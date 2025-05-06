@@ -1,7 +1,25 @@
+'use client';
+
 import Image from "next/image";
 import styles from "./page.module.css";
-import Sidebar from '../sidebar';
+import Sidebar from '../components/sidebar';
+import { useState } from 'react';
+import DashboardHeader from '../components/dashboardHeader'; 
 
+const headerCellStyle = {
+  padding: '12px',
+  textAlign: 'left',
+  fontWeight: 'bold',
+  borderBottom: '2px solid #d1d5db',
+  fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif', // ใช้ฟอนต์เดียวกัน
+};
+
+const cellStyle = {
+  padding: '12px',
+  textAlign: 'left',
+  verticalAlign: 'middle',
+  fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif', // ใช้ฟอนต์เดียวกัน
+};
 
 const dormData = [
   { id: 1, name: 'Hopak1', owner: 'David Jo', status: 'Available', updated: '24 Jun, 2023' },
@@ -14,89 +32,91 @@ const dormData = [
 ];
 
 export default function Dashboard() {
+  const [dorms, setDorms] = useState(dormData); // ใช้ useState เพื่อจัดการกับข้อมูลในตาราง
+
+  // ฟังก์ชันสำหรับการแก้ไข
+  const handleEdit = (id) => {
+    console.log('Editing dorm with id:', id);
+    // ที่นี่คุณสามารถทำการแก้ไขข้อมูลตามที่ต้องการ เช่นเปิด modal หรือฟอร์มแก้ไข
+  };
+
+  // ฟังก์ชันสำหรับการลบ
+  const handleDelete = (id) => {
+    const updatedDorms = dorms.filter(dorm => dorm.id !== id); // ลบ dorm ที่มี id ตรงกัน
+    setDorms(updatedDorms); // อัพเดต state เพื่อให้ตารางแสดงข้อมูลที่ถูกลบ
+    console.log('Deleted dorm with id:', id);
+  };
+
   return (
-    <div style={{ display: 'flex', backgroundColor: '#e0f2ff', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', backgroundColor: '#e8f8ff', minHeight: '100vh', fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif', color: '#222B45' }}>
       <Sidebar />
       <main style={{ marginLeft: '25px', padding: '2rem', width: '100%' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          
-          {/* Greeting Text */}
-          <div>
-            <h1 style={{ margin: 0 }}>Hello, Salman</h1>
-            <p style={{ margin: 0 }}>Have a nice day</p>
-          </div>
-        
-          {/* Account Box */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
-            padding: '8px 12px',
-            borderRadius: '8px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-            cursor: 'pointer',
-            minWidth: '200px'
-          }}>
-            <img src="/favicon.ico" alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} />
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 'bold', fontSize: '14px' }}>Salman</div>
-              <div style={{ fontSize: '12px', color: '#6b7280' }}>Admin</div>
-            </div>
-            <div style={{ fontSize: '18px', color: '#6b7280' }}>▼</div>
-          </div>
-        </div>
+      <DashboardHeader />
 
-        {/* Dash Board */}
-        <div style={{ margin: '1rem 0' }}>
-          <input type="text" placeholder="Search..." style={{ padding: '8px', width: '300px' }} />
-          <button style={{
-            marginLeft: '1rem',
-            padding: '8px 16px',
-            background: '#3b82f6',
-            color: 'white',
-            borderRadius: '4px',
-            border: 'none'
+        <div style={{
+          backgroundColor: 'white',
+          boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+          borderRadius: '8px',
+          overflow: 'hidden',
+        }}>
+          <h2 style={{
+            margin: 0,
+            marginBottom: '16px',
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            paddingLeft: '10px',
+            paddingTop: '10px',
+            fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
           }}>
-            Add Dorm +
-          </button>
-        </div>
+            List Dormitory
+          </h2>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Owner</th>
-              <th>State</th>
-              <th>Last update</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dormData.map((dorm) => (
-              <tr key={dorm.id}>
-                <td>{dorm.id}</td>
-                <td>{dorm.name}</td>
-                <td>{dorm.owner}</td>
-                <td>
-                  <span style={{
-                    padding: '4px 8px',
-                    borderRadius: '12px',
-                    backgroundColor: dorm.status === 'Full' ? '#ef4444' : '#10b981',
-                    color: 'white',
-                    fontSize: '0.875rem',
-                  }}>
-                    {dorm.status}
-                  </span>
-                </td>
-                <td>{dorm.updated}</td>
-                <td>
-                  ✏️ 🗑️
-                </td>
+          <table style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+          }}>
+            <thead>
+              <tr style={{ backgroundColor: '#f3f4f6' }}>
+                <th style={headerCellStyle}>ID</th>
+                <th style={headerCellStyle}>Name</th>
+                <th style={headerCellStyle}>Owner</th>
+                <th style={headerCellStyle}>State</th>
+                <th style={headerCellStyle}>Last update</th>
+                <th style={headerCellStyle}>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {dorms.map((dorm) => (
+                <tr key={dorm.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                  <td style={cellStyle}>{dorm.id}</td>
+                  <td style={cellStyle}>{dorm.name}</td>
+                  <td style={cellStyle}>{dorm.owner}</td>
+                  <td style={cellStyle}>
+                    <span style={{
+                      display: 'inline-block',
+                      minWidth: '80px',
+                      padding: '4px 8px',
+                      borderRadius: '12px',
+                      backgroundColor: dorm.status === 'Full' ? '#FF0000' : '#6FC273',
+                      color: 'white',
+                      fontSize: '0.875rem',
+                      textAlign: 'center',
+                    }}>
+                      {dorm.status}
+                    </span>
+                  </td>
+                  <td style={cellStyle}>{dorm.updated}</td>
+                  <td style={cellStyle}>
+                    <span onClick={() => handleEdit(dorm.id)} style={{ cursor: 'pointer', marginRight: '10px' }}>✏️</span>
+                    <span onClick={() => handleDelete(dorm.id)} style={{ cursor: 'pointer' }}>🗑️</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+        </div>
       </main>
     </div>
   );

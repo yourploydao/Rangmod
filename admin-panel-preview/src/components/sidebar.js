@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 import styles from './sidebar.module.css';
 
 const menuItems = [
-  { label: 'Dashboard', href: '/dashboard' },
-  { label: 'Users', href: '#' },
-  { label: 'Owner Permissions', href: '#' },
+  { label: 'Dashboard', href: '/' },
+  { label: 'Users', href: '/users' },
+  { label: 'Owner Permissions', href: '/ownerpermiss' },
   { label: 'Setting', href: '#' },
 ];
 

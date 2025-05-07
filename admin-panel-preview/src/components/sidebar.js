@@ -8,7 +8,7 @@ const menuItems = [
   { label: 'Dashboard', href: '/' },
   { label: 'Users', href: '/users' },
   { label: 'Owner Permissions', href: '/ownerpermiss' },
-  { label: 'Setting', href: '#' },
+  { label: 'Setting', href: '/setting' },
 ];
 
 const Sidebar = () => {

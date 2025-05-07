@@ -29,69 +29,6 @@ export default function DashboardHeader() {
           <div style={{ fontSize: '18px', color: '#6b7280' }}>▼</div>
         </div>
       </div>
-
-      {/* Dashboard Actions */}
-      <div style={{ margin: '1rem 0 20px 0' }}>
-        <h1 style={{ marginBottom: '1rem', fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif', color: '#4A85F6' }}>Admin Dashboard</h1>
-
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <input
-            type="text"
-            placeholder="Search"
-            style={{
-              height: '25px',
-              flex: 1,
-              padding: '8px',
-              minWidth: '0',
-              background: 'url(/favicon.ico) no-repeat 10px center',
-              backgroundSize: '15px 15px',
-              paddingLeft: '36px',
-              backgroundColor: 'white',
-              border: 'none',
-              borderRadius: '10px',
-              outline: 'none',
-              fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
-            }}
-          />
-
-          <button style={{
-            marginLeft: '1rem',
-            padding: '8px 16px',
-            background: '#3b82f6',
-            color: 'white',
-            borderRadius: '4px',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-          }}>
-            Sort by
-            <img
-              src="/favicon.ico"
-              alt="Sort"
-              style={{
-                width: '15px',
-                height: '15px',
-                borderRadius: '50%',
-                marginLeft: '10px',
-                verticalAlign: 'middle'
-              }}
-            />
-          </button>
-
-          <button style={{
-            marginLeft: '1rem',
-            padding: '8px 16px',
-            background: '#3b82f6',
-            color: 'white',
-            borderRadius: '4px',
-            border: 'none',
-            fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-          }}>
-            Add Dorm +
-          </button>
-        </div>
-      </div>
     </>
   );
 }

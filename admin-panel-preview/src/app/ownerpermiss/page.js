@@ -32,6 +32,7 @@ const userData = [
 
 export default function Dashboard() {
   const [users, setUsers] = useState(userData);
+  const [searchQuery, setSearchQuery] = useState(""); 
 
   const handleEdit = (id) => {
     const updatedUsers = users.filter(user => user.id !== id);
@@ -45,11 +46,78 @@ export default function Dashboard() {
     console.log('Deleted user with id:', id);
   };
 
+  const filteredUsers = users.filter(user =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div style={{ display: 'flex', backgroundColor: '#e8f8ff', minHeight: '100vh', fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif', color: '#222B45' }}>
       <Sidebar />
       <main style={{ marginLeft: '25px', padding: '2rem', width: '100%' }}>
         <DashboardHeader />
+        <div style={{ margin: '1rem 0 20px 0' }}>
+        <h1 style={{ marginBottom: '1rem', fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif', color: '#4A85F6' }}>Admin Owner Permissions</h1>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                height: '25px',
+                flex: 1,
+                padding: '8px',
+                minWidth: '0',
+                background: 'url(/favicon.ico) no-repeat 10px center',
+                backgroundSize: '15px 15px',
+                paddingLeft: '36px',
+                backgroundColor: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                outline: 'none',
+              }}
+            />
+
+          <button style={{
+            marginLeft: '1rem',
+            padding: '8px 16px',
+            background: '#3b82f6',
+            color: 'white',
+            borderRadius: '4px',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+          }}>
+            Sort by
+            <img
+              src="/favicon.ico"
+              alt="Sort"
+              style={{
+                width: '15px',
+                height: '15px',
+                borderRadius: '50%',
+                marginLeft: '10px',
+                verticalAlign: 'middle'
+              }}
+            />
+          </button>
+
+          <button style={{
+            marginLeft: '1rem',
+            padding: '8px 16px',
+            background: '#3b82f6',
+            color: 'white',
+            borderRadius: '4px',
+            border: 'none',
+            fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+          }}>
+            Add Owner +
+          </button>
+        </div>
+      </div>
 
         <div style={{
           backgroundColor: 'white',
@@ -83,7 +151,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+            {filteredUsers.map((user) => (
                 <tr key={user.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                   <td style={cellStyle}>{user.id}</td>
                   <td style={cellStyle}>{user.username}</td>

@@ -1,11 +1,14 @@
 // components/Navigation.js
 import React, { useState, useEffect, useRef } from "react";
 import styles from "../styles/navigation.module.css";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 const Navigation = () => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
+  const router = useRouter();
 
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
@@ -28,11 +31,24 @@ const Navigation = () => {
     setShowDropdown(false);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Function to check if a link is active
+  const isActive = (path) => {
+    return router.pathname === path;
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target) && 
+          !event.target.closest(`.${styles.hamburgerMenu}`)) {
+        setIsMobileMenuOpen(false);
       }
     };
 
@@ -45,31 +61,99 @@ const Navigation = () => {
   return (
     <header className={styles.header}>
       <div className={styles.headerContainer}>
-        <div className={styles.logo} onClick={handleLogoClick}>
-          <img src="/assets/rangmod-logo.png" alt="RANGMOD" className={styles.logoImage} />
-          <span className={styles.logoText}>RANGMOD</span>
+        <div className={styles.leftSection}>
+          <div className={styles.logo} onClick={handleLogoClick}>
+            <img src="/assets/rangmodlogo.png" alt="RANGMOD" className={styles.logoImage} />
+            <span className={styles.logoText}>RANGMOD</span>
+          </div>
         </div>
         
-        <div className={styles.navigation}>
-          <a href="/homepage-after-login" className={styles.navLink}>Home</a>
-          <a href="/search" className={styles.navLink}>Search</a>
-          <a href="/about" className={styles.navLink}>About</a>
-          <a href="/contact" className={styles.navLink}>Contact</a>
+        <div className={styles.rightSection}>
+          {/* Desktop Navigation */}
+          <nav className={styles.navigation}>
+            <a 
+              href="/homepage-after-login" 
+              className={`${styles.navLink} ${isActive('/homepage-after-login') ? styles.activeLink : ''}`}
+            >
+              Home
+            </a>
+            <a 
+              href="/search" 
+              className={`${styles.navLink} ${isActive('/search') ? styles.activeLink : ''}`}
+            >
+              Search
+            </a>
+            <a 
+              href="/about" 
+              className={`${styles.navLink} ${isActive('/about') ? styles.activeLink : ''}`}
+            >
+              About
+            </a>
+            <a 
+              href="/contact" 
+              className={`${styles.navLink} ${isActive('/contact') ? styles.activeLink : ''}`}
+            >
+              Contact
+            </a>
+          </nav>
+          
+          <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
+            <img src="/assets/user1.jpeg" alt="tinny" className={styles.profileImage} />
+            <span className={styles.profileName}>tinny</span>
+            <img 
+              src="https://cdn-icons-png.flaticon.com/128/152/152415.png" 
+              alt="dropdown" 
+              className={styles.dropdownArrow} 
+            />
+          </div>
         </div>
         
-        <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-          <img src="/assets/user1.jpeg" alt="tinny" className={styles.profileImage} />
-          <span className={styles.profileName}>tinny</span>
-          <span className={styles.dropdownIcon}>▼</span>
+        {/* Hamburger Menu Button */}
+        <div className={styles.hamburgerMenu} onClick={toggleMobileMenu}>
+          <img 
+            src="https://cdn-icons-png.flaticon.com/128/13958/13958298.png" 
+            alt="Menu" 
+            className={styles.hamburgerIcon} 
+          />
         </div>
         
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className={styles.mobileNavigation} ref={mobileMenuRef}>
+            <a 
+              href="/homepage-after-login" 
+              className={`${styles.mobileNavLink} ${isActive('/homepage-after-login') ? styles.activeLink : ''}`}
+            >
+              Home
+            </a>
+            <a 
+              href="/search" 
+              className={`${styles.mobileNavLink} ${isActive('/search') ? styles.activeLink : ''}`}
+            >
+              Search
+            </a>
+            <a 
+              href="/about" 
+              className={`${styles.mobileNavLink} ${isActive('/about') ? styles.activeLink : ''}`}
+            >
+              About
+            </a>
+            <a 
+              href="/contact" 
+              className={`${styles.mobileNavLink} ${isActive('/contact') ? styles.activeLink : ''}`}
+            >
+              Contact
+            </a>
+          </div>
+        )}
+        
+        {/* Profile Dropdown */}
         {showDropdown && (
           <div className={styles.profileDropdown}>
             <div className={styles.profileHeader}>
               <img src="/assets/user1.jpeg" alt="User Profile" className={styles.dropdownProfileImage} />
               <div className={styles.profileInfo}>
                 <h3 className={styles.profileFullName}>tinny</h3>
-                <p className={styles.profileStatus}>Online</p>
               </div>
             </div>
             

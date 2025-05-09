@@ -1,4 +1,7 @@
-/* Footer */
+:local(*) {
+  font-family: 'Poppins', sans-serif;
+}
+
 .footer {
   background-color: #0095ff;
   color: white;

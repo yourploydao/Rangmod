@@ -1,8 +1,12 @@
-/* components/navigation.module.css */
+:local(*) {
+  font-family: 'Poppins', sans-serif;
+}
+
 .header {
+  width: 100%; /* Make header take full width */
   background-color: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -13,21 +17,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1200px; /* Match this with your content container */
+  width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0; /* Removed padding to allow elements to be flush with edges */
+  position: relative;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  padding-left: 0; /* Ensure the logo is flush with the left edge */
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding-right: 0; /* Ensure profile is flush with the right edge */
 }
 
 .logo {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-left: -120px;
 }
 
 .logoImage {
-  width: 2rem;
-  height: 2rem;
+  width: 4rem;
+  height: 4rem;
 }
 
 .logoText {
@@ -41,9 +59,11 @@
 
 .navigation {
   display: flex;
-  justify-content: center;
-  gap: 5rem;
-  margin-right: -600px;
+  justify-content: center; /* Changed to center the navigation links */
+  gap: 2rem;
+  margin-right: 2rem;
+  margin-left: 0;
+  flex: 1; /* Allow navigation to take available space */
 }
 
 .navLink {
@@ -52,9 +72,60 @@
   font-size: 1rem;
   font-weight: 500;
   transition: color 0.3s ease;
+  padding: 0.5rem 0;
 }
 
 .navLink:hover {
+  color: #0099ff;
+}
+
+.activeLink {
+  color: #0099ff;
+  font-weight: 600;
+}
+
+/* Hamburger Menu */
+.hamburgerMenu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1010;
+  position: absolute;
+  right: 1rem;
+}
+
+.hamburgerIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Mobile Navigation */
+.mobileNavigation {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  z-index: 1000;
+  flex-direction: column;
+  border-radius: 0 0 8px 8px;
+}
+
+.mobileNavLink {
+  color: #333;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.mobileNavLink:hover {
+  background-color: #f5f5f5;
   color: #0099ff;
 }
 
@@ -63,13 +134,12 @@
   align-items: center;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
-  border-radius: 2rem;
+  border-radius: 1rem;
   transition: background-color 0.3s ease;
-  margin-right: -150px;
 }
 
 .userProfile:hover {
-  background-color: #f5f5f5;
+  background-color: #a7cce4;
 }
 
 .profileImage {
@@ -85,16 +155,17 @@
   font-weight: 500;
 }
 
-.dropdownIcon {
-  font-size: 0.7rem;
-  color: #777;
+.dropdownArrow {
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-left: 0.2rem;
 }
 
 /* Dropdown menu */
 .profileDropdown {
   position: absolute;
   top: 100%;
-  right: 1rem;
+  right: 0; /* Changed to align with the right edge */
   width: 250px;
   background-color: #ffffff;
   border-radius: 0.5rem;
@@ -128,12 +199,6 @@
   font-weight: 600;
 }
 
-.profileStatus {
-  margin: 0;
-  font-size: 0.8rem;
-  color: #4CAF50;
-}
-
 .dropdownDivider {
   height: 1px;
   background-color: #eeeeee;
@@ -162,12 +227,71 @@
   color: #999;
 }
 
+/* Media Queries for Responsive Design */
+@media (max-width: 1024px) {
+  .navigation {
+    gap: 1.5rem;
+  }
+  
+  .logo {
+    margin-left: 0;
+  }
+  
+  .userProfile {
+    margin-right: 0;
+  }
+  
+  .headerContainer {
+    padding: 0 1rem; /* Add some padding for medium screens */
+  }
+}
+
 @media (max-width: 768px) {
   .navigation {
     display: none;
   }
   
+  .hamburgerMenu {
+    display: flex;
+  }
+  
+  .mobileNavigation {
+    display: flex;
+  }
+  
   .headerContainer {
     justify-content: space-between;
+    padding: 0 1rem; /* Add some padding for small screens */
+  }
+  
+  .profileName {
+    display: none;
+  }
+  
+  .dropdownArrow {
+    display: none;
+  }
+  
+  .profileDropdown {
+    right: 0;
+    width: 220px;
+  }
+  
+  .leftSection {
+    padding-left: 0;
+  }
+  
+  .rightSection {
+    padding-right: 0; 
+  }
+}
+
+@media (max-width: 480px) {
+  .logoText {
+    font-size: 1rem;
+  }
+  
+  .headerContainer {
+    padding: 0 1rem;
   }
 }

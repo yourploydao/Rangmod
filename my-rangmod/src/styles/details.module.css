@@ -1,0 +1,459 @@
+:local(*) {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    width: 100%;
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  /* Photo Gallery */
+  .photoGrid {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    height: 350px;
+  }
+  
+  .mainPhoto {
+    flex: 2;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+  }
+  
+  .mainPhoto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .mainPhoto img:hover {
+    transform: scale(1.03);
+  }
+  
+  .smallPhotos {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .smallPhoto {
+    position: relative;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .smallPhoto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .smallPhoto img:hover {
+    transform: scale(1.05);
+  }
+  
+  .morePhotos {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  /* Basic Info */
+  .basicInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .nameLocation h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+  }
+  
+  .nameLocation p {
+    color: #666;
+    margin: 0;
+  }
+  
+  .gender {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .genderIcon {
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .priceRange {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Sections */
+  .section {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .section h2 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .featuresList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .featuresList li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #666;
+  }
+  
+  /* Facilities */
+  .facilitiesList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .facilityItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 45%;
+  }
+  
+  .facilityIcon {
+    font-size: 1.4rem;
+  }
+  
+  .showAllButton {
+    background-color: transparent;
+    color: #2563eb;
+    border: none;
+    padding: 0.5rem 0;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  
+  /* Details and Map Section */
+  .detailsMapSection {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mapContainer {
+    flex: 1;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .map {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .mapDetails {
+    padding: 1rem;
+  }
+  
+  .mapDetail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .detailIcon {
+    font-size: 1.2rem;
+  }
+  
+  .propertyDetails {
+    flex: 1;
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .propertyDetails h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .utilityList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .utilityItem {
+    display: flex;
+    align-items: center;
+  }
+  
+  .utilityIcon {
+    width: 1.5rem;
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+  }
+  
+  .utilityName {
+    flex: 1;
+    color: #555;
+  }
+  
+  .utilityValue {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  /* Room Types */
+  .roomTypes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  
+  .roomCard {
+    flex: 1;
+    min-width: 280px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .roomImageContainer {
+    width: 100%;
+    height: 230px;
+  }
+  
+  .roomImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .roomInfo {
+    padding: 1rem;
+  }
+  
+  .roomInfo h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    color: #333;
+  }
+  
+  .roomDetail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  .roomIcon {
+    font-size: 1.1rem;
+  }
+  
+  /* Agreement */
+  .agreementList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #555;
+  }
+  
+  .agreementList li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+  
+  /* Photo Gallery Modal */
+  .galleryOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .galleryContent {
+    position: relative;
+    width: 90%;
+    max-width: 1000px;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .closeGallery {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+  
+  .navButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .navButton:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .galleryImageContainer {
+    position: relative;
+    height: 100%;
+    flex: 1;
+    margin: 0 1rem;
+  }
+  
+  .galleryImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .photoCounter {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 0.9rem;
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .content {
+      padding: 1rem;
+    }
+    
+    .photoGrid {
+      flex-direction: column;
+      height: auto;
+    }
+    
+    .mainPhoto {
+      height: 250px;
+    }
+    
+    .smallPhotos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      height: 150px;
+    }
+    
+    .detailsMapSection {
+      flex-direction: column;
+    }
+    
+    .facilityItem {
+      width: 100%;
+    }
+    
+    .galleryContent {
+      height: 60%;
+    }
+    
+    .navButton {
+      height: 40px;
+      width: 40px;
+      font-size: 1.5rem;
+    }
+    
+    .roomTypes {
+      flex-direction: column;
+    }
+  }

@@ -1,0 +1,166 @@
+:local(*) {
+  font-family: 'Poppins', sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f9ff;
+}
+
+/* Layout Structure */
+.layout {
+  display: flex;
+  flex: 1;
+  height: 100vh;
+}
+
+/* Main Content Wrapper */
+.mainWrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 240px;
+  background-color: #fff;
+  box-shadow: 1px 0 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebarHeader {
+  padding: 1.5rem;
+}
+
+.sidebarHeader a {
+  text-decoration: none;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  cursor: pointer;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 0.5rem;
+}
+
+.logoText {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #0284c7;
+  text-decoration: none;
+}
+
+/* Sidebar Navigation Styles */
+.sidebarNav, .settingNav {
+  padding: 0 1rem;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.navItem:hover {
+  background-color: #f1f5f9;
+}
+
+.navItem.active {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.navIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.navText {
+  flex: 1;
+  text-align: left;
+}
+
+/* Setting Component Styles */
+.settingContainer {
+  width: 100%;
+}
+
+/* Main Content Styles */
+.mainContent {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  overflow-y: auto;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    position: static;
+  }
+  
+  .navItem {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .navIcon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebarHeader {
+    padding: 1rem;
+  }
+  
+  .logo {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .logoText {
+    font-size: 1.1rem;
+  }
+}

@@ -9,6 +9,7 @@ const RangModSignIn = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,18 +21,10 @@ const RangModSignIn = () => {
     };
 
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://localhost:3000/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("http://localhost:3000/api/auth/signin", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200 && data.status === "ok") {
         alert(data.message || "Signed in successfully!");
         
         // เก็บ JWT token ตามตัวเลือก rememberMe
@@ -42,7 +35,8 @@ const RangModSignIn = () => {
         }
 
         // หลังจากล็อกอินสำเร็จ ไปดึงข้อมูลตัวเอง
-        const me = await axios.get("https://localhost:3000/me", {
+        
+        const me = await axios.get("http://localhost:3000/api/auth/me", {
           headers: {
             Authorization: `Bearer ${data.token}`, // ส่ง token ใน header
           },

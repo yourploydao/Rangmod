@@ -5,7 +5,7 @@ import { sendEmail } from '@/config/mailer';
 import bcrypt from 'bcryptjs';
 
 export async function POST(req: NextRequest) {
-  const { name, email, phone, password } = await req.json();
+  const { name, email, phone, username, password } = await req.json();
 
   try {
     await connectDB();
@@ -24,12 +24,14 @@ export async function POST(req: NextRequest) {
       name,
       email,
       phone,
+      username,
       password: hashedPassword,
       verificationOTP,
       verificationOTPExpires,
       isVerified: false,
     });
 
+    // ส่งอีเมลยืนยัน OTP
     await sendEmail({
       to: email,
       subject: 'Verify your email',
@@ -38,6 +40,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: 'User registered. Please verify your email.' }, { status: 201 });
   } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    console.error("Error during registration:", error);
+    return NextResponse.json({ message: error.message || "Server error" }, { status: 500 });
   }
 }

@@ -77,7 +77,7 @@ const RangModVerifyEmail = () => {
     
     try {
       // Replace with your actual API endpoint
-      const res = await axios.post("http://localhost:3000/api/auth/resend-otp", { email });
+      const res = await axios.post("http://localhost:3000/api/auth/resendotp", { email });
       const data = res.data;
 
       if (res.status === 200 && data.status === "ok") {

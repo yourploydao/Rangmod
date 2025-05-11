@@ -854,7 +854,7 @@ const DormitoryDetail = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className={styles.roomCard}>
               <div className={styles.roomImageContainer}>
                 <img src="https://pix10.agoda.net/hotelImages/217/2170856/2170856_17042609030052634768.jpg?ca=6&ce=1&s=1024x768" alt="Twin Room" className={styles.roomImage} />

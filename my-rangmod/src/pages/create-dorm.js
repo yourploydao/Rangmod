@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, Trash2, MapPin } from 'lucide-react';
 import styles from "../styles/create-dorm.module.css";
-import Sidebar from "../components/sidebar-setting-admin";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 
 const CreateDormitoryPage = () => {
@@ -39,7 +38,7 @@ const CreateDormitoryPage = () => {
   });
   
   const userData = {
-    username: "Salman Faris"
+    username: "Admin"
   };
   
   const handleProfileClick = () => {

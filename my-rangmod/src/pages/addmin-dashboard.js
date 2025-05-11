@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
-import styles from "../styles/owner-dashboard.module.css";
-import SidebarOwner from '@/components/sidebar-setting-owner';
+import styles from "../styles/addmin-dashboard.module.css";
+import SidebarAdmin from '@/components/sidebar-setting-admin';
 
 const OwnerDashboard = () => {
   const router = useRouter();
@@ -9,10 +9,10 @@ const OwnerDashboard = () => {
   
   // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Benny Targarian',
-    username: 'Benny',
-    role: 'Dorm Owner',
-    profileImage: '/assets/owner1.jpeg'
+    fullName: 'Salman Faris',
+    username: 'Salman',
+    role: 'Admin',
+    profileImage: '/assets/admin1.jpeg'
   });
 
   // Mock dormitory data
@@ -24,6 +24,54 @@ const OwnerDashboard = () => {
       owner: 'David Jo',
       state: 'Available',
       lastUpdate: '24 Jun, 2023'
+    },
+    {
+      id: 2,
+      name: 'Hopak2',
+      code: '101/999',
+      owner: 'Ina Hogan',
+      state: 'Available',
+      lastUpdate: '24 Aug, 2023'
+    },
+    {
+      id: 3,
+      name: 'Hopak3',
+      code: '101/999',
+      owner: 'Harmon Nola',
+      state: 'Available',
+      lastUpdate: '18 Dec, 2023'
+    },
+    {
+      id: 4,
+      name: 'Hopak4',
+      code: '101/999',
+      owner: 'Lena Jung',
+      state: 'Full',
+      lastUpdate: '8 Dec, 2023'
+    },
+    {
+      id: 5,
+      name: 'Hopak5',
+      code: '101/999',
+      owner: 'Eula Lina',
+      state: 'Available',
+      lastUpdate: '15 Jun, 2023'
+    },
+    {
+      id: 6,
+      name: 'Hopak6',
+      code: '101/999',
+      owner: 'Victoria Christ',
+      state: 'Available',
+      lastUpdate: '12 July, 2023'
+    },
+    {
+      id: 7,
+      name: 'Hopak7',
+      code: '101/999',
+      owner: 'Cora Polar',
+      state: 'Full',
+      lastUpdate: '21 July, 2023'
     }
   ]);
 
@@ -33,6 +81,7 @@ const OwnerDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [notification, setNotification] = useState({ show: false, message: '' });
+  const [searchQuery, setSearchQuery] = useState('');
   
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
@@ -42,6 +91,10 @@ const OwnerDashboard = () => {
     // In a real app, this would clear auth state and redirect
     alert("Logging out...");
     router.push("/login");
+  };
+
+  const handleAddDorm = () => {
+    router.push("/create-dorm");
   };
 
   const handleEditDorm = (dormId) => {
@@ -87,6 +140,17 @@ const OwnerDashboard = () => {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  
+  // Filter dormitories based on search query
+  const filteredDormitories = dormitories.filter(dorm => 
+    dorm.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dorm.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dorm.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -106,7 +170,7 @@ const OwnerDashboard = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         {/* Sidebar */}
-        <SidebarOwner />
+        <SidebarAdmin />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
@@ -118,7 +182,7 @@ const OwnerDashboard = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <img src="/assets/admin1.jpeg" alt="Profile" className={styles.profileImage} />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -144,7 +208,45 @@ const OwnerDashboard = () => {
           </div>
           
           <div className={styles.dashboardHeader}>
-            <h2 className={styles.dashboardTitle}>Owner Dashboard</h2>
+            <h2 className={styles.dashboardTitle}>Admin Dashboard</h2>
+          </div>
+          
+          <div className={styles.searchSortContainer}>
+            <div className={styles.searchContainer}>
+              <div className={styles.searchIcon}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <input 
+                type="text" 
+                placeholder="Search" 
+                className={styles.searchInput}
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </div>
+            
+            <div className={styles.actionButtons}>
+              <div className={styles.sortByContainer}>
+                <span>Sort by</span>
+                <div className={styles.sortIcon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M6 12h12"></path>
+                    <path d="M9 18h6"></path>
+                  </svg>
+                </div>
+              </div>
+              <button className={styles.addDormButton} onClick={handleAddDorm}>
+                Add Dorm
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
           </div>
           
           <div className={styles.dormListContainer}>
@@ -163,7 +265,7 @@ const OwnerDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dormitories.map((dorm) => (
+                  {filteredDormitories.map((dorm) => (
                     <tr key={dorm.id}>
                       <td>{dorm.id}</td>
                       <td>

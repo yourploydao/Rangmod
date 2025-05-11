@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles/signin.module.css";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const RangModSignIn = () => {
   // State variables for form inputs
@@ -14,12 +16,12 @@ const RangModSignIn = () => {
     const payload = {
       email: email,
       password: password,
-      rememberMe: rememberMe
+      rememberMe: rememberMe,
     };
 
     try {
       // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/signin", {
+      const res = await fetch("https://localhost:3000/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +33,35 @@ const RangModSignIn = () => {
 
       if (res.ok && data.status === "ok") {
         alert(data.message || "Signed in successfully!");
-        window.location.href = "/dashboard";
+        
+        // เก็บ JWT token ตามตัวเลือก rememberMe
+        if (rememberMe) {
+          localStorage.setItem("token", data.token); // เก็บใน localStorage ถ้า rememberMe ถูกเลือก
+        } else {
+          sessionStorage.setItem("token", data.token); // หรือเก็บใน sessionStorage ถ้าไม่เลือก rememberMe
+        }
+
+        // หลังจากล็อกอินสำเร็จ ไปดึงข้อมูลตัวเอง
+        const me = await axios.get("https://localhost:3000/me", {
+          headers: {
+            Authorization: `Bearer ${data.token}`, // ส่ง token ใน header
+          },
+        });
+        
+        //* อย่าลืมมาเซ็ต path ว่าไปไหน *//
+
+        if (me.data.role === "admin") {
+          // ถ้าเป็น admin ให้ไปที่ /admin/dashboard
+          router.push("/admin/dashboard");
+        } else if (me.data.role === "user") {
+          // ถ้าเป็น user ให้ไปที่ /user/dashboard
+          router.push("/user/dashboard");
+        } else if (me.data.role === "owner") {
+          // ถ้าเป็น user ให้ไปที่ /owner/dashboard
+          router.push("/owner/dashboard");
+        } else {
+          alert("Unknown role");
+        }
       } else {
         alert(data.error || data.message || "Sign in failed");
       }
@@ -101,7 +131,7 @@ const RangModSignIn = () => {
                   Remember Me
                 </label>
               </div>
-              <a href="#" className={styles.forgotPasswordLink}>Forgot Password?</a>
+              <a href="/forgotpassword" className={styles.forgotPasswordLink}>Forgot Password?</a>
             </div>
             
             <button type="submit" className={styles.createButton}>

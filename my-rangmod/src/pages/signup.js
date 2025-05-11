@@ -203,7 +203,11 @@ const RangModLogin = () => {
 
       if (res.ok && data.status === "ok") {
         alert(data.message || "Account created successfully!");
-        window.location.href = "/dashboard";
+
+        // Save email to localStorage
+        localStorage.setItem('resetEmail', email)
+
+        window.location.href = "/signin";
       } else {
         alert(data.error || data.message || "Registration failed");
       }

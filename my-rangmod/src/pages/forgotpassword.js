@@ -10,7 +10,6 @@ const RangModForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
 
     if (!email) {
       setMessage({ text: "Please enter your email address", isError: true });
@@ -18,19 +17,15 @@ const RangModForgotPassword = () => {
       return;
     }
 
-    const payload = {
-      email: email
-    };
+    const payload = { email };
 
     try {
       // Replace with your actual API endpoint
       const res = await fetch("https://api.rangmod.com/forgot-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      });
+      }); 
 
       const data = await res.json();
 
@@ -39,6 +34,10 @@ const RangModForgotPassword = () => {
           text: data.message || "Password reset instructions sent to your email!", 
           isError: false 
         });
+        // Save email to localStorage
+        localStorage.setItem('resetEmail', email)
+
+        window.location.href = "/verifycode";
       } else {
         setMessage({ 
           text: data.error || data.message || "Failed to process your request", 

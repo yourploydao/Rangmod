@@ -4,8 +4,39 @@ import { useRouter } from "next/router";
 import styles from "../styles/homepage-before-login.module.css";
 import Header from "../components/navigation";
 import Footer from "../components/footer";
+import { connectDB } from '@/lib/mongodb';
+import Dormitory from '@/models/Dormitory';
 
-const RangModDormitory = () => {
+export async function getServerSideProps() {
+  try {
+    await connectDB();
+    
+    // Fetch all dormitories
+    const dormitories = await Dormitory.find({}).lean();
+    
+    // Serialize the data
+    const serializedDormitories = dormitories.map(dormitory => ({
+      ...dormitory,
+      _id: dormitory._id.toString(),
+      last_updated: dormitory.last_updated || null
+    }));
+
+    return {
+      props: {
+        dormitories: serializedDormitories
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching dormitories:', error);
+    return {
+      props: {
+        dormitories: []
+      }
+    };
+  }
+}
+
+const RangModDormitory = ({ dormitories }) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -26,8 +57,8 @@ const RangModDormitory = () => {
     router.push('/search-results');
   };
 
-  const handleDormitoryClick = (dormitory) => {
-    router.push(`/dormitory/${dormitory}`);
+  const handleDormitoryClick = (dormitoryId) => {
+    router.push(`/details/${dormitoryId}`);
   };
 
   const handleProfileClick = () => {
@@ -40,6 +71,29 @@ const RangModDormitory = () => {
 
   const handleGateSelection = (gate) => {
     setSelectedGate(gate);
+  };
+
+  // Filter dormitories based on contract duration
+  const getDormitoriesByDuration = (duration) => {
+    return dormitories.filter(dormitory => {
+      const agreement = dormitory.agreement?.toLowerCase() || '';
+      if (duration === "3 Months") {
+        return agreement.includes('3 month') || agreement.includes('3-month');
+      } else if (duration === "6 Months") {
+        return agreement.includes('6 month') || agreement.includes('6-month');
+      } else if (duration === "1 Year") {
+        return agreement.includes('1 year') || agreement.includes('12 month') || agreement.includes('12-month');
+      }
+      return true;
+    });
+  };
+
+  // Filter dormitories based on university affiliation
+  const getDormitoriesByGate = (gate) => {
+    return dormitories.filter(dormitory => {
+      const type = dormitory.type_dormitory?.toLowerCase() || '';
+      return type.includes('university') || type.includes('affiliated');
+    });
   };
 
   return (
@@ -174,53 +228,30 @@ const RangModDormitory = () => {
         {/* More Dormitories Section */}
         <section className={styles.moreDormsSection}>
           <div className={styles.dormCards}>
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('bann-suanthon')}>
-              <div className={styles.cardImage}>
-                <img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Bann Suanthon" />
+            {getDormitoriesByDuration(selectedDuration).map((dormitory) => (
+              <div 
+                key={dormitory._id} 
+                className={styles.dormCard} 
+                onClick={() => handleDormitoryClick(dormitory._id)}
+              >
+                <div className={styles.cardImage}>
+                  <img 
+                    src={dormitory.images[0] || '/images/placeholder.jpg'} 
+                    alt={dormitory.name_dormitory} 
+                  />
+                </div>
+                <div className={styles.cardInfo}>
+                  <h3 className={styles.dormTitle}>{dormitory.name_dormitory}</h3>
+                  <p className={styles.priceRange}>
+                    {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} THB/Month
+                  </p>
+                  <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
+                  <p className={styles.refreshDate}>
+                    refreshed at: {new Date(dormitory.last_updated).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>Bann Suanthon</h3>
-                <p className={styles.priceRange}>5,000 - 8,000 THB/Month</p>
-                <p className={styles.dormFeature}>Pet-Friendly</p>
-                <p className={styles.refreshDate}>refreshed at : 10/02/2025</p>
-              </div>
-            </div>
-
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('cherboon1')}>
-              <div className={styles.cardImage}>
-                <img src="https://images.thaiapartment.com/Apartment/11506/bang-mod-place_ext01.jpg" alt="Cherboon1" />
-              </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>Cherboon1</h3>
-                <p className={styles.priceRange}>4,500 - 6,000 THB/Month</p>
-                <p className={styles.dormFeature}>Female Dormitory</p>
-                <p className={styles.refreshDate}>refreshed at : 19/02/2025</p>
-              </div>
-            </div>
-
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('j-home')}>
-              <div className={styles.cardImage}>
-                <img src="https://bcdn.renthub.in.th/listing_picture/202111/20211112/5urKh7yE3t6u1YeJjJkj.jpg?class=lthumbnail" alt="J Home" />
-              </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>J Home</h3>
-                <p className={styles.priceRange}>3,000 - 5,200 THB/Month</p>
-                <p className={styles.dormFeature}>Mixed-gender Dormitory</p>
-                <p className={styles.refreshDate}>refreshed at : 18/02/2025</p>
-              </div>
-            </div>
-
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('tanasit-resident')}>
-              <div className={styles.cardImage}>
-                <img src="https://bcdn.renthub.in.th/listing_picture/202312/20231230/s9VV5Q62AQacdmUtRy5t.jpg?class=lthumbnail" alt="Tanasit Resident" />
-              </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>Tanasit Resident</h3>
-                <p className={styles.priceRange}>3,000 - 4,500 THB/Month</p>
-                <p className={styles.dormFeature}>Mixed-gender Dormitory</p>
-                <p className={styles.refreshDate}>refreshed at : 10/02/2025</p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
@@ -244,53 +275,30 @@ const RangModDormitory = () => {
           </div>
 
           <div className={styles.dormCards}>
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('bann-suanthon')}>
-              <div className={styles.cardImage}>
-                <img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Bann Suanthon" />
+            {getDormitoriesByGate(selectedGate).map((dormitory) => (
+              <div 
+                key={dormitory._id} 
+                className={styles.dormCard} 
+                onClick={() => handleDormitoryClick(dormitory._id)}
+              >
+                <div className={styles.cardImage}>
+                  <img 
+                    src={dormitory.images[0] || '/images/placeholder.jpg'} 
+                    alt={dormitory.name_dormitory} 
+                  />
+                </div>
+                <div className={styles.cardInfo}>
+                  <h3 className={styles.dormTitle}>{dormitory.name_dormitory}</h3>
+                  <p className={styles.priceRange}>
+                    {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} THB/Month
+                  </p>
+                  <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
+                  <p className={styles.refreshDate}>
+                    refreshed at: {new Date(dormitory.last_updated).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>Bann Suanthon</h3>
-                <p className={styles.priceRange}>5,000 - 8,000 THB/Month</p>
-                <p className={styles.dormFeature}>Pet-Friendly</p>
-                <p className={styles.refreshDate}>refreshed at : 10/02/2025</p>
-              </div>
-            </div>
-
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('j-home')}>
-              <div className={styles.cardImage}>
-                <img src="https://bcdn.renthub.in.th/listing_picture/202111/20211112/5urKh7yE3t6u1YeJjJkj.jpg?class=lthumbnail" alt="J Home" />
-              </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>J Home</h3>
-                <p className={styles.priceRange}>3,000 - 5,200 THB/Month</p>
-                <p className={styles.dormFeature}>Mixed-gender Dormitory</p>
-                <p className={styles.refreshDate}>refreshed at : 18/02/2025</p>
-              </div>
-            </div>
-
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('tanasit-resident')}>
-              <div className={styles.cardImage}>
-              <img src="https://bcdn.renthub.in.th/listing_picture/202312/20231230/s9VV5Q62AQacdmUtRy5t.jpg?class=lthumbnail" alt="Tanasit Resident" />
-              </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>Tanasit Resident</h3>
-                <p className={styles.priceRange}>3,000 - 4,500 THB/Month</p>
-                <p className={styles.dormFeature}>Mixed-gender Dormitory</p>
-                <p className={styles.refreshDate}>refreshed at : 10/02/2025</p>
-              </div>
-            </div>
-
-            <div className={styles.dormCard} onClick={() => handleDormitoryClick('int-home')}>
-              <div className={styles.cardImage}>
-                <img src="https://pbs.twimg.com/media/E1CNn-0VIAE3oTr.jpg" alt="INT Home" />
-              </div>
-              <div className={styles.cardInfo}>
-                <h3 className={styles.dormTitle}>INT Home</h3>
-                <p className={styles.priceRange}>4,000 - 6,500 THB/Month</p>
-                <p className={styles.dormFeature}>Mixed-gender Dormitory</p>
-                <p className={styles.refreshDate}>refreshed at : 18/02/2025</p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
       </div>

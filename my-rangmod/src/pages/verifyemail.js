@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "../styles/verifyemail.module.css";
+import { useRouter } from "next/navigation";
 
 const RangModVerifyEmail = () => {
   // State variables
@@ -7,6 +9,7 @@ const RangModVerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
   const [countdown, setCountdown] = useState(0);
+  const router = useRouter();
 
   // Handle OTP input change
   const handleOtpChange = (e) => {
@@ -22,6 +25,10 @@ const RangModVerifyEmail = () => {
     setIsSubmitting(true);
 
     const email = localStorage.getItem('resetEmail');
+    const payload = {
+      email: email,
+      otp: otp
+    };
 
     if (!otp || otp.length < 6) {
       setMessage({ text: "Please enter a valid 6-digit OTP", isError: true });
@@ -29,36 +36,23 @@ const RangModVerifyEmail = () => {
       return;
     }
 
-    const payload = {
-      email: email,
-      otp: otp
-    };
-
     try {
       // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/verify-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("http://localhost:3000/api/auth/verifyemail", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200 && data.status === "ok") {
         setMessage({ 
           text: data.message || "Email verified successfully!", 
           isError: false 
         });
 
-        // Save email and OTP to localStorage
-        localStorage.setItem('resetEmail', email);  // Store email in localStorage
+        // Save OTP to localStorage
         localStorage.setItem('resetOtp', otp);     // Store OTP in localStorage
 
         // Redirect user after successful verification
         setTimeout(() => {
-          window.location.href = "/signin";
+          router.push("/signin");
         }, 2000);
       } else {
         setMessage({ 
@@ -81,20 +75,12 @@ const RangModVerifyEmail = () => {
   const handleResendOtp = async () => {
     if (countdown > 0) return;
     
-    setMessage({ text: "", isError: false });
-    
     try {
       // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/resend-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await axios.post("http://localhost:3000/api/auth/resend-otp", { email });
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200 && data.status === "ok") {
         setMessage({ 
           text: "A new OTP has been sent to your email", 
           isError: false 

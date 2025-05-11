@@ -17,9 +17,19 @@ const RangModResetPassword = () => {
       return;
     }
 
+    const email = localStorage.getItem('resetEmail'); // Retrieve the email stored
+    const otp = localStorage.getItem('resetOtp'); // Retrieve the OTP stored
+
+    if (!email || !otp) {
+      alert("Missing email or OTP for reset. Please start the reset process again.");
+      window.location.href = '/forgotpassword';
+      return;
+    }
+
     const payload = {
+      email: email,
+      otp: otp,
       newPassword: newPassword,
-      confirmPassword: confirmPassword
     };
 
     try {

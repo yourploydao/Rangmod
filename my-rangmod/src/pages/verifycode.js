@@ -10,7 +10,8 @@ const VerifyCodeForgotpassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
+
+    const email = localStorage.getItem('resetEmail');
 
     if (!otp) {
       setMessage({ text: "Please enter the verification code", isError: true });
@@ -18,7 +19,8 @@ const VerifyCodeForgotpassword = () => {
       return;
     }
 
-    const payload = {
+    const payload = { 
+      email: email,
       otp: otp
     };
 
@@ -39,9 +41,14 @@ const VerifyCodeForgotpassword = () => {
           text: data.message || "Email verified successfully!", 
           isError: false 
         });
+
+        // Save email and OTP to localStorage
+        localStorage.setItem('resetEmail', email);  // Store email in localStorage
+        localStorage.setItem('resetOtp', otp);     // Store OTP in localStorage
+
         // Redirect to reset password page after successful verification
         setTimeout(() => {
-          window.location.href = "/reset-password";
+          window.location.href = "/resetpassword";
         }, 1500);
       } else {
         setMessage({ 

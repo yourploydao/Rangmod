@@ -20,7 +20,8 @@ const RangModVerifyEmail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
+
+    const email = localStorage.getItem('resetEmail');
 
     if (!otp || otp.length < 6) {
       setMessage({ text: "Please enter a valid 6-digit OTP", isError: true });
@@ -29,6 +30,7 @@ const RangModVerifyEmail = () => {
     }
 
     const payload = {
+      email: email,
       otp: otp
     };
 
@@ -49,9 +51,14 @@ const RangModVerifyEmail = () => {
           text: data.message || "Email verified successfully!", 
           isError: false 
         });
+
+        // Save email and OTP to localStorage
+        localStorage.setItem('resetEmail', email);  // Store email in localStorage
+        localStorage.setItem('resetOtp', otp);     // Store OTP in localStorage
+
         // Redirect user after successful verification
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          window.location.href = "/signin";
         }, 2000);
       } else {
         setMessage({ 

@@ -1,7 +1,9 @@
-/* Inherit base styles from the owner-account-setting.module.css */:local(*) {
+/* Global and Base Styles */
+:local(*) {
     font-family: 'Poppins', sans-serif;
 }
 
+/* Container and Layout */
 .container {
   display: flex;
   flex-direction: column;
@@ -14,12 +16,12 @@
   flex: 1;
 }
 
-/* Main Content Styles */
 .mainContent {
   flex: 1;
   padding: 1.5rem 2rem;
 }
 
+/* Header Styles */
 .header {
   display: flex;
   justify-content: space-between;
@@ -43,7 +45,7 @@
   color: #64748b;
 }
 
-/* User Profile Section */
+/* User Profile Dropdown */
 .headerRightSection {
   display: flex;
   align-items: center;
@@ -107,17 +109,6 @@
   animation: fadeIn 0.2s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .dropdownItem {
   display: flex;
   align-items: center;
@@ -142,7 +133,7 @@
   color: #3b82f6;
 }
 
-/* Dashboard specific styles */
+/* Dashboard Header */
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
@@ -157,7 +148,7 @@
   margin: 0;
 }
 
-/* Search and Sort Container */
+/* Search and Action Buttons */
 .searchSortContainer {
   display: flex;
   justify-content: space-between;
@@ -182,9 +173,9 @@
 .searchInput {
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
-  border: none;
+  border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
-  background-color: #fff;
+  background-color: white;
   font-size: 0.95rem;
   color: #0f172a;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -196,6 +187,7 @@
 
 .searchInput:focus {
   outline: none;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 
@@ -223,7 +215,7 @@
   color: #64748b;
 }
 
-.addDormButton {
+.addUserButton {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -237,13 +229,14 @@
   transition: all 0.2s ease;
 }
 
-.addDormButton:hover {
+.addUserButton:hover {
   background-color: #2563eb;
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
 }
 
-.dormListContainer {
+/* User List Container */
+.userListContainer {
   background-color: white;
   border-radius: 0.75rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -262,13 +255,13 @@
   overflow-x: auto;
 }
 
-.dormTable {
+.userTable {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
 }
 
-.dormTable th {
+.userTable th {
   text-align: left;
   padding: 0.75rem 1rem;
   color: #64748b;
@@ -277,56 +270,18 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
-.dormTable td {
+.userTable td {
   padding: 1rem;
   border-bottom: 1px solid #f1f5f9;
   color: #0f172a;
   font-size: 0.9rem;
 }
 
-.dormTable tbody tr:hover {
+.userTable tbody tr:hover {
   background-color: #f8fafc;
 }
 
-.dormName {
-  display: flex;
-  flex-direction: column;
-}
-
-.dormCode {
-  color: #64748b;
-  font-size: 0.8rem;
-  margin-top: 0.25rem;
-}
-
-.statusBadge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.available {
-  background-color: #dcfce7;
-  color: #15803d;
-}
-
-.full {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
-
-.occupied {
-  background-color: #fef3c7;
-  color: #b45309;
-}
-
-.maintenance {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
-
+/* Action Buttons in Table */
 .actions {
   display: flex;
   gap: 0.5rem;
@@ -367,6 +322,7 @@
   background-color: #fecaca;
 }
 
+/* Pagination */
 .pagination {
   display: flex;
   align-items: center;
@@ -490,6 +446,91 @@
     color: #0f172a;
   }
 
+
+.userDetails {
+  margin-bottom: 1.5rem;
+}
+
+.userDetails p {
+  margin: 0.5rem 0;
+  color: #0f172a;
+}
+
+.userDetails p strong {
+  color: #64748b;
+  margin-right: 0.5rem;
+}
+
+.permissionActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.acceptButton, .denyButton {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.acceptButton {
+  background-color: #22c55e;
+  color: white;
+}
+
+.acceptButton:hover {
+  background-color: #16a34a;
+}
+
+.denyButton {
+  background-color: #ef4444;
+  color: white;
+}
+
+.denyButton:hover {
+  background-color: #dc2626;
+}
+
+.permissionModalHeader {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .permissionModalContainer {
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 450px;
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease;
+  }
+  
+  .permissionModalContent {
+    padding: 1.5rem;
+  }
+  
+  .permissionModalCloseButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.2s ease;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  
+  .permissionModalCloseButton:hover {
+    color: #0f172a;
+  }
+  
 /* Animations */
 @keyframes fadeIn {
     from {

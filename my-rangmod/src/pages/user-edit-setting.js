@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import styles from "../styles/user-account-setting.module.css";
 import SidebarUser from '@/components/sidebar-setting-user';
 
-const OwnerAccountSetting = () => {
+const UserAccountSettingEdit = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -518,4 +518,4 @@ const OwnerAccountSetting = () => {
   );
 };
 
-export default OwnerAccountSetting;
+export default UserAccountSettingEdit;

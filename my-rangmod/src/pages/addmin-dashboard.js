@@ -9,8 +9,8 @@ const OwnerDashboard = () => {
   
   // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Salman Faris',
-    username: 'Salman',
+    fullName: 'Addmin Targarian',
+    username: 'Admin',
     role: 'Admin',
     profileImage: '/assets/admin1.jpeg'
   });
@@ -46,7 +46,7 @@ const OwnerDashboard = () => {
       name: 'Hopak4',
       code: '101/999',
       owner: 'Lena Jung',
-      state: 'Full',
+      state: 'Unavilable',
       lastUpdate: '8 Dec, 2023'
     },
     {
@@ -70,7 +70,7 @@ const OwnerDashboard = () => {
       name: 'Hopak7',
       code: '101/999',
       owner: 'Cora Polar',
-      state: 'Full',
+      state: 'Unavilable',
       lastUpdate: '21 July, 2023'
     }
   ]);

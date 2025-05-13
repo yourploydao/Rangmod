@@ -2,8 +2,37 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
 import styles from "../styles/addmin-dashboard.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
+import { connectDB } from '@/lib/mongodb';
+import Dormitory from '@/models/Dormitory';
 
-const OwnerDashboard = () => {
+export async function getServerSideProps() {
+  try {
+    await connectDB();
+    const dormitories = await Dormitory.find({}).lean();
+    
+    // Serialize dormitory data
+    const serializedDormitories = dormitories.map(dormitory => ({
+      ...dormitory,
+      _id: dormitory._id.toString(),
+      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null
+    }));
+
+    return {
+      props: {
+        initialDormitories: serializedDormitories
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching dormitories:', error);
+    return {
+      props: {
+        initialDormitories: []
+      }
+    };
+  }
+}
+
+const OwnerDashboard = ({ initialDormitories }) => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   
@@ -15,66 +44,7 @@ const OwnerDashboard = () => {
     profileImage: '/assets/admin1.jpeg'
   });
 
-  // Mock dormitory data
-  const [dormitories, setDormitories] = useState([
-    {
-      id: 1,
-      name: 'Hopak1',
-      code: '101/999',
-      owner: 'David Jo',
-      state: 'Available',
-      lastUpdate: '24 Jun, 2023'
-    },
-    {
-      id: 2,
-      name: 'Hopak2',
-      code: '101/999',
-      owner: 'Ina Hogan',
-      state: 'Available',
-      lastUpdate: '24 Aug, 2023'
-    },
-    {
-      id: 3,
-      name: 'Hopak3',
-      code: '101/999',
-      owner: 'Harmon Nola',
-      state: 'Available',
-      lastUpdate: '18 Dec, 2023'
-    },
-    {
-      id: 4,
-      name: 'Hopak4',
-      code: '101/999',
-      owner: 'Lena Jung',
-      state: 'Unavilable',
-      lastUpdate: '8 Dec, 2023'
-    },
-    {
-      id: 5,
-      name: 'Hopak5',
-      code: '101/999',
-      owner: 'Eula Lina',
-      state: 'Available',
-      lastUpdate: '15 Jun, 2023'
-    },
-    {
-      id: 6,
-      name: 'Hopak6',
-      code: '101/999',
-      owner: 'Victoria Christ',
-      state: 'Available',
-      lastUpdate: '12 July, 2023'
-    },
-    {
-      id: 7,
-      name: 'Hopak7',
-      code: '101/999',
-      owner: 'Cora Polar',
-      state: 'Unavilable',
-      lastUpdate: '21 July, 2023'
-    }
-  ]);
-
+  const [dormitories, setDormitories] = useState(initialDormitories);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dormToDelete, setDormToDelete] = useState(null);
@@ -106,19 +76,33 @@ const OwnerDashboard = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    // In a real app, this would make an API call to delete the dorm
-    setDormitories(dormitories.filter(dorm => dorm.id !== dormToDelete));
-    setShowDeleteModal(false);
-    setDormToDelete(null);
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`/api/dormitory/delete/${dormToDelete}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete dormitory');
+      }
+
+      // Update local state after successful deletion
+      setDormitories(dormitories.filter(dorm => dorm._id !== dormToDelete));
+      setShowDeleteModal(false);
+      setDormToDelete(null);
+      
+      setNotification({
+        show: true,
+        message: "Dormitory deleted successfully"
+      });
+    } catch (error) {
+      console.error('Error deleting dormitory:', error);
+      setNotification({
+        show: true,
+        message: "Failed to delete dormitory"
+      });
+    }
     
-    // Show notification
-    setNotification({
-      show: true,
-      message: "Dormitory deleted successfully"
-    });
-    
-    // Hide notification after 3 seconds
     setTimeout(() => {
       setNotification({ show: false, message: '' });
     }, 3000);
@@ -147,9 +131,9 @@ const OwnerDashboard = () => {
   
   // Filter dormitories based on search query
   const filteredDormitories = dormitories.filter(dorm => 
-    dorm.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    dorm.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    dorm.code.toLowerCase().includes(searchQuery.toLowerCase())
+    dorm.name_dormitory.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dorm.type_dormitory.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dorm.category_dormitory.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
   // Close dropdown when clicking outside
@@ -258,34 +242,38 @@ const OwnerDashboard = () => {
                   <tr>
                     <th className={styles.idColumn}>ID</th>
                     <th className={styles.nameColumn}>Name</th>
-                    <th className={styles.ownerColumn}>Owner</th>
-                    <th className={styles.stateColumn}>State</th>
+                    <th className={styles.typeColumn}>Type</th>
+                    <th className={styles.categoryColumn}>Category</th>
                     <th className={styles.updateColumn}>Last update</th>
                     <th className={styles.actionColumn}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredDormitories.map((dorm) => (
-                    <tr key={dorm.id}>
-                      <td>{dorm.id}</td>
+                  {filteredDormitories.map((dorm, index) => (
+                    <tr 
+                      key={dorm._id}
+                      className={styles.dormRow}
+                      onClick={() => router.push(`/details/${dorm._id}`)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td>{index + 1}</td>
                       <td>
                         <div className={styles.dormName}>
-                          {dorm.name}
-                          <div className={styles.dormCode}>{dorm.code}</div>
+                          {dorm.name_dormitory}
+                          <div className={styles.dormCode}>{dorm.type_dormitory}</div>
                         </div>
                       </td>
-                      <td>{dorm.owner}</td>
-                      <td>
-                        <span className={`${styles.statusBadge} ${styles[dorm.state.toLowerCase()]}`}>
-                          {dorm.state}
-                        </span>
-                      </td>
-                      <td>{dorm.lastUpdate}</td>
+                      <td>{dorm.type_dormitory}</td>
+                      <td>{dorm.category_dormitory}</td>
+                      <td>{new Date(dorm.last_updated).toLocaleDateString()}</td>
                       <td className={styles.actions}>
                         <div className={styles.actionButtons}>
                           <button 
                             className={styles.editButton} 
-                            onClick={() => handleEditDorm(dorm.id)}
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent row click when clicking edit
+                              handleEditDorm(dorm._id);
+                            }}
                             title="Edit"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -295,7 +283,10 @@ const OwnerDashboard = () => {
                           </button>
                           <button 
                             className={styles.deleteButton}
-                            onClick={() => handleDeleteClick(dorm.id)}
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent row click when clicking delete
+                              handleDeleteClick(dorm._id);
+                            }}
                             title="Delete"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

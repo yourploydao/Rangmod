@@ -297,6 +297,21 @@ input:checked + label .checkIcon {
   color: #999;
 }
 
+.dormCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease-in-out;
+}
+
+.dormCardLink:hover {
+  transform: translateY(-2px);
+}
+
+.dormCardLink:hover .dormCardHorizontal {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* For mobile responsiveness */
 @media (max-width: 768px) {
   .content {

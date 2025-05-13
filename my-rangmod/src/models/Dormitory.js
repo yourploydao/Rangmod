@@ -6,6 +6,7 @@ const dormitorySchema = new mongoose.Schema({
   category_dormitory: String,
   alley: String,
   address: String,
+  gate_location: String,
   description: String,
   price_range: {
     min: Number,
@@ -16,6 +17,7 @@ const dormitorySchema = new mongoose.Schema({
   other: Number,
   phone_number: String,
   agreement: String,
+  contract_duration: Number,
   num_of_rooms: Number,
   distance_from_university: Number,
   last_updated: Date,

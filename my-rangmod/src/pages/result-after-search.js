@@ -172,12 +172,12 @@ const DormitorySearch = ({ initialDormitories }) => {
     // Filter by category (Male/Female/Mixed)
     const selectedCategories = Object.entries(filters.category)
       .filter(([, selected]) => selected)
-      .map(([category]) => category.toLowerCase());
+      .map(([category]) => category);
     
     if (selectedCategories.length > 0) {
       results = results.filter(dorm => {
-        const dormCategory = dorm.category_dormitory.toLowerCase();
-        return selectedCategories.some(category => dormCategory.includes(category));
+        // Exact match for category
+        return selectedCategories.includes(dorm.category_dormitory);
       });
     }
     

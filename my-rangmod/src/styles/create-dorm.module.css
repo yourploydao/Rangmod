@@ -64,6 +64,7 @@
 }
 
 /* User Profile Section */
+/* User Profile Dropdown */
 .headerRightSection {
   display: flex;
   align-items: center;
@@ -81,6 +82,7 @@
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
 }
 
 .userProfile:hover {
@@ -93,6 +95,7 @@
   border-radius: 50%;
   object-fit: cover;
   margin-right: 0.75rem;
+  border: 2px solid #e2e8f0;
 }
 
 .profileName {
@@ -105,6 +108,11 @@
   width: 12px;
   height: 12px;
   opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+
+.userProfile:hover .dropdownArrow {
+  opacity: 1;
 }
 
 .dropdownMenu {
@@ -113,10 +121,11 @@
   right: 0;
   background-color: #fff;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   min-width: 180px;
   z-index: 100;
   overflow: hidden;
+  animation: fadeIn 0.2s ease;
 }
 
 .dropdownItem {
@@ -126,15 +135,21 @@
   font-size: 0.875rem;
   color: #0f172a;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .dropdownItem:hover {
   background-color: #f8fafc;
+  color: #3b82f6;
 }
 
 .dropdownIcon {
   margin-right: 0.75rem;
   color: #64748b;
+}
+
+.dropdownItem:hover .dropdownIcon {
+  color: #3b82f6;
 }
 
 /* Form Container Styles */

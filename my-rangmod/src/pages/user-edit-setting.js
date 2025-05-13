@@ -1,23 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
-import styles from "../styles/owner-account-setting.module.css";
-import SidebarOwner from '@/components/sidebar-setting-owner';
+import styles from "../styles/user-account-setting.module.css";
+import SidebarUser from '@/components/sidebar-setting-user';
 
-const OwnerAccountSettingEdit = () => {
+const UserAccountSettingEdit = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
   
   // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Benny Targarian',
-    username: 'Benny',
+    fullName: 'Tinny Targarian',
+    username: 'Tinny',
     phoneNumber: '0880001234',
-    email: 'Benny@gmail.com',
-    profileImage: '/assets/owner1.jpeg'
+    email: 'Tinny@gmail.com',
+    profileImage: '/assets/user1.jpeg'
   });
 
-  const [emails, setEmails] = useState(['Benny@gmail.com']);
+  const [emails, setEmails] = useState(['Tinny@gmail.com']);
   const [showAddEmail, setShowAddEmail] = useState(false);
   const [newEmail, setNewEmail] = useState('');
 
@@ -71,7 +71,7 @@ const OwnerAccountSettingEdit = () => {
     
     // Set a short delay before redirecting to ensure user sees the notification
     setTimeout(() => {
-      router.push("/owner-account-setting");
+      router.push("/user-account-setting");
     }, 1500);
   };
   
@@ -221,7 +221,7 @@ const OwnerAccountSettingEdit = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         {/* Use the imported Sidebar component */}
-        <SidebarOwner />
+        <SidebarUser />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
@@ -518,4 +518,4 @@ const OwnerAccountSettingEdit = () => {
   );
 };
 
-export default OwnerAccountSettingEdit;
+export default UserAccountSettingEdit;

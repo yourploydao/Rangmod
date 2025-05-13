@@ -3,6 +3,13 @@ import { Upload, X, Trash2, MapPin } from 'lucide-react';
 import styles from "../styles/create-dorm.module.css";
 import Sidebar from "../components/sidebar-setting-admin";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
+import 'leaflet/dist/leaflet.css';
+import dynamic from 'next/dynamic';  // นำเข้า dynamic import
+
+// ใช้ dynamic import สำหรับการโหลด Leaflet และ MapContainer
+const MapSelector = dynamic(() => import('../components/MapSelector'), {
+  ssr: false, // ปิดการโหลดในฝั่ง Server
+});
 
 const CreateDormitoryPage = () => {
   const [rooms, setRooms] = useState([{ 
@@ -17,7 +24,7 @@ const CreateDormitoryPage = () => {
   const [photos, setPhotos] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
-  const [mapLocation, setMapLocation] = useState(null);
+  const [mapLocation, setMapLocation] = useState(null);  // เก็บตำแหน่งแผนที่ที่เลือก
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
   const roomFileInputRefs = useRef({});
@@ -154,15 +161,11 @@ const CreateDormitoryPage = () => {
         : room
     ));
   };
+  
 
-  const handleMapSelect = () => {
-    // This is a mock function - in reality, you'd integrate with Google Maps API
-    setMapLocation({
-      address: "Sample Location, Kahibah",
-      lat: 15.123,
-      lng: 102.456
-    });
-    setShowMapModal(false);
+   const handleMapSelect = (lat, lng) => {
+    setMapLocation({ lat, lng, address: `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
+    setShowMapModal(false); // ปิด modal หลังจากเลือกตำแหน่ง
   };
 
   const handleSubmit = (e) => {
@@ -401,81 +404,78 @@ const CreateDormitoryPage = () => {
                 </div>
               </div>
 
-              {/* Location Map */}
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Location</label>
-                <div className={styles.mapContainer}>
-                  {mapLocation ? (
-                    <>
-                      <div className={styles.mapPreview}>
-                        <img 
-                          src="/api/placeholder/700/150" 
-                          alt="Map location" 
-                          className={styles.mapImage}
-                        />
-                        <div className={styles.mapOverlay}>
-                          <MapPin size={32} className={styles.mapPinIcon} />
-                        </div>
-                      </div>
-                      <div className={styles.mapAddress}>
-                        <MapPin size={16} className={styles.mapPinSmall} />
-                        <span>{mapLocation.address}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <div 
-                      className={styles.mapSelectArea}
-                      onClick={() => setShowMapModal(true)}
-                    >
-                      <MapPin size={24} className={styles.mapIcon} />
-                      <span className={styles.mapText}>Select Location on Map</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+                {/* Location Map */}
+      <div className={styles.formGroup}>
+        <label className={styles.formLabel}>Location</label>
+        <div className={styles.mapContainer}>
+{mapLocation ? (
+  <>
+    <div className={styles.mapPreview}>
+<img
+  src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
+  alt="Map location"
+  className={styles.mapImage}
+  onClick={() => setShowMapModal(true)}  // เพิ่มตรงนี้!
+  style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
+/>
 
-              {/* Map Modal */}
-              {showMapModal && (
-                <div className={styles.modalOverlay}>
-                  <div className={styles.mapModal}>
-                    <div className={styles.modalHeader}>
-                      <h3>Select Location</h3>
-                      <button 
-                        className={styles.closeModalBtn}
-                        onClick={() => setShowMapModal(false)}
-                      >
-                        <X size={20} />
-                      </button>
-                    </div>
-                    <div className={styles.modalBody}>
-                      <div className={styles.modalMapContainer}>
-                        <img 
-                          src="/api/placeholder/600/300" 
-                          alt="Google Maps" 
-                          className={styles.modalMapImage} 
-                        />
-                        <div className={styles.mapMarker}>
-                          <MapPin size={32} className={styles.mapPinIcon} />
-                        </div>
-                      </div>
-                      <div className={styles.modalActions}>
-                        <button 
-                          className={styles.cancelBtn}
-                          onClick={() => setShowMapModal(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button 
-                          className={styles.saveLocationBtn}
-                          onClick={handleMapSelect}
-                        >
-                          Save Location
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+
+
+    </div>
+    <div className={styles.mapAddress}>
+      <MapPin size={16} className={styles.mapPinSmall} />
+      <span>{mapLocation.address}</span>
+    </div>
+  </>
+) : (
+  <div 
+    className={styles.mapSelectArea}
+    onClick={() => setShowMapModal(true)}
+  >
+    <MapPin size={24} className={styles.mapIcon} />
+    <span className={styles.mapText}>Select Location on Map</span>
+  </div>
+)}
+
+        </div>
+      </div>
+
+      {/* Map Modal */}
+      {showMapModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.mapModal}>
+            <div className={styles.modalHeader}>
+              <h3>Select Location</h3>
+              <button 
+                className={styles.closeModalBtn}
+                onClick={() => setShowMapModal(false)}  // ปิด modal
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.modalMapContainer}>
+                {/* ใช้ MapSelector */}
+                <MapSelector onSelect={handleMapSelect} />
+              </div>
+              <div className={styles.modalActions}>
+                <button 
+                  className={styles.cancelBtn}
+                  onClick={() => setShowMapModal(false)}  // ปิด modal
+                >
+                  Cancel
+                </button>
+                <button 
+                  className={styles.saveLocationBtn}
+                  onClick={() => setShowMapModal(false)}  // ปิด modal โดยไม่ทำอะไร
+                >
+                  Save Location
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
               {/* Room Sections */}
               <div className={styles.sectionDivider}>

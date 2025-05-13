@@ -1,5 +1,4 @@
-/* Inherit base styles from the owner-account-setting.module.css */
-:local(*) {
+/* Inherit base styles from the owner-account-setting.module.css */:local(*) {
     font-family: 'Poppins', sans-serif;
   }
   
@@ -262,6 +261,11 @@
     gap: 0.5rem;
   }
   
+  .actionButtons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
   .editButton, .deleteButton {
     display: flex;
     align-items: center;
@@ -440,4 +444,61 @@
   
   .confirmButton:hover {
     background-color: #dc2626;
+  }
+  
+  /* Notification Styles */
+  .notification {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px) translateX(0);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) translateX(0);
+    }
+  }
+  
+  .notificationContent {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .notificationIcon {
+    color: #10b981;
+  }
+  
+  .notificationClose {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .notificationClose:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
   }

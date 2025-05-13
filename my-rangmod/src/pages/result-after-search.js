@@ -1,70 +1,99 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/router";
+import Link from 'next/link';
 import styles from "../styles/result-after-search.module.css";
 import Header from "../components/navigation";
 import Footer from "../components/footer";
+import { connectDB } from '@/lib/mongodb';
+import Dormitory from '@/models/Dormitory';
+import Facility from '@/models/Facility';
 
-const DormitorySearch = () => {
+export async function getServerSideProps() {
+  try {
+    await connectDB();
+    
+    // Fetch all dormitories
+    const dormitories = await Dormitory.find({}).lean();
+    
+    // Fetch all facilities
+    const facilities = await Facility.find({}).lean();
+    
+    // Create a map of dormitoryID to facilities
+    const facilitiesMap = facilities.reduce((acc, facility) => {
+      acc[facility.dormitoryID.toString()] = facility.facilities;
+      return acc;
+    }, {});
+    
+    // Serialize dormitory data and attach facilities
+    const serializedDormitories = dormitories.map(dormitory => ({
+      ...dormitory,
+      _id: dormitory._id.toString(),
+      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null,
+      facilities: facilitiesMap[dormitory._id.toString()] || []
+    }));
+
+    return {
+      props: {
+        initialDormitories: serializedDormitories
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching dormitories:', error);
+    return {
+      props: {
+        initialDormitories: []
+      }
+    };
+  }
+}
+
+const DormitorySearch = ({ initialDormitories }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSortOption, setActiveSortOption] = useState('lowest price');
   const [priceRange, setPriceRange] = useState({ lowest: '', highest: '' });
-  const [filteredDormitories, setFilteredDormitories] = useState([]);
+  const [filteredDormitories, setFilteredDormitories] = useState(initialDormitories);
+  const [allDormitories, setAllDormitories] = useState(initialDormitories);
   
-  // Mock data that would be from DB in real implementation
-  const [allDormitories, setAllDormitories] = useState([
-    {
-      id: 1,
-      name: 'Cosmos Home',
-      priceRange: '3,000 - 4,500',
-      type: 'University-Affiliated Dormitory',
-      refreshedAt: '21/02/2025',
-      image: '/images/cosmos-home.jpg'
-    },
-    {
-      id: 2,
-      name: 'Tanasit Resident',
-      priceRange: '3,000 - 4,500',
-      type: 'Mixed-gender Dormitory',
-      refreshedAt: '10/02/2025',
-      image: '/images/tanasit-resident.jpg'
-    },
-    {
-      id: 3,
-      name: 'My Place',
-      priceRange: '4,200 - 7,500',
-      type: 'Female Dormitory',
-      refreshedAt: '21/02/2025',
-      image: '/images/my-place.jpg'
-    },
-    {
-      id: 4,
-      name: 'Bann Suanthon',
-      priceRange: '5,000 - 8,000',
-      type: 'University-Affiliated Dormitory',
-      refreshedAt: '10/02/2025',
-      image: '/images/bann-suanthon.jpg'
-    },
-    {
-        id: 5,
-        name: 'J Home',
-        priceRange: '2,800 - 4,000',
-        type: 'Mixed-gender Dormitory',
-        refreshedAt: '15/02/2025',
-        image: '/images/bann-suanthon.jpg'
-      }
-  ]);
-
-  // Local filters (mock part)
+  // Filters state
   const [filters, setFilters] = useState({
     dormType: {
-      'Female Dorm': true,
-      'Mixed Dorm': false,
-      'condo': true,
+      'Female': false,
+      'Mixed': false,
+      'Male': false,
+      'Apartment': false,
+      'Mansion': false,
+      'Dormitory': false,
+      'Condominium': false,
+      'House': false,
+      'Townhouse': false
+    },
+    category: {
+      'Female': false,
+      'Mixed': false,
+      'Male': false
+    },
+    contractDuration: {
+      '3': false,
+      '6': false,
+      '12': false
+    },
+    gateLocation: {
+      'Front Gate': false,
+      'Back Gate': false
     },
     facilities: {
-      'fan': true,
-      'Air Conditioner': false,
-      'kitchen': true,
+      'wifi': false,
+      'airConditioner': false,
+      'privateBathroom': false,
+      'refrigerator': false,
+      'television': false,
+      'closet': false,
+      'microwave': false,
+      'balcony': false,
+      'cctv': false,
+      'desk': false,
+      'parking': false,
+      'kitchen': false
     }
   });
 
@@ -79,35 +108,20 @@ const DormitorySearch = () => {
       
       if (!isNaN(lowest) && !isNaN(highest)) {
         results = results.filter(dorm => {
-          const [min, max] = dorm.priceRange.split(' - ').map(price => 
-            parseInt(price.replace(/,/g, ''))
-          );
-          
-          // Check if there's any overlap in price ranges
+          const min = dorm.price_range?.min || 0;
+          const max = dorm.price_range?.max || 0;
           return (min <= highest && max >= lowest);
         });
       }
     } else if (priceRange.lowest) {
       const lowest = parseInt(priceRange.lowest.replace(/,/g, ''));
-      
       if (!isNaN(lowest)) {
-        results = results.filter(dorm => {
-          const [, max] = dorm.priceRange.split(' - ').map(price => 
-            parseInt(price.replace(/,/g, ''))
-          );
-          return max >= lowest;
-        });
+        results = results.filter(dorm => (dorm.price_range?.max || 0) >= lowest);
       }
     } else if (priceRange.highest) {
       const highest = parseInt(priceRange.highest.replace(/,/g, ''));
-      
       if (!isNaN(highest)) {
-        results = results.filter(dorm => {
-          const [min] = dorm.priceRange.split(' - ').map(price => 
-            parseInt(price.replace(/,/g, ''))
-          );
-          return min <= highest;
-        });
+        results = results.filter(dorm => (dorm.price_range?.min || 0) <= highest);
       }
     }
     
@@ -115,8 +129,31 @@ const DormitorySearch = () => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       results = results.filter(dorm => 
-        dorm.name.toLowerCase().includes(query) || 
-        dorm.type.toLowerCase().includes(query)
+        dorm.name_dormitory.toLowerCase().includes(query) || 
+        dorm.type_dormitory.toLowerCase().includes(query) ||
+        dorm.address.toLowerCase().includes(query)
+      );
+    }
+    
+    // Filter by contract duration
+    const selectedDurations = Object.entries(filters.contractDuration)
+      .filter(([, selected]) => selected)
+      .map(([duration]) => parseInt(duration));
+    
+    if (selectedDurations.length > 0) {
+      results = results.filter(dorm => 
+        selectedDurations.includes(dorm.contract_duration)
+      );
+    }
+
+    // Filter by gate location
+    const selectedGates = Object.entries(filters.gateLocation)
+      .filter(([, selected]) => selected)
+      .map(([gate]) => gate);
+    
+    if (selectedGates.length > 0) {
+      results = results.filter(dorm => 
+        selectedGates.includes(dorm.gate_location)
       );
     }
     
@@ -127,53 +164,88 @@ const DormitorySearch = () => {
     
     if (selectedDormTypes.length > 0) {
       results = results.filter(dorm => {
-        const dormType = dorm.type.toLowerCase();
+        const dormType = dorm.type_dormitory.toLowerCase();
         return selectedDormTypes.some(type => dormType.includes(type));
       });
     }
+
+    // Filter by category (Male/Female/Mixed)
+    const selectedCategories = Object.entries(filters.category)
+      .filter(([, selected]) => selected)
+      .map(([category]) => category);
     
-    // Apply sorting based on active sort option
-    sortDormitories(results, activeSortOption);
+    if (selectedCategories.length > 0) {
+      results = results.filter(dorm => {
+        // Exact match for category
+        return selectedCategories.includes(dorm.category_dormitory);
+      });
+    }
     
-    return results;
+    // Filter by facilities
+    const selectedFacilities = Object.entries(filters.facilities)
+      .filter(([, selected]) => selected)
+      .map(([facility]) => facility);
+    
+    if (selectedFacilities.length > 0) {
+      results = results.filter(dorm => {
+        // Check if dorm has facilities array
+        if (!Array.isArray(dorm.facilities)) return false;
+        
+        // Check if all selected facilities are present in the dorm's facilities array
+        return selectedFacilities.every(facility => {
+          // Convert facility name to match the database field name
+          const dbFacilityName = facility === 'airConditioner' ? 'air_conditioner' : 
+                               facility === 'privateBathroom' ? 'private_bathroom' :
+                               facility.toLowerCase();
+          
+          return dorm.facilities.includes(dbFacilityName);
+        });
+      });
+    }
+    
+    // Apply sorting
+    return sortDormitories(results, activeSortOption);
   };
 
   // Function to sort dormitories based on option
   const sortDormitories = (dorms, sortOption) => {
-    if (sortOption === 'lowest price') {
-      return dorms.sort((a, b) => {
-        const aPrice = parseInt(a.priceRange.split(' - ')[0].replace(/,/g, ''));
-        const bPrice = parseInt(b.priceRange.split(' - ')[0].replace(/,/g, ''));
-        return aPrice - bPrice;
-      });
-    } else if (sortOption === 'highest price') {
-      return dorms.sort((a, b) => {
-        const aPrice = parseInt(a.priceRange.split(' - ')[1].replace(/,/g, ''));
-        const bPrice = parseInt(b.priceRange.split(' - ')[1].replace(/,/g, ''));
-        return bPrice - aPrice;
-      });
-    } else if (sortOption === 'closest to KMUTT') {
-      // Mock implementation - in real app would use geolocation
-      console.log('Sorting by distance to KMUTT');
-      return dorms;
+    const sortedDorms = [...dorms];
+    
+    switch (sortOption) {
+      case 'lowest price':
+        return sortedDorms.sort((a, b) => {
+          const aPrice = a.price_range?.min || 0;
+          const bPrice = b.price_range?.min || 0;
+          return aPrice - bPrice;
+        });
+      
+      case 'highest price':
+        return sortedDorms.sort((a, b) => {
+          const aPrice = a.price_range?.max || 0;
+          const bPrice = b.price_range?.max || 0;
+          return bPrice - aPrice;
+        });
+      
+      case 'closest to KMUTT':
+        return sortedDorms.sort((a, b) => {
+          const aDistance = a.distance_from_university || Infinity;
+          const bDistance = b.distance_from_university || Infinity;
+          return aDistance - bDistance;
+        });
+      
+      default:
+        return sortedDorms;
     }
-    return dorms;
   };
 
-  // Mock function to simulate DB fetch/filter
   const fetchFilteredDormitories = () => {
-    // In real implementation, this would make an API call with the filters
-    console.log('Fetching dormitories with filters:', filters);
-    console.log('Price range:', priceRange);
-    
     const filtered = applyFilters();
     setFilteredDormitories(filtered);
   };
 
   useEffect(() => {
-    // Initial data load
-    setFilteredDormitories([...allDormitories]);
-  }, []);
+    fetchFilteredDormitories();
+  }, [searchQuery, priceRange, filters, activeSortOption]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -186,28 +258,20 @@ const DormitorySearch = () => {
 
   const handleSortChange = (sortOption) => {
     setActiveSortOption(sortOption);
-    
-    // Apply new sorting to current filtered results
-    const sorted = [...filteredDormitories];
-    sortDormitories(sorted, sortOption);
-    setFilteredDormitories(sorted);
   };
 
   const handleFilterChange = (category, item) => {
-    const updatedFilters = {
-      ...filters,
+    setFilters(prev => ({
+      ...prev,
       [category]: {
-        ...filters[category],
-        [item]: !filters[category][item]
+        ...prev[category],
+        [item]: !prev[category][item]
       }
-    };
-    
-    setFilters(updatedFilters);
+    }));
   };
 
   return (
     <div className={styles.container}>
-      {/* Header Component */}
       <Header />
 
       {/* Search Box */}
@@ -243,7 +307,6 @@ const DormitorySearch = () => {
           <div className={styles.mapSearch}>
             <div className={styles.mapContainer}>
               <img src="https://1033609670.rsc.cdn77.org/maps/sky-dairy-and-takeaway-tokoroa-map.jpg" alt="Map" className={styles.map} />
-              {/* <div className={styles.mapPin}>📍</div> */}
             </div>
             <div className={styles.mapSearchText}>Search on the map</div>
           </div>
@@ -269,95 +332,91 @@ const DormitorySearch = () => {
             </div>
           </div>
 
-          {/* Your Filters */}
+          {/* Contract Duration Filter */}
           <div className={styles.filterSection}>
-            <h3>Your filters</h3>
+            <h3>Contract Duration</h3>
             <div className={styles.filterList}>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="filter-condo" 
-                  checked={filters.dormType.condo}
-                  onChange={() => handleFilterChange('dormType', 'condo')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="filter-condo" className={styles.checkboxLabel}>
-                  <span className={styles.checkIcon}>✓</span>
-                </label>
-                <span>condo</span>
-              </div>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="filter-fan" 
-                  checked={filters.facilities.fan}
-                  onChange={() => handleFilterChange('facilities', 'fan')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="filter-fan" className={styles.checkboxLabel}>
-                  <span className={styles.checkIcon}>✓</span>
-                </label>
-                <span>fan</span>
-              </div>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="filter-kitchen" 
-                  checked={filters.facilities.kitchen}
-                  onChange={() => handleFilterChange('facilities', 'kitchen')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="filter-kitchen" className={styles.checkboxLabel}>
-                  <span className={styles.checkIcon}>✓</span>
-                </label>
-                <span>kitchen</span>
-              </div>
+              {Object.entries(filters.contractDuration).map(([duration, checked]) => (
+                <div key={duration} className={styles.filterItem}>
+                  <input 
+                    type="checkbox" 
+                    id={`duration-${duration}`}
+                    checked={checked}
+                    onChange={() => handleFilterChange('contractDuration', duration)}
+                    className={styles.checkboxHidden}
+                  />
+                  <label htmlFor={`duration-${duration}`} className={styles.checkboxLabel}>
+                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                  </label>
+                  <span>{duration} Months</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Gate Location Filter */}
+          <div className={styles.filterSection}>
+            <h3>Gate Location</h3>
+            <div className={styles.filterList}>
+              {Object.entries(filters.gateLocation).map(([gate, checked]) => (
+                <div key={gate} className={styles.filterItem}>
+                  <input 
+                    type="checkbox" 
+                    id={`gate-${gate}`}
+                    checked={checked}
+                    onChange={() => handleFilterChange('gateLocation', gate)}
+                    className={styles.checkboxHidden}
+                  />
+                  <label htmlFor={`gate-${gate}`} className={styles.checkboxLabel}>
+                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                  </label>
+                  <span>{gate}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Category Filter */}
+          <div className={styles.filterSection}>
+            <h3>Category</h3>
+            <div className={styles.filterList}>
+              {Object.entries(filters.category).map(([category, checked]) => (
+                <div key={category} className={styles.filterItem}>
+                  <input 
+                    type="checkbox" 
+                    id={`category-${category}`}
+                    checked={checked}
+                    onChange={() => handleFilterChange('category', category)}
+                    className={styles.checkboxHidden}
+                  />
+                  <label htmlFor={`category-${category}`} className={styles.checkboxLabel}>
+                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                  </label>
+                  <span>{category}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Dormitory Type */}
           <div className={styles.filterSection}>
-            <h3>Dormitory</h3>
+            <h3>Dormitory Type</h3>
             <div className={styles.filterList}>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="dorm-female" 
-                  checked={filters.dormType['Female Dorm']}
-                  onChange={() => handleFilterChange('dormType', 'Female Dorm')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="dorm-female" className={styles.checkboxLabel}>
-                  {filters.dormType['Female Dorm'] && <span className={styles.checkIcon}>✓</span>}
-                </label>
-                <span>Female Dorm</span>
-              </div>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="dorm-mixed" 
-                  checked={filters.dormType['Mixed Dorm']}
-                  onChange={() => handleFilterChange('dormType', 'Mixed Dorm')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="dorm-mixed" className={styles.checkboxLabel}>
-                  {filters.dormType['Mixed Dorm'] && <span className={styles.checkIcon}>✓</span>}
-                </label>
-                <span>Mixed Dorm</span>
-              </div>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="dorm-condo" 
-                  checked={filters.dormType.condo}
-                  onChange={() => handleFilterChange('dormType', 'condo')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="dorm-condo" className={styles.checkboxLabel}>
-                  <span className={styles.checkIcon}>✓</span>
-                </label>
-                <span>condo</span>
-              </div>
+              {Object.entries(filters.dormType).map(([type, checked]) => (
+                <div key={type} className={styles.filterItem}>
+                  <input 
+                    type="checkbox" 
+                    id={`dorm-${type}`}
+                    checked={checked}
+                    onChange={() => handleFilterChange('dormType', type)}
+                    className={styles.checkboxHidden}
+                  />
+                  <label htmlFor={`dorm-${type}`} className={styles.checkboxLabel}>
+                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                  </label>
+                  <span>{type}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -365,45 +424,23 @@ const DormitorySearch = () => {
           <div className={styles.filterSection}>
             <h3>Facilities</h3>
             <div className={styles.filterList}>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="facility-fan" 
-                  checked={filters.facilities.fan}
-                  onChange={() => handleFilterChange('facilities', 'fan')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="facility-fan" className={styles.checkboxLabel}>
-                  <span className={styles.checkIcon}>✓</span>
-                </label>
-                <span>fan</span>
-              </div>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="facility-ac" 
-                  checked={filters.facilities['Air Conditioner']}
-                  onChange={() => handleFilterChange('facilities', 'Air Conditioner')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="facility-ac" className={styles.checkboxLabel}>
-                  {filters.facilities['Air Conditioner'] && <span className={styles.checkIcon}>✓</span>}
-                </label>
-                <span>Air Conditioner</span>
-              </div>
-              <div className={styles.filterItem}>
-                <input 
-                  type="checkbox" 
-                  id="facility-kitchen" 
-                  checked={filters.facilities.kitchen}
-                  onChange={() => handleFilterChange('facilities', 'kitchen')}
-                  className={styles.checkboxHidden}
-                />
-                <label htmlFor="facility-kitchen" className={styles.checkboxLabel}>
-                  <span className={styles.checkIcon}>✓</span>
-                </label>
-                <span>kitchen</span>
-              </div>
+              {Object.entries(filters.facilities).map(([facility, checked]) => (
+                <div key={facility} className={styles.filterItem}>
+                  <input 
+                    type="checkbox" 
+                    id={`facility-${facility}`}
+                    checked={checked}
+                    onChange={() => handleFilterChange('facilities', facility)}
+                    className={styles.checkboxHidden}
+                  />
+                  <label htmlFor={`facility-${facility}`} className={styles.checkboxLabel}>
+                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                  </label>
+                  <span>{facility === 'airConditioner' ? 'Air Conditioner' : 
+                         facility === 'privateBathroom' ? 'Private Bathroom' :
+                         facility.charAt(0).toUpperCase() + facility.slice(1)}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -423,7 +460,7 @@ const DormitorySearch = () => {
                 className={`${styles.sortButton} ${activeSortOption === 'closest to KMUTT' ? styles.active : ''}`}
                 onClick={() => handleSortChange('closest to KMUTT')}
               >
-                Closest to KMUTT.
+                Closest to KMUTT
               </button>
               <button 
                 className={`${styles.sortButton} ${activeSortOption === 'highest price' ? styles.active : ''}`}
@@ -434,26 +471,35 @@ const DormitorySearch = () => {
             </div>
           </div>
 
-          {/* Dormitory Cards - Horizontal style matching Image 2 */}
+          {/* Dormitory Cards */}
           <div className={styles.dormCardsList}>
             {filteredDormitories.map(dorm => (
-              <div key={dorm.id} className={styles.dormCardHorizontal}>
-                <div className={styles.dormImageContainerHorizontal}>
-                  <img src={`/api/placeholder/200/150`} alt={dorm.name} className={styles.dormImageHorizontal} />
+              <Link href={`/details/${dorm._id}`} key={dorm._id} className={styles.dormCardLink}>
+                <div className={styles.dormCardHorizontal}>
+                  <div className={styles.dormImageContainerHorizontal}>
+                    <img 
+                      src={dorm.images[0] || '/images/placeholder.jpg'} 
+                      alt={dorm.name_dormitory} 
+                      className={styles.dormImageHorizontal} 
+                    />
+                  </div>
+                  <div className={styles.dormInfoHorizontal}>
+                    <h3 className={styles.dormNameHorizontal}>{dorm.name_dormitory}</h3>
+                    <div className={styles.dormPriceHorizontal}>
+                      {dorm.price_range?.min?.toLocaleString()} - {dorm.price_range?.max?.toLocaleString()} THB/Month
+                    </div>
+                    <div className={styles.dormTypeHorizontal}>{dorm.type_dormitory}</div>
+                    <div className={styles.dormRefreshedHorizontal}>
+                      refreshed at: {new Date(dorm.last_updated).toLocaleDateString()}
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.dormInfoHorizontal}>
-                  <h3 className={styles.dormNameHorizontal}>{dorm.name}</h3>
-                  <div className={styles.dormPriceHorizontal}>{dorm.priceRange} THB/Month</div>
-                  <div className={styles.dormTypeHorizontal}>{dorm.type}</div>
-                  <div className={styles.dormRefreshedHorizontal}>refreshed at : {dorm.refreshedAt}</div>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Footer Component */}
       <Footer />
     </div>
   );

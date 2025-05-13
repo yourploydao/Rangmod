@@ -1,38 +1,73 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
-import styles from "../styles/owner-dashboard.module.css";
-import SidebarOwner from '@/components/sidebar-setting-owner';
+import styles from "../styles/addmin-user.module.css";
+import SidebarAdmin from '@/components/sidebar-setting-admin';
 
-const OwnerDashboard = () => {
+const AdminUsers = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   
   // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Benny Targarian',
-    username: 'Benny',
-    role: 'Dorm Owner',
-    profileImage: '/assets/owner1.jpeg'
+    fullName: 'Addmin Targarian',
+    username: 'Admin',
+    role: 'Admin',
+    profileImage: '/assets/admin1.jpeg'
   });
 
-  // Mock dormitory data
-  const [dormitories, setDormitories] = useState([
+  // Mock admin users data
+  const [adminUsers, setAdminUsers] = useState([
     {
       id: 1,
-      name: 'Hopak1',
-      code: '101/999',
-      owner: 'David Jo',
-      state: 'Available',
+      username: 'user2',
+      email: 'user1@gmail.com',
       lastUpdate: '24 Jun, 2023'
+    },
+    {
+      id: 2,
+      username: 'user2',
+      email: 'user2@gmail.com',
+      lastUpdate: '24 Aug, 2023'
+    },
+    {
+      id: 3,
+      username: 'user3',
+      email: 'user3@gmail.com',
+      lastUpdate: '18 Dec, 2023'
+    },
+    {
+      id: 4,
+      username: 'user4',
+      email: 'user4@gmail.com',
+      lastUpdate: '8 Oct, 2023'
+    },
+    {
+      id: 5,
+      username: 'user5',
+      email: 'user5@gmail.com',
+      lastUpdate: '15 Jun, 2023'
+    },
+    {
+      id: 6,
+      username: 'user6',
+      email: 'user6@gmail.com',
+      lastUpdate: '12 July, 2023'
+    },
+    {
+      id: 7,
+      username: 'user7',
+      email: 'user7@gmail.com',
+      lastUpdate: '21 July, 2023'
     }
   ]);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [dormToDelete, setDormToDelete] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [notification, setNotification] = useState({ show: false, message: '' });
+  const [searchQuery, setSearchQuery] = useState('');
   
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
@@ -44,25 +79,29 @@ const OwnerDashboard = () => {
     router.push("/login");
   };
 
-  const handleEditDorm = (dormId) => {
-    router.push(`/edit-dorm/${dormId}`);
+  const handleAddUser = () => {
+    router.push("/create-user");
   };
 
-  const handleDeleteClick = (dormId) => {
-    setDormToDelete(dormId);
+  const handleEditUser = (userId) => {
+    router.push(`/edit-user/${userId}`);
+  };
+
+  const handleDeleteClick = (userId) => {
+    setUserToDelete(userId);
     setShowDeleteModal(true);
   };
 
   const confirmDelete = () => {
-    // In a real app, this would make an API call to delete the dorm
-    setDormitories(dormitories.filter(dorm => dorm.id !== dormToDelete));
+    // In a real app, this would make an API call to delete the user
+    setAdminUsers(adminUsers.filter(user => user.id !== userToDelete));
     setShowDeleteModal(false);
-    setDormToDelete(null);
+    setUserToDelete(null);
     
     // Show notification
     setNotification({
       show: true,
-      message: "Dormitory deleted successfully"
+      message: "User deleted successfully"
     });
     
     // Hide notification after 3 seconds
@@ -73,7 +112,7 @@ const OwnerDashboard = () => {
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
-    setDormToDelete(null);
+    setUserToDelete(null);
   };
 
   const goToPreviousPage = () => {
@@ -87,6 +126,16 @@ const OwnerDashboard = () => {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  
+  // Filter admin users based on search query
+  const filteredAdminUsers = adminUsers.filter(user => 
+    user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -106,7 +155,7 @@ const OwnerDashboard = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         {/* Sidebar */}
-        <SidebarOwner />
+        <SidebarAdmin />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
@@ -118,7 +167,7 @@ const OwnerDashboard = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <img src="/assets/admin1.jpeg" alt="Profile" className={styles.profileImage} />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -144,46 +193,73 @@ const OwnerDashboard = () => {
           </div>
           
           <div className={styles.dashboardHeader}>
-            <h2 className={styles.dashboardTitle}>Owner Dashboard</h2>
+            <h2 className={styles.dashboardTitle}>Admin Users</h2>
           </div>
           
-          <div className={styles.dormListContainer}>
-            <h3 className={styles.listTitle}>List Dormitory</h3>
+          <div className={styles.searchSortContainer}>
+            <div className={styles.searchContainer}>
+              <div className={styles.searchIcon}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <input 
+                type="text" 
+                placeholder="Search" 
+                className={styles.searchInput}
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </div>
+            
+            <div className={styles.actionButtons}>
+              <div className={styles.sortByContainer}>
+                <span>Sort by</span>
+                <div className={styles.sortIcon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M6 12h12"></path>
+                    <path d="M9 18h6"></path>
+                  </svg>
+                </div>
+              </div>
+              <button className={styles.addUserButton} onClick={handleAddUser}>
+                Add User
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div className={styles.userListContainer}>
+            <h3 className={styles.listTitle}>List Users</h3>
             
             <div className={styles.tableContainer}>
-              <table className={styles.dormTable}>
+              <table className={styles.userTable}>
                 <thead>
                   <tr>
                     <th className={styles.idColumn}>ID</th>
-                    <th className={styles.nameColumn}>Name</th>
-                    <th className={styles.ownerColumn}>Owner</th>
-                    <th className={styles.stateColumn}>State</th>
+                    <th className={styles.usernameColumn}>Username</th>
+                    <th className={styles.emailColumn}>Email</th>
                     <th className={styles.updateColumn}>Last update</th>
                     <th className={styles.actionColumn}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {dormitories.map((dorm) => (
-                    <tr key={dorm.id}>
-                      <td>{dorm.id}</td>
-                      <td>
-                        <div className={styles.dormName}>
-                          {dorm.name}
-                          <div className={styles.dormCode}>{dorm.code}</div>
-                        </div>
-                      </td>
-                      <td>{dorm.owner}</td>
-                      <td>
-                        <span className={`${styles.statusBadge} ${styles[dorm.state.toLowerCase()]}`}>
-                          {dorm.state}
-                        </span>
-                      </td>
-                      <td>{dorm.lastUpdate}</td>
+                  {filteredAdminUsers.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.id}</td>
+                      <td>{user.username}</td>
+                      <td>{user.email}</td>
+                      <td>{user.lastUpdate}</td>
                       <td className={styles.actions}>
                         <div className={styles.actionButtons}>
                           <button 
                             className={styles.editButton} 
-                            onClick={() => handleEditDorm(dorm.id)}
+                            onClick={() => handleEditUser(user.id)}
                             title="Edit"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -193,7 +269,7 @@ const OwnerDashboard = () => {
                           </button>
                           <button 
                             className={styles.deleteButton}
-                            onClick={() => handleDeleteClick(dorm.id)}
+                            onClick={() => handleDeleteClick(user.id)}
                             title="Delete"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -252,7 +328,7 @@ const OwnerDashboard = () => {
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p>Are you sure you want to delete this dormitory? <br></br>This action cannot be undone.</p>
+              <p>Are you sure you want to delete this user? <br></br>This action cannot be undone.</p>
             </div>
             <div className={styles.modalFooter}>
               <button className={styles.cancelButton} onClick={cancelDelete}>Cancel</button>
@@ -287,4 +363,4 @@ const OwnerDashboard = () => {
   );
 };
 
-export default OwnerDashboard;
+export default AdminUsers;

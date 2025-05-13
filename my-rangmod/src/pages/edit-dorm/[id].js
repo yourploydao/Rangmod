@@ -1,10 +1,82 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, Trash2, MapPin } from 'lucide-react';
-import styles from "../styles/create-dorm.module.css";
+import { useRouter } from 'next/router';
+import styles from "../../styles/create-dorm.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
+import { connectDB } from '@/lib/mongodb';
+import Dormitory from '@/models/Dormitory';
+import Facility from '@/models/Facility';
+import Room from '@/models/Room';
 
-const CreateDormitoryPage = () => {
-  const [rooms, setRooms] = useState([{ 
+export async function getServerSideProps({ params }) {
+  try {
+    await connectDB();
+    
+    // Fetch dormitory data
+    const dormitory = await Dormitory.findById(params.id).lean();
+    if (!dormitory) {
+      return {
+        notFound: true
+      };
+    }
+
+    // Fetch facility data
+    const facility = await Facility.findOne({ dormitoryID: params.id }).lean();
+
+    // Fetch rooms data
+    const rooms = await Room.find({ dormitoryID: params.id }).lean();
+
+    // Convert rooms to the format expected by the component
+    const formattedRooms = rooms.map(room => ({
+      id: room._id.toString(),
+      name: `Room ${room._id.toString().slice(-4)}`,
+      type: room.room_type || '',
+      price: room.price || '',
+      size: room.room_size || '',
+      beds: '1', // Default value since it's not in schema
+      photos: room.room_image ? room.room_image.map((url, index) => ({
+        id: `${room._id}-${index}`,
+        name: `Room Image ${index + 1}`,
+        url: url,
+        public_id: url // Using URL as public_id since it's not stored separately
+      })) : []
+    }));
+
+    // Convert dormitory images to the format expected by the component
+    const formattedImages = dormitory.images ? dormitory.images.map((url, index) => ({
+      id: `dorm-${index}`,
+      name: `Dormitory Image ${index + 1}`,
+      url: url,
+      public_id: url // Using URL as public_id since it's not stored separately
+    })) : [];
+
+    return {
+      props: {
+        dormitory: {
+          ...dormitory,
+          _id: dormitory._id.toString(),
+          last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null
+        },
+        facility: facility ? {
+          ...facility,
+          _id: facility._id.toString(),
+          dormitoryID: facility.dormitoryID.toString()
+        } : null,
+        initialImages: formattedImages,
+        initialRooms: formattedRooms
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching dormitory:', error);
+    return {
+      notFound: true
+    };
+  }
+}
+
+const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
+  const router = useRouter();
+  const [rooms, setRooms] = useState(initialRooms.length > 0 ? initialRooms : [{ 
     id: 1, 
     name: 'Room 1',
     type: '',
@@ -13,43 +85,43 @@ const CreateDormitoryPage = () => {
     beds: '',
     photos: []
   }]);
-  const [photos, setPhotos] = useState([]);
+  const [photos, setPhotos] = useState(initialImages);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
-  const [mapLocation, setMapLocation] = useState(null);
+  const [mapLocation, setMapLocation] = useState(dormitory.mapLocation || null);
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
   const roomFileInputRefs = useRef({});
   
   const [formData, setFormData] = useState({
-    dormitoryName: '',
-    description: '',
-    location: '',
-    type_dormitory: '',
-    category_dormitory: '',
-    alley: '',
-    address: '',
-    electric_price: '',
-    water_price: '',
-    other: '',
-    phone_number: '',
-    agreement: '',
-    distance_from_university: '',
-    contract_duration: 3,
-    gate_location: '',
+    dormitoryName: dormitory.name_dormitory || '',
+    description: dormitory.description || '',
+    location: dormitory.location || '',
+    type_dormitory: dormitory.type_dormitory || '',
+    category_dormitory: dormitory.category_dormitory || '',
+    alley: dormitory.alley || '',
+    address: dormitory.address || '',
+    electric_price: dormitory.electric_price || '',
+    water_price: dormitory.water_price || '',
+    other: dormitory.other || '',
+    phone_number: dormitory.phone_number || '',
+    agreement: dormitory.agreement || '',
+    distance_from_university: dormitory.distance_from_university || '',
+    contract_duration: dormitory.contract_duration || 3,
+    gate_location: dormitory.gate_location || '',
     facilities: {
-      wifi: false,
-      airConditioner: false,
-      privateBathroom: false,
-      refrigerator: false,
-      television: false,
-      closet: false,
-      microwave: false,
-      balcony: false,
-      cctv: false,
-      desk: false,
-      parking: false,
-      kitchen: false
+      wifi: facility?.facilities?.includes('wifi') || false,
+      airConditioner: facility?.facilities?.includes('air_conditioner') || false,
+      privateBathroom: facility?.facilities?.includes('private_bathroom') || false,
+      refrigerator: facility?.facilities?.includes('refrigerator') || false,
+      television: facility?.facilities?.includes('television') || false,
+      closet: facility?.facilities?.includes('closet') || false,
+      microwave: facility?.facilities?.includes('microwave') || false,
+      balcony: facility?.facilities?.includes('balcony') || false,
+      cctv: facility?.facilities?.includes('cctv') || false,
+      desk: facility?.facilities?.includes('desk') || false,
+      parking: facility?.facilities?.includes('parking') || false,
+      kitchen: facility?.facilities?.includes('kitchen') || false
     }
   });
   
@@ -62,12 +134,10 @@ const CreateDormitoryPage = () => {
   };
   
   const handleLogout = () => {
-    // Implement your logout logic here
     console.log("Logging out...");
     setShowDropdown(false);
   };
   
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -130,7 +200,6 @@ const CreateDormitoryPage = () => {
     if (files.length > 0) {
       try {
         const uploadPromises = files.map(async (file) => {
-          // Convert file to base64
           const reader = new FileReader();
           const base64Promise = new Promise((resolve) => {
             reader.onload = () => resolve(reader.result);
@@ -138,7 +207,6 @@ const CreateDormitoryPage = () => {
           });
           const base64 = await base64Promise;
 
-          // Upload to Cloudinary
           const response = await fetch('/api/upload', {
             method: 'POST',
             headers: {
@@ -161,8 +229,6 @@ const CreateDormitoryPage = () => {
         });
 
         const newPhotos = await Promise.all(uploadPromises);
-        
-        // Limit to 10 photos total
         const updatedPhotos = [...photos, ...newPhotos].slice(0, 10);
         setPhotos(updatedPhotos);
       } catch (error) {
@@ -177,14 +243,12 @@ const CreateDormitoryPage = () => {
     if (files.length > 0) {
       try {
         const file = files[0];
-        // Convert file to base64
         const reader = new FileReader();
         const base64 = await new Promise((resolve) => {
           reader.onload = () => resolve(reader.result);
           reader.readAsDataURL(file);
         });
 
-        // Upload to Cloudinary
         const response = await fetch('/api/upload', {
           method: 'POST',
           headers: {
@@ -259,7 +323,6 @@ const CreateDormitoryPage = () => {
   };
 
   const handleMapSelect = () => {
-    // This is a mock function - in reality, you'd integrate with Google Maps API
     setMapLocation({
       address: "Sample Location, Kahibah",
       lat: 15.123,
@@ -275,7 +338,6 @@ const CreateDormitoryPage = () => {
       return;
     }
     
-    // Validate all rooms have at least one photo
     const roomsWithoutPhotos = rooms.filter(room => room.photos.length === 0);
     if (roomsWithoutPhotos.length > 0) {
       alert(`Please upload at least one photo for each room. ${roomsWithoutPhotos.map(r => r.name).join(', ')} missing photos.`);
@@ -292,21 +354,19 @@ const CreateDormitoryPage = () => {
       return;
     }
 
-    // Validate contract duration
     if (![3, 6, 12].includes(Number(formData.contract_duration))) {
       alert('Please select a valid contract duration (3, 6, or 12 months)');
       return;
     }
 
-    // Validate gate location
     if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
       alert('Please select a valid gate location (Front Gate or Back Gate)');
       return;
     }
     
     try {
-      const response = await fetch('/api/dormitory/create', {
-        method: 'POST',
+      const response = await fetch(`/api/dormitory/edit/${dormitory._id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -320,24 +380,21 @@ const CreateDormitoryPage = () => {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to create dormitory');
+        throw new Error('Failed to update dormitory');
       }
 
-      // Redirect to the dormitory details page
-      window.location.href = `/details/${data.dormitoryId}`;
+      alert('Dormitory updated successfully');
+      router.push('/addmin-dashboard');
     } catch (error) {
       alert(error.message);
-      console.error('Error creating dormitory:', error);
+      console.error('Error updating dormitory:', error);
     }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.layout}>
-        {/* Use the imported Sidebar component */}
         <SidebarAdmin />
 
         <div className={styles.mainContent}>
@@ -375,9 +432,8 @@ const CreateDormitoryPage = () => {
             </div>
           </div>
 
-          {/* Main Form Content */}
           <div className={styles.formSection}>
-            <h1 className={styles.contentTitle}>Admin Dashboard</h1>
+            <h1 className={styles.contentTitle}>Edit Dormitory</h1>
             
             <div className={styles.formContainer}>
               <h2 className={styles.sectionTitle}>Dormitory details section.</h2>
@@ -400,7 +456,6 @@ const CreateDormitoryPage = () => {
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Your Dormitory Photos (5-10 photos required)</label>
                 <div className={styles.photoGallery}>
-                  {/* Display uploaded photos */}
                   {photos.map(photo => (
                     <div key={photo.id} className={styles.photoPreview}>
                       <img src={photo.url} alt={photo.name} />
@@ -414,7 +469,6 @@ const CreateDormitoryPage = () => {
                     </div>
                   ))}
                   
-                  {/* Upload button (only show if less than 10 photos) */}
                   {photos.length < 10 && (
                     <div 
                       className={styles.photoUploadArea}
@@ -591,7 +645,7 @@ const CreateDormitoryPage = () => {
                 </div>
               </div>
 
-              {/* Add these new form fields before the Location Map section */}
+              {/* Dormitory Type */}
               <div className={styles.formGroup}>
                 <label htmlFor="type_dormitory" className={styles.formLabel}>Dormitory Type</label>
                 <select
@@ -610,6 +664,7 @@ const CreateDormitoryPage = () => {
                 </select>
               </div>
 
+              {/* Category */}
               <div className={styles.formGroup}>
                 <label htmlFor="category_dormitory" className={styles.formLabel}>Category</label>
                 <select
@@ -625,6 +680,7 @@ const CreateDormitoryPage = () => {
                 </select>
               </div>
 
+              {/* Alley */}
               <div className={styles.formGroup}>
                 <label htmlFor="alley" className={styles.formLabel}>Alley</label>
                 <input
@@ -638,6 +694,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
+              {/* Address */}
               <div className={styles.formGroup}>
                 <label htmlFor="address" className={styles.formLabel}>Address</label>
                 <textarea
@@ -651,6 +708,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
+              {/* Electric Price */}
               <div className={styles.formGroup}>
                 <label htmlFor="electric_price" className={styles.formLabel}>Electric Price (per unit)</label>
                 <input
@@ -664,6 +722,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
+              {/* Water Price */}
               <div className={styles.formGroup}>
                 <label htmlFor="water_price" className={styles.formLabel}>Water Price (per unit)</label>
                 <input
@@ -677,6 +736,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
+              {/* Other Fees */}
               <div className={styles.formGroup}>
                 <label htmlFor="other" className={styles.formLabel}>Other Fees (per year)</label>
                 <input
@@ -690,6 +750,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
+              {/* Phone Number */}
               <div className={styles.formGroup}>
                 <label htmlFor="phone_number" className={styles.formLabel}>Phone Number</label>
                 <input
@@ -703,6 +764,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
+              {/* Agreement */}
               <div className={styles.formGroup}>
                 <label htmlFor="agreement" className={styles.formLabel}>Agreement Terms</label>
                 <textarea
@@ -716,6 +778,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
+              {/* Distance from University */}
               <div className={styles.formGroup}>
                 <label htmlFor="distance_from_university" className={styles.formLabel}>Distance from University (km)</label>
                 <input
@@ -730,7 +793,7 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
-              {/* Add Gate Location selection before the Contract Duration section */}
+              {/* Gate Location */}
               <div className={styles.formGroup}>
                 <label htmlFor="gate_location" className={styles.formLabel}>Gate Location</label>
                 <select
@@ -745,7 +808,7 @@ const CreateDormitoryPage = () => {
                 </select>
               </div>
 
-              {/* Contract Duration selection */}
+              {/* Contract Duration */}
               <div className={styles.formGroup}>
                 <label htmlFor="contract_duration" className={styles.formLabel}>Contract Duration (months)</label>
                 <select
@@ -861,7 +924,6 @@ const CreateDormitoryPage = () => {
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Your Room Photos</label>
                     <div className={styles.photoGallery}>
-                      {/* Display uploaded room photos */}
                       {room.photos.map(photo => (
                         <div key={photo.id} className={styles.photoPreview}>
                           <img src={photo.url} alt={photo.name} />
@@ -875,7 +937,6 @@ const CreateDormitoryPage = () => {
                         </div>
                       ))}
                       
-                      {/* Upload button for room photos */}
                       {room.photos.length < 5 && (
                         <div 
                           className={styles.photoUploadArea}
@@ -967,7 +1028,7 @@ const CreateDormitoryPage = () => {
                   className={styles.createButton}
                   onClick={handleSubmit}
                 >
-                  Create
+                  Update Dormitory
                 </button>
               </div>
             </div>
@@ -978,4 +1039,4 @@ const CreateDormitoryPage = () => {
   );
 };
 
-export default CreateDormitoryPage;
+export default EditDorm; 

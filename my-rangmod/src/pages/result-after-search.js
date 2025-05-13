@@ -57,9 +57,6 @@ const DormitorySearch = ({ initialDormitories }) => {
   // Filters state
   const [filters, setFilters] = useState({
     dormType: {
-      'Female': false,
-      'Mixed': false,
-      'Male': false,
       'Apartment': false,
       'Mansion': false,
       'Dormitory': false,

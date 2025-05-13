@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, Trash2, MapPin } from 'lucide-react';
 import styles from "../styles/create-dorm.module.css";
-import Sidebar from "../components/sidebar-setting-admin";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 
 const CreateDormitoryPage = () => {
@@ -26,20 +25,36 @@ const CreateDormitoryPage = () => {
     dormitoryName: '',
     description: '',
     location: '',
+    type_dormitory: 'Standard',
+    category_dormitory: 'Mixed',
+    alley: '',
+    address: '',
+    electric_price: '',
+    water_price: '',
+    other: '',
+    phone_number: '',
+    agreement: '',
+    distance_from_university: '',
+    contract_duration: 3,
+    gate_location: 'Front Gate',
     facilities: {
       wifi: false,
-      parking: false,
-      laundry: false,
-      security: false,
-      kitchen: false,
-      tv: false,
       airConditioner: false,
-      heater: false,
+      privateBathroom: false,
+      refrigerator: false,
+      television: false,
+      closet: false,
+      microwave: false,
+      balcony: false,
+      cctv: false,
+      desk: false,
+      parking: false,
+      kitchen: false
     }
   });
   
   const userData = {
-    username: "Salman Faris"
+    username: "Admin"
   };
   
   const handleProfileClick = () => {
@@ -110,44 +125,132 @@ const CreateDormitoryPage = () => {
     });
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
-      // Create URLs for previews
-      const newPhotos = files.map(file => ({
-        id: Date.now() + Math.random(),
-        name: file.name,
-        url: URL.createObjectURL(file)
-      }));
-      
-      // Limit to 10 photos total
-      const updatedPhotos = [...photos, ...newPhotos].slice(0, 10);
-      setPhotos(updatedPhotos);
+      try {
+        const uploadPromises = files.map(async (file) => {
+          // Convert file to base64
+          const reader = new FileReader();
+          const base64Promise = new Promise((resolve) => {
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+          });
+          const base64 = await base64Promise;
+
+          // Upload to Cloudinary
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: base64 }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to upload image');
+          }
+
+          const result = await response.json();
+          return {
+            id: Date.now() + Math.random(),
+            name: file.name,
+            url: result.url,
+            public_id: result.public_id
+          };
+        });
+
+        const newPhotos = await Promise.all(uploadPromises);
+        
+        // Limit to 10 photos total
+        const updatedPhotos = [...photos, ...newPhotos].slice(0, 10);
+        setPhotos(updatedPhotos);
+      } catch (error) {
+        console.error('Error uploading photos:', error);
+        alert('Error uploading photos. Please try again.');
+      }
     }
   };
 
-  const handleRoomPhotoUpload = (roomId, e) => {
+  const handleRoomPhotoUpload = async (roomId, e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
-      const newPhoto = {
-        id: Date.now() + Math.random(),
-        name: files[0].name,
-        url: URL.createObjectURL(files[0])
-      };
-      
-      setRooms(rooms.map(room => 
-        room.id === roomId 
-          ? { ...room, photos: [...room.photos, newPhoto].slice(0, 5) } 
-          : room
-      ));
+      try {
+        const file = files[0];
+        // Convert file to base64
+        const reader = new FileReader();
+        const base64 = await new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+
+        // Upload to Cloudinary
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ image: base64 }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const result = await response.json();
+        const newPhoto = {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          url: result.url,
+          public_id: result.public_id
+        };
+        
+        setRooms(rooms.map(room => 
+          room.id === roomId 
+            ? { ...room, photos: [...room.photos, newPhoto].slice(0, 5) } 
+            : room
+        ));
+      } catch (error) {
+        console.error('Error uploading room photo:', error);
+        alert('Error uploading photo. Please try again.');
+      }
     }
   };
 
-  const removePhoto = (id) => {
+  const removePhoto = async (id) => {
+    const photoToRemove = photos.find(photo => photo.id === id);
+    if (photoToRemove?.public_id) {
+      try {
+        await fetch('/api/upload', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ public_id: photoToRemove.public_id }),
+        });
+      } catch (error) {
+        console.error('Error deleting photo from Cloudinary:', error);
+      }
+    }
     setPhotos(photos.filter(photo => photo.id !== id));
   };
 
-  const removeRoomPhoto = (roomId, photoId) => {
+  const removeRoomPhoto = async (roomId, photoId) => {
+    const room = rooms.find(r => r.id === roomId);
+    const photoToRemove = room?.photos.find(photo => photo.id === photoId);
+    if (photoToRemove?.public_id) {
+      try {
+        await fetch('/api/upload', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ public_id: photoToRemove.public_id }),
+        });
+      } catch (error) {
+        console.error('Error deleting photo from Cloudinary:', error);
+      }
+    }
     setRooms(rooms.map(room => 
       room.id === roomId 
         ? { ...room, photos: room.photos.filter(photo => photo.id !== photoId) } 
@@ -165,7 +268,7 @@ const CreateDormitoryPage = () => {
     setShowMapModal(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (photos.length < 5) {
       alert('Please upload at least 5 photos of the dormitory');
@@ -183,9 +286,52 @@ const CreateDormitoryPage = () => {
       alert('Please select a location on the map');
       return;
     }
+
+    if (rooms.length < 2) {
+      alert('Please add at least 2 rooms');
+      return;
+    }
+
+    // Validate contract duration
+    if (![3, 6, 12].includes(Number(formData.contract_duration))) {
+      alert('Please select a valid contract duration (3, 6, or 12 months)');
+      return;
+    }
+
+    // Validate gate location
+    if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
+      alert('Please select a valid gate location (Front Gate or Back Gate)');
+      return;
+    }
     
-    console.log('Form submitted', { formData, rooms, photos, mapLocation });
-    // Submit logic would go here
+    try {
+      const response = await fetch('/api/dormitory/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          rooms,
+          photos,
+          mapLocation,
+          contract_duration: Number(formData.contract_duration),
+          gate_location: formData.gate_location
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create dormitory');
+      }
+
+      // Redirect to the dormitory details page
+      window.location.href = `/details/${data.dormitoryId}`;
+    } catch (error) {
+      alert(error.message);
+      console.error('Error creating dormitory:', error);
+    }
   };
 
   return (
@@ -324,6 +470,105 @@ const CreateDormitoryPage = () => {
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
+                      id="airConditioner"
+                      name="airConditioner"
+                      checked={formData.facilities.airConditioner}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="airConditioner" className={styles.checkboxLabel}>Air Conditioner</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="privateBathroom"
+                      name="privateBathroom"
+                      checked={formData.facilities.privateBathroom}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="privateBathroom" className={styles.checkboxLabel}>Private Bathroom</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="refrigerator"
+                      name="refrigerator"
+                      checked={formData.facilities.refrigerator}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="refrigerator" className={styles.checkboxLabel}>Refrigerator</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="television"
+                      name="television"
+                      checked={formData.facilities.television}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="television" className={styles.checkboxLabel}>Television</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="closet"
+                      name="closet"
+                      checked={formData.facilities.closet}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="closet" className={styles.checkboxLabel}>Closet</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="microwave"
+                      name="microwave"
+                      checked={formData.facilities.microwave}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="microwave" className={styles.checkboxLabel}>Microwave</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="balcony"
+                      name="balcony"
+                      checked={formData.facilities.balcony}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="balcony" className={styles.checkboxLabel}>Balcony</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="cctv"
+                      name="cctv"
+                      checked={formData.facilities.cctv}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="cctv" className={styles.checkboxLabel}>CCTV</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="desk"
+                      name="desk"
+                      checked={formData.facilities.desk}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="desk" className={styles.checkboxLabel}>Desk</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
                       id="parking"
                       name="parking"
                       checked={formData.facilities.parking}
@@ -331,28 +576,6 @@ const CreateDormitoryPage = () => {
                       className={styles.checkbox}
                     />
                     <label htmlFor="parking" className={styles.checkboxLabel}>Parking</label>
-                  </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
-                      id="laundry"
-                      name="laundry"
-                      checked={formData.facilities.laundry}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="laundry" className={styles.checkboxLabel}>Laundry</label>
-                  </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
-                      id="security"
-                      name="security"
-                      checked={formData.facilities.security}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="security" className={styles.checkboxLabel}>Security</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -365,40 +588,177 @@ const CreateDormitoryPage = () => {
                     />
                     <label htmlFor="kitchen" className={styles.checkboxLabel}>Kitchen</label>
                   </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
-                      id="tv"
-                      name="tv"
-                      checked={formData.facilities.tv}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="tv" className={styles.checkboxLabel}>TV</label>
-                  </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
-                      id="airConditioner"
-                      name="airConditioner"
-                      checked={formData.facilities.airConditioner}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="airConditioner" className={styles.checkboxLabel}>Air Conditioner</label>
-                  </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
-                      id="heater"
-                      name="heater"
-                      checked={formData.facilities.heater}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="heater" className={styles.checkboxLabel}>Heater</label>
-                  </div>
                 </div>
+              </div>
+
+              {/* Add these new form fields before the Location Map section */}
+              <div className={styles.formGroup}>
+                <label htmlFor="type_dormitory" className={styles.formLabel}>Dormitory Type</label>
+                <select
+                  id="type_dormitory"
+                  name="type_dormitory"
+                  className={styles.formInput}
+                  value={formData.type_dormitory}
+                  onChange={handleInputChange}
+                >
+                  <option value="Apartment">Apartment</option>
+                  <option value="Mansion">Mansion</option>
+                  <option value="Dormitory">Dormitory</option>
+                  <option value="Condominium">Condominium</option>
+                  <option value="House">House</option>
+                  <option value="Townhouse">Townhouse</option>
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="category_dormitory" className={styles.formLabel}>Category</label>
+                <select
+                  id="category_dormitory"
+                  name="category_dormitory"
+                  className={styles.formInput}
+                  value={formData.category_dormitory}
+                  onChange={handleInputChange}
+                >
+                  <option value="Mixed">Mixed</option>
+                  <option value="Male">Male Only</option>
+                  <option value="Female">Female Only</option>
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="alley" className={styles.formLabel}>Alley</label>
+                <input
+                  type="text"
+                  id="alley"
+                  name="alley"
+                  className={styles.formInput}
+                  value={formData.alley}
+                  onChange={handleInputChange}
+                  placeholder="Enter alley"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="address" className={styles.formLabel}>Address</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  className={styles.formTextarea}
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  placeholder="Enter full address"
+                  rows={3}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="electric_price" className={styles.formLabel}>Electric Price (per unit)</label>
+                <input
+                  type="number"
+                  id="electric_price"
+                  name="electric_price"
+                  className={styles.formInput}
+                  value={formData.electric_price}
+                  onChange={handleInputChange}
+                  placeholder="Enter electric price"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="water_price" className={styles.formLabel}>Water Price (per unit)</label>
+                <input
+                  type="number"
+                  id="water_price"
+                  name="water_price"
+                  className={styles.formInput}
+                  value={formData.water_price}
+                  onChange={handleInputChange}
+                  placeholder="Enter water price"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="other" className={styles.formLabel}>Other Fees (per year)</label>
+                <input
+                  type="number"
+                  id="other"
+                  name="other"
+                  className={styles.formInput}
+                  value={formData.other}
+                  onChange={handleInputChange}
+                  placeholder="Enter other fees"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="phone_number" className={styles.formLabel}>Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone_number"
+                  name="phone_number"
+                  className={styles.formInput}
+                  value={formData.phone_number}
+                  onChange={handleInputChange}
+                  placeholder="Enter phone number"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="agreement" className={styles.formLabel}>Agreement Terms</label>
+                <textarea
+                  id="agreement"
+                  name="agreement"
+                  className={styles.formTextarea}
+                  value={formData.agreement}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder="Enter agreement terms"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="distance_from_university" className={styles.formLabel}>Distance from University (km)</label>
+                <input
+                  type="number"
+                  id="distance_from_university"
+                  name="distance_from_university"
+                  className={styles.formInput}
+                  value={formData.distance_from_university}
+                  onChange={handleInputChange}
+                  placeholder="Enter distance"
+                  step="0.1"
+                />
+              </div>
+
+              {/* Add Gate Location selection before the Contract Duration section */}
+              <div className={styles.formGroup}>
+                <label htmlFor="gate_location" className={styles.formLabel}>Gate Location</label>
+                <select
+                  id="gate_location"
+                  name="gate_location"
+                  className={styles.formInput}
+                  value={formData.gate_location}
+                  onChange={handleInputChange}
+                >
+                  <option value="Front Gate">Front Gate</option>
+                  <option value="Back Gate">Back Gate</option>
+                </select>
+              </div>
+
+              {/* Contract Duration selection */}
+              <div className={styles.formGroup}>
+                <label htmlFor="contract_duration" className={styles.formLabel}>Contract Duration (months)</label>
+                <select
+                  id="contract_duration"
+                  name="contract_duration"
+                  className={styles.formInput}
+                  value={formData.contract_duration}
+                  onChange={handleInputChange}
+                >
+                  <option value="3">3 Months</option>
+                  <option value="6">6 Months</option>
+                  <option value="12">12 Months</option>
+                </select>
               </div>
 
               {/* Location Map */}

@@ -44,8 +44,7 @@ export async function getServerSideProps(context) {
     const serializedDormitory = {
       ...dormitory,
       _id: dormitory._id.toString(),
-      // Keep last_updated as is since it's already a string
-      last_updated: dormitory.last_updated || null
+      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null
     };
 
     const serializedRooms = rooms.map(room => ({
@@ -201,11 +200,6 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
               </div>
             ))}
           </div>
-          {facility?.facilities.length > 0 && (
-            <button className={styles.showAllButton}>
-              Show All {facility.facilities.length} facilities
-            </button>
-          )}
         </div>
 
         {/* Details and Map */}
@@ -241,6 +235,11 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
                 <span className={styles.utilityIcon}>📑</span>
                 <span className={styles.utilityName}>Other</span>
                 <span className={styles.utilityValue}>{dormitory.other} THB / YEAR</span>
+              </div>
+              <div className={styles.utilityItem}>
+                <span className={styles.utilityIcon}>📑</span>
+                <span className={styles.utilityName}>Contract Duration</span>
+                <span className={styles.utilityValue}>{dormitory.contract_duration} MONTH</span>
               </div>
             </div>
           </div>

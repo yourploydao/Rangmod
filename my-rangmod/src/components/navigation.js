@@ -16,7 +16,7 @@ const Navigation = () => {
 
   const handleLogoClick = () => {
     // Navigate to home page
-    window.location.href = '/';
+    window.location.href = '/homepage-before-login';
   };
 
   const handleMyAccountClick = () => {
@@ -72,14 +72,14 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <nav className={styles.navigation}>
             <a 
-              href="/homepage-after-login" 
-              className={`${styles.navLink} ${isActive('/homepage-after-login') ? styles.activeLink : ''}`}
+              href="/homepage-before-login" 
+              className={`${styles.navLink} ${isActive('/homepage-before-login') ? styles.activeLink : ''}`}
             >
               Home
             </a>
             <a 
-              href="/search" 
-              className={`${styles.navLink} ${isActive('/search') ? styles.activeLink : ''}`}
+              href="/result-after-search" 
+              className={`${styles.navLink} ${isActive('/result-after-search') ? styles.activeLink : ''}`}
             >
               Search
             </a>

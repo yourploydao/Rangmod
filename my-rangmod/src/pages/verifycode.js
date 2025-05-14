@@ -1,16 +1,20 @@
 import React, { useState } from "react";
+import axios from "axios";
 import styles from "../styles/verifycode.module.css";
+import { useRouter } from "next/navigation";
 
 const VerifyCodeForgotpassword = () => {
   // State variable for OTP input
   const [otp, setOtp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
+
+    const email = localStorage.getItem('resetEmail');
 
     if (!otp) {
       setMessage({ text: "Please enter the verification code", isError: true });
@@ -18,30 +22,29 @@ const VerifyCodeForgotpassword = () => {
       return;
     }
 
-    const payload = {
+    const payload = { 
+      email: email,
       otp: otp
     };
 
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("http://localhost:3000/api/auth/verifyotp", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200 && data.status === "ok") {
         setMessage({ 
           text: data.message || "Email verified successfully!", 
           isError: false 
         });
+
+        // Save email and OTP to localStorage
+        localStorage.setItem('resetEmail', email);  // Store email in localStorage
+        localStorage.setItem('resetOtp', otp);     // Store OTP in localStorage
+
         // Redirect to reset password page after successful verification
         setTimeout(() => {
-          window.location.href = "/reset-password";
+
+          router.push("/resetpassword");
         }, 1500);
       } else {
         setMessage({ 

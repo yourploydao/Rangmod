@@ -24,7 +24,7 @@ const RangModSignIn = () => {
       const res = await axios.post("http://localhost:3000/api/auth/signin", payload);
       const data = res.data;
 
-      if (res.status === 200 && data.status === "ok") {
+      if (res.status === 200 ) {
         alert(data.message || "Signed in successfully!");
         
         // เก็บ JWT token ตามตัวเลือก rememberMe

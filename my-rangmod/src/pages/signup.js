@@ -202,20 +202,25 @@ const handleSubmit = async (e) => {
     // แสดงข้อมูลที่ได้รับจาก API
     console.log("Data from API:", data);
 
-    if (res.status === 201 && data.status === "ok") {
-      alert(data.message || "Account created successfully!");
-
+    if (res.status === 201) {
       // Save email to localStorage
-      localStorage.setItem('resetEmail', email);
-
-      console.log("redirecting...");
+      localStorage.setItem('email', email);
+      
+      // Show success message
+      alert(data.message || "Account created successfully!");
+      
+      // Redirect to verify email page
       router.push("/verifyemail");
     } else {
-      alert(data.error || data.message || "Registration failed");
+      alert(data.message || "Registration failed");
     }
   } catch (err) {
     console.error("Registration error:", err);
-    alert("Something went wrong. Please try again later.");
+    if (err.response?.data?.message) {
+      alert(err.response.data.message);
+    } else {
+      alert("Something went wrong. Please try again later.");
+    }
   }
   };
 

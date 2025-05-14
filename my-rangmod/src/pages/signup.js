@@ -160,8 +160,13 @@
   
 //   export default RangModSignup;
 
+'use client';
+
 import React, { useState } from "react";
+import axios from "axios";
 import styles from "../styles/signup.module.css";
+import { useRouter } from "next/navigation";
+
 
 const RangModLogin = () => {
   // State variables for form inputs
@@ -172,45 +177,51 @@ const RangModLogin = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!agreeTerms) {
-      alert("You must agree to the terms of service and privacy policy.");
-      return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!agreeTerms) {
+    alert("You must agree to the terms of service and privacy policy.");
+    return;
+  }
+
+  const payload = {
+    name: name,
+    email: email,
+    phone: phone,
+    username: username,
+    password: password,
+  };
+
+  try {
+    const res = await axios.post("http://localhost:3000/api/auth/signup", payload);
+    const data = res.data;
+
+    // แสดงข้อมูลที่ได้รับจาก API
+    console.log("Data from API:", data);
+
+    if (res.status === 201) {
+      // Save email to localStorage
+      localStorage.setItem('email', email);
+      
+      // Show success message
+      alert(data.message || "Account created successfully!");
+      
+      // Redirect to verify email page
+      router.push("/verifyemail");
+    } else {
+      alert(data.message || "Registration failed");
     }
-
-    const payload = {
-      name: name,
-      email: email,
-      phone: phone,
-      username: username,
-      password: password,
-    };
-
-    try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
-        alert(data.message || "Account created successfully!");
-        window.location.href = "/dashboard";
-      } else {
-        alert(data.error || data.message || "Registration failed");
-      }
-    } catch (err) {
-      console.error("Registration error:", err);
+  } catch (err) {
+    console.error("Registration error:", err);
+    if (err.response?.data?.message) {
+      alert(err.response.data.message);
+    } else {
       alert("Something went wrong. Please try again later.");
     }
+  }
   };
 
   return (

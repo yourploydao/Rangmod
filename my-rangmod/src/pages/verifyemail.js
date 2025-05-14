@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "../styles/verifyemail.module.css";
+import { useRouter } from "next/navigation";
 
 const RangModVerifyEmail = () => {
   // State variables
@@ -7,6 +9,7 @@ const RangModVerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
   const [countdown, setCountdown] = useState(0);
+  const router = useRouter();
 
   // Handle OTP input change
   const handleOtpChange = (e) => {
@@ -20,7 +23,12 @@ const RangModVerifyEmail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
+
+    const email = localStorage.getItem('email');
+    const payload = {
+      email: email,
+      otp: otp
+    };
 
     if (!otp || otp.length < 6) {
       setMessage({ text: "Please enter a valid 6-digit OTP", isError: true });
@@ -28,41 +36,30 @@ const RangModVerifyEmail = () => {
       return;
     }
 
-    const payload = {
-      otp: otp
-    };
-
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/verify-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("http://localhost:3000/api/auth/verifyemail", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200) {
         setMessage({ 
           text: data.message || "Email verified successfully!", 
           isError: false 
         });
+
         // Redirect user after successful verification
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          router.push("/signin");
         }, 2000);
       } else {
         setMessage({ 
-          text: data.error || data.message || "Invalid or expired OTP", 
+          text: data.message || "Invalid or expired OTP", 
           isError: true 
         });
       }
     } catch (err) {
       console.error("Verification error:", err);
       setMessage({ 
-        text: "Something went wrong. Please try again later.", 
+        text: err.response?.data?.message || "Something went wrong. Please try again later.", 
         isError: true 
       });
     } finally {
@@ -72,40 +69,40 @@ const RangModVerifyEmail = () => {
 
   // Handle resend OTP
   const handleResendOtp = async () => {
-    if (countdown > 0) return;
-    
-    setMessage({ text: "", isError: false });
-    
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/resend-otp", {
+      const email = localStorage.getItem("email");
+      if (!email) {
+        setMessage({ text: "Email not found. Please sign up again.", isError: true });
+        return;
+      }
+
+      const res = await fetch("/api/auth/resendverification", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ email }),
       });
 
       const data = await res.json();
 
-      if (res.ok && data.status === "ok") {
-        setMessage({ 
-          text: "A new OTP has been sent to your email", 
-          isError: false 
-        });
-        // Start countdown timer
+      if (res.status === 200) {
+        setMessage({ text: data.message, isError: false });
         setCountdown(60);
+        const timer = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       } else {
-        setMessage({ 
-          text: data.error || data.message || "Failed to resend OTP", 
-          isError: true 
-        });
+        setMessage({ text: data.message || "Failed to resend OTP", isError: true });
       }
-    } catch (err) {
-      console.error("Resend OTP error:", err);
-      setMessage({ 
-        text: "Something went wrong. Please try again later.", 
-        isError: true 
-      });
+    } catch (error) {
+      setMessage({ text: "Failed to resend OTP", isError: true });
     }
   };
 

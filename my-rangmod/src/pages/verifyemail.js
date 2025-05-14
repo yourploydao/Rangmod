@@ -24,7 +24,7 @@ const RangModVerifyEmail = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const email = localStorage.getItem('resetEmail');
+    const email = localStorage.getItem('email');
     const payload = {
       email: email,
       otp: otp
@@ -37,18 +37,14 @@ const RangModVerifyEmail = () => {
     }
 
     try {
-      // Replace with your actual API endpoint
       const res = await axios.post("http://localhost:3000/api/auth/verifyemail", payload);
       const data = res.data;
 
-      if (res.status === 200 && data.status === "ok") {
+      if (res.status === 200) {
         setMessage({ 
           text: data.message || "Email verified successfully!", 
           isError: false 
         });
-
-        // Save OTP to localStorage
-        localStorage.setItem('resetOtp', otp);     // Store OTP in localStorage
 
         // Redirect user after successful verification
         setTimeout(() => {
@@ -56,14 +52,14 @@ const RangModVerifyEmail = () => {
         }, 2000);
       } else {
         setMessage({ 
-          text: data.error || data.message || "Invalid or expired OTP", 
+          text: data.message || "Invalid or expired OTP", 
           isError: true 
         });
       }
     } catch (err) {
       console.error("Verification error:", err);
       setMessage({ 
-        text: "Something went wrong. Please try again later.", 
+        text: err.response?.data?.message || "Something went wrong. Please try again later.", 
         isError: true 
       });
     } finally {
@@ -73,32 +69,40 @@ const RangModVerifyEmail = () => {
 
   // Handle resend OTP
   const handleResendOtp = async () => {
-    if (countdown > 0) return;
-    
     try {
-      // Replace with your actual API endpoint
-      const res = await axios.post("http://localhost:3000/api/auth/resendotp", { email });
-      const data = res.data;
-
-      if (res.status === 200 && data.status === "ok") {
-        setMessage({ 
-          text: "A new OTP has been sent to your email", 
-          isError: false 
-        });
-        // Start countdown timer
-        setCountdown(60);
-      } else {
-        setMessage({ 
-          text: data.error || data.message || "Failed to resend OTP", 
-          isError: true 
-        });
+      const email = localStorage.getItem("email");
+      if (!email) {
+        setMessage({ text: "Email not found. Please sign up again.", isError: true });
+        return;
       }
-    } catch (err) {
-      console.error("Resend OTP error:", err);
-      setMessage({ 
-        text: "Something went wrong. Please try again later.", 
-        isError: true 
+
+      const res = await fetch("/api/auth/resendverification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       });
+
+      const data = await res.json();
+
+      if (res.status === 200) {
+        setMessage({ text: data.message, isError: false });
+        setCountdown(60);
+        const timer = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      } else {
+        setMessage({ text: data.message || "Failed to resend OTP", isError: true });
+      }
+    } catch (error) {
+      setMessage({ text: "Failed to resend OTP", isError: true });
     }
   };
 

@@ -408,34 +408,31 @@ const CreateDormitoryPage = () => {
       <div className={styles.formGroup}>
         <label className={styles.formLabel}>Location</label>
         <div className={styles.mapContainer}>
-{mapLocation ? (
-  <>
-    <div className={styles.mapPreview}>
-<img
-  src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
-  alt="Map location"
-  className={styles.mapImage}
-  onClick={() => setShowMapModal(true)}  // เพิ่มตรงนี้!
-  style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
-/>
-
-
-
-    </div>
-    <div className={styles.mapAddress}>
-      <MapPin size={16} className={styles.mapPinSmall} />
-      <span>{mapLocation.address}</span>
-    </div>
-  </>
-) : (
-  <div 
-    className={styles.mapSelectArea}
-    onClick={() => setShowMapModal(true)}
-  >
-    <MapPin size={24} className={styles.mapIcon} />
-    <span className={styles.mapText}>Select Location on Map</span>
-  </div>
-)}
+        {mapLocation ? (
+          <>
+            <div className={styles.mapPreview}>
+        <img
+          src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
+          alt="Map location"
+          className={styles.mapImage}
+          onClick={() => setShowMapModal(true)}  // เพิ่มตรงนี้!
+          style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
+        />
+          </div>
+          <div className={styles.mapAddress}>
+            <MapPin size={16} className={styles.mapPinSmall} />
+            <span>{mapLocation.address}</span>
+          </div>
+        </>
+      ) : (
+        <div 
+          className={styles.mapSelectArea}
+          onClick={() => setShowMapModal(true)}
+        >
+          <MapPin size={24} className={styles.mapIcon} />
+          <span className={styles.mapText}>Select Location on Map</span>
+        </div>
+      )}
 
         </div>
       </div>

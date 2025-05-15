@@ -10,70 +10,65 @@ import mongoose from 'mongoose';
 
 export async function getServerSideProps(context) {
   const { dormitory_id } = context.params;
-  console.log('Fetching dormitory with ID:', dormitory_id);
 
-  try {
-    await connectDB();
-    
-    // Validate if the ID is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(dormitory_id)) {
-      console.error('Invalid dormitory ID format:', dormitory_id);
-      return { notFound: true };
+  // 💡 ข้อมูลจำลอง อย่าเอาไปรวมนะ จ๊ะ
+  const dummyDormitory = {
+    _id: dormitory_id,
+    name_dormitory: "Dummy Dormitory",
+    alley: "Soi 123",
+    address: "Bangkok, Thailand",
+    category_dormitory: "Unisex",
+    price_range: { min: 3500, max: 5500 },
+    description: "A dummy dormitory for development purpose.",
+    images: [
+      "/images/dummy1.jpg",
+      "/images/dummy2.jpg",
+      "/images/dummy3.jpg",
+      "/images/dummy4.jpg",
+      "/images/dummy5.jpg"
+    ],
+    distance_from_university: 1.2,
+    phone_number: "012-345-6789",
+    type_dormitory: "Apartment",
+    electric_price: 8,
+    water_price: 20,
+    other: "500"
+  };
+
+  const dummyRooms = [
+    {
+      _id: "room1",
+      room_type: "Standard Room",
+      price: 4000,
+      room_size: 28,
+      dormitoryID: dormitory_id,
+      room_image: ["/images/room1.jpg"]
+    },
+    {
+      _id: "room2",
+      room_type: "Deluxe Room",
+      price: 5000,
+      room_size: 35,
+      dormitoryID: dormitory_id,
+      room_image: ["/images/room2.jpg"]
     }
+  ];
 
-    // Convert string ID to ObjectId
-    const dormitoryObjectId = new mongoose.Types.ObjectId(dormitory_id);
-    
-    // Fetch dormitory with error logging
-    const dormitory = await Dormitory.findById(dormitoryObjectId).lean();
-    console.log('Found dormitory:', dormitory ? 'Yes' : 'No');
-    
-    if (!dormitory) {
-      console.error('Dormitory not found with ID:', dormitory_id);
-      return { notFound: true };
+  const dummyFacility = {
+    _id: "facility1",
+    dormitoryID: dormitory_id,
+    facilities: ["Wifi", "Air Conditioner", "Private Bathroom", "Parking"]
+  };
+
+  return {
+    props: {
+      dormitory: dummyDormitory,
+      rooms: dummyRooms,
+      facility: dummyFacility
     }
-
-    // Fetch related data
-    const rooms = await Room.find({ dormitoryID: dormitoryObjectId }).lean();
-    console.log('Found rooms:', rooms.length);
-    
-    const facility = await Facility.findOne({ dormitoryID: dormitoryObjectId }).lean();
-    console.log('Found facility:', facility ? 'Yes' : 'No');
-
-    // Fix object serialization issue
-    const serializedDormitory = {
-      ...dormitory,
-      _id: dormitory._id.toString(),
-      // Keep last_updated as is since it's already a string
-      last_updated: dormitory.last_updated || null
-    };
-
-    const serializedRooms = rooms.map(room => ({
-      ...room,
-      _id: room._id.toString(),
-      dormitoryID: room.dormitoryID.toString()
-    }));
-
-    const serializedFacility = facility ? {
-      ...facility,
-      _id: facility._id.toString(),
-      dormitoryID: facility.dormitoryID.toString()
-    } : null;
-
-    return {
-      props: { 
-        dormitory: serializedDormitory,
-        rooms: serializedRooms,
-        facility: serializedFacility
-      },
-    };
-  } catch (error) {
-    console.error('Error in getServerSideProps:', error);
-    return {
-      notFound: true,
-    };
-  }
+  };
 }
+
 
 const DormitoryDetail = ({ dormitory, rooms, facility }) => {
   const [activePhoto, setActivePhoto] = useState(0);
@@ -211,15 +206,25 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
         {/* Details and Map */}
         <div className={styles.detailsMapSection}>
           <div className={styles.mapContainer}>
-            <img src="https://1033609670.rsc.cdn77.org/maps/ross-js-aloha-grill-las-vegas-map.jpg" alt="Map Location" className={styles.map} />
+            <a
+              href="https://www.google.com/maps?q=13.65115,100.48839"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=13.65115,100.48839&zoom=15&size=700x150&markers=icon:large-red-cutout|13.65115,100.48839`}
+                alt="Map Location"
+                className={styles.map}
+              />
+            </a>
             <div className={styles.mapDetails}>
               <div className={styles.mapDetail}>
                 <span className={styles.detailIcon}>📍</span>
-                <span>{dormitory.distance_from_university} kilometers away</span>
+                <span>0.36 kilometers away</span>
               </div>
               <div className={styles.mapDetail}>
                 <span className={styles.detailIcon}>📱</span>
-                <span>{dormitory.phone_number}</span>
+                <span>012-345-6789</span>
               </div>
             </div>
           </div>

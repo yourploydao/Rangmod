@@ -36,10 +36,10 @@ const RangModResetPassword = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/resetpassword", payload);
+      const res = await axios.post("/api/auth/resetpassword", payload);
       const data = res.data;
 
-      if (res.status === 200 && data.status === "ok") {
+      if (res.status === 200 ) {
         alert(data.message || "Password reset successfully!");
 
         router.push("/signin");

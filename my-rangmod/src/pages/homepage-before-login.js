@@ -51,16 +51,23 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search functionality here
-    console.log("Searching for:", {
-      query: searchQuery,
-      filter: selectedFilter || "Not selected",
-    });
-    // Router navigation would go here
+    if (searchQuery.trim()) {
+      router.push({
+        pathname: '/result-after-search',
+        query: { search: searchQuery.trim() }
+      });
+    }
   };
 
   const handleSearchClick = () => {
-    router.push('/search-results');
+    if (searchQuery.trim()) {
+      router.push({
+        pathname: '/result-after-search',
+        query: { search: searchQuery.trim() }
+      });
+    } else {
+      router.push('/result-after-search');
+    }
   };
 
   const handleDormitoryClick = (dormitoryId) => {
@@ -182,7 +189,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                   </p>
                   <p className={styles.dormType}>{dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
-                    refreshed at: {new Date(dormitory.last_updated).toLocaleDateString()}
+                    {dormitory.distance_from_university?.toFixed(2)} km from KMUTT
                   </p>
                 </div>
               </div>
@@ -237,7 +244,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                   </p>
                   <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
-                    refreshed at: {new Date(dormitory.last_updated).toLocaleDateString()}
+                    {dormitory.distance_from_university?.toFixed(2)} km from KMUTT
                   </p>
                 </div>
               </div>
@@ -284,7 +291,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                   </p>
                   <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
-                    refreshed at: {new Date(dormitory.last_updated).toLocaleDateString()}
+                    {dormitory.distance_from_university?.toFixed(2)} km from KMUTT
                   </p>
                 </div>
               </div>

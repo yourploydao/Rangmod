@@ -385,7 +385,7 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
       }
 
       alert('Dormitory updated successfully');
-      router.push('/addmin-dashboard');
+      router.push('/admin-dashboard');
     } catch (error) {
       alert(error.message);
       console.error('Error updating dormitory:', error);

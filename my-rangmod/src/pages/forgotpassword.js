@@ -23,10 +23,10 @@ const RangModForgotPassword = () => {
     const payload = { email };
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/forgotpassword", payload);
+      const res = await axios.post("/api/auth/forgot-password", payload);
       const data = res.data;
 
-      if (res.status === 200 && data.status === "ok") {
+      if (res.status === 200 ) {
         setMessage({ 
           text: data.message || "Password reset instructions sent to your email!", 
           isError: false 

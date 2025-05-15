@@ -1,90 +1,99 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
-import styles from "../styles/addmin-user.module.css";
+import axios from 'axios';
+import styles from "../styles/admin-user.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 
 const AdminUsers = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   
-  // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Addmin Targarian',
-    username: 'Admin',
-    role: 'Admin',
-    profileImage: '/assets/admin1.jpeg'
+    name: '',
+    username: '',
+    role: '',
+    profileImage: ''
   });
 
-  // Mock admin users data
-  const [adminUsers, setAdminUsers] = useState([
-    {
-      id: 1,
-      username: 'user2',
-      email: 'user1@gmail.com',
-      lastUpdate: '24 Jun, 2023'
-    },
-    {
-      id: 2,
-      username: 'user2',
-      email: 'user2@gmail.com',
-      lastUpdate: '24 Aug, 2023'
-    },
-    {
-      id: 3,
-      username: 'user3',
-      email: 'user3@gmail.com',
-      lastUpdate: '18 Dec, 2023'
-    },
-    {
-      id: 4,
-      username: 'user4',
-      email: 'user4@gmail.com',
-      lastUpdate: '8 Oct, 2023'
-    },
-    {
-      id: 5,
-      username: 'user5',
-      email: 'user5@gmail.com',
-      lastUpdate: '15 Jun, 2023'
-    },
-    {
-      id: 6,
-      username: 'user6',
-      email: 'user6@gmail.com',
-      lastUpdate: '12 July, 2023'
-    },
-    {
-      id: 7,
-      username: 'user7',
-      email: 'user7@gmail.com',
-      lastUpdate: '21 July, 2023'
-    }
-  ]);
-
+  const [adminUsers, setAdminUsers] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [userToUpdate, setUserToUpdate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [notification, setNotification] = useState({ show: false, message: '' });
+  const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch current user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/api/auth/me');
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            role: user.role,
+            profileImage: user.profile_picture
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        if (err.response?.status === 401) {
+          router.push('/signin');
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
+
+  // Fetch users with pagination and search
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`/api/users?page=${currentPage}&search=${searchQuery}`);
+        setAdminUsers(response.data.users);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        showNotification('Error fetching users', 'error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [currentPage, searchQuery]);
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: '', type: 'success' });
+    }, 3000);
+  };
   
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
   
-  const handleLogout = () => {
-    // In a real app, this would clear auth state and redirect
-    alert("Logging out...");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      showNotification('Failed to logout', 'error');
+    }
   };
 
   const handleAddUser = () => {
     router.push("/create-user");
-  };
-
-  const handleEditUser = (userId) => {
-    router.push(`/edit-user/${userId}`);
   };
 
   const handleDeleteClick = (userId) => {
@@ -92,27 +101,47 @@ const AdminUsers = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    // In a real app, this would make an API call to delete the user
-    setAdminUsers(adminUsers.filter(user => user.id !== userToDelete));
-    setShowDeleteModal(false);
-    setUserToDelete(null);
-    
-    // Show notification
-    setNotification({
-      show: true,
-      message: "User deleted successfully"
-    });
-    
-    // Hide notification after 3 seconds
-    setTimeout(() => {
-      setNotification({ show: false, message: '' });
-    }, 3000);
+  const handleRoleClick = (user) => {
+    setUserToUpdate(user);
+    setShowRoleModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`/api/users/${userToDelete}`);
+      setAdminUsers(adminUsers.filter(user => user._id !== userToDelete));
+      setShowDeleteModal(false);
+      setUserToDelete(null);
+      showNotification('User deleted successfully');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      showNotification('Error deleting user', 'error');
+    }
+  };
+
+  const updateUserRole = async (newRole) => {
+    try {
+      const response = await axios.patch(`/api/users/${userToUpdate._id}`, { role: newRole });
+      setAdminUsers(adminUsers.map(user => 
+        user._id === userToUpdate._id ? response.data : user
+      ));
+      setShowRoleModal(false);
+      setUserToUpdate(null);
+      showNotification('User role updated successfully');
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      showNotification('Error updating user role', 'error');
+    }
   };
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setUserToDelete(null);
+  };
+
+  const cancelRoleUpdate = () => {
+    setShowRoleModal(false);
+    setUserToUpdate(null);
   };
 
   const goToPreviousPage = () => {
@@ -129,32 +158,12 @@ const AdminUsers = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
   };
-  
-  // Filter admin users based on search query
-  const filteredAdminUsers = adminUsers.filter(user => 
-    user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    }
-    
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        {/* Sidebar */}
         <SidebarAdmin />
         
         <div className={styles.mainContent}>
@@ -167,7 +176,7 @@ const AdminUsers = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src="/assets/admin1.jpeg" alt="Profile" className={styles.profileImage} />
+                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -214,16 +223,6 @@ const AdminUsers = () => {
             </div>
             
             <div className={styles.actionButtons}>
-              <div className={styles.sortByContainer}>
-                <span>Sort by</span>
-                <div className={styles.sortIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 6h18"></path>
-                    <path d="M6 12h12"></path>
-                    <path d="M9 18h6"></path>
-                  </svg>
-                </div>
-              </div>
               <button className={styles.addUserButton} onClick={handleAddUser}>
                 Add User
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -244,45 +243,61 @@ const AdminUsers = () => {
                     <th className={styles.idColumn}>ID</th>
                     <th className={styles.usernameColumn}>Username</th>
                     <th className={styles.emailColumn}>Email</th>
-                    <th className={styles.updateColumn}>Last update</th>
+                    <th className={styles.roleColumn}>Role</th>
                     <th className={styles.actionColumn}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAdminUsers.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.username}</td>
-                      <td>{user.email}</td>
-                      <td>{user.lastUpdate}</td>
-                      <td className={styles.actions}>
-                        <div className={styles.actionButtons}>
-                          <button 
-                            className={styles.editButton} 
-                            onClick={() => handleEditUser(user.id)}
-                            title="Edit"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                          </button>
-                          <button 
-                            className={styles.deleteButton}
-                            onClick={() => handleDeleteClick(user.id)}
-                            title="Delete"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="3 6 5 6 21 6"></polyline>
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                              <line x1="10" y1="11" x2="10" y2="17"></line>
-                              <line x1="14" y1="11" x2="14" y2="17"></line>
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="5" className={styles.loadingCell}>Loading...</td>
                     </tr>
-                  ))}
+                  ) : adminUsers.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className={styles.noDataCell}>No users found</td>
+                    </tr>
+                  ) : (
+                    adminUsers.map((user, index) => (
+                      <tr key={user._id}>
+                        <td>{(currentPage - 1) * 10 + index + 1}</td>
+                        <td>{user.username}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          <span className={`${styles.roleBadge} ${styles[user.role]}`}>
+                            {user.role}
+                          </span>
+                        </td>
+                        <td className={styles.actions}>
+                          <div className={styles.actionButtons}>
+                            <button 
+                              className={styles.roleButton}
+                              onClick={() => handleRoleClick(user)}
+                              title="Change Role"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                              </svg>
+                            </button>
+                            <button 
+                              className={styles.deleteButton}
+                              onClick={() => handleDeleteClick(user._id)}
+                              title="Delete"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -337,10 +352,53 @@ const AdminUsers = () => {
           </div>
         </div>
       )}
+
+      {/* Role Update Modal */}
+      {showRoleModal && userToUpdate && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h3>Update User Role</h3>
+              <button className={styles.closeButton} onClick={cancelRoleUpdate}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <p>Update role for user: {userToUpdate.username}</p>
+              <div className={styles.roleOptions}>
+                <button 
+                  className={`${styles.roleOption} ${userToUpdate.role === 'user' ? styles.active : ''}`}
+                  onClick={() => updateUserRole('user')}
+                >
+                  User
+                </button>
+                <button 
+                  className={`${styles.roleOption} ${userToUpdate.role === 'owner' ? styles.active : ''}`}
+                  onClick={() => updateUserRole('owner')}
+                >
+                  Owner
+                </button>
+                <button 
+                  className={`${styles.roleOption} ${userToUpdate.role === 'admin' ? styles.active : ''}`}
+                  onClick={() => updateUserRole('admin')}
+                >
+                  Admin
+                </button>
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button className={styles.cancelButton} onClick={cancelRoleUpdate}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Notification */}
       {notification.show && (
-        <div className={styles.notification}>
+        <div className={`${styles.notification} ${styles[notification.type]}`}>
           <div className={styles.notificationContent}>
             <svg className={styles.notificationIcon} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -350,7 +408,7 @@ const AdminUsers = () => {
           </div>
           <button 
             className={styles.notificationClose}
-            onClick={() => setNotification({ show: false, message: '' })}
+            onClick={() => setNotification({ show: false, message: '', type: 'success' })}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>

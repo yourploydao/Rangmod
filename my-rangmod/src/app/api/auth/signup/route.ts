@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/config/db';
+import { connectDB } from '@/lib/mongodb';
 import User from '@/models/User';
 import { sendEmail } from '@/config/mailer';
 import bcrypt from 'bcryptjs';
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    const verificationOTPExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 นาที
+    const verificationOTPExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     const user = await User.create({
       name,
@@ -29,9 +29,10 @@ export async function POST(req: NextRequest) {
       verificationOTP,
       verificationOTPExpires,
       isVerified: false,
+      profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
     });
 
-    // ส่งอีเมลยืนยัน OTP
+    // Send verification email
     await sendEmail({
       to: email,
       subject: 'Verify your email',

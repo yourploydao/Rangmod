@@ -299,7 +299,7 @@ const CreateDormitoryPage = () => {
     }
 
     // Validate gate location
-    if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
+    if (!formData.gate_location || !['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
       alert('Please select a valid gate location (Front Gate or Back Gate)');
       return;
     }

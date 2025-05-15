@@ -1,122 +1,172 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
-import styles from "../styles/addmin-permission.module.css";
+import axios from 'axios';
+import styles from "../styles/admin-dashboard.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
+import { connectDB } from '@/lib/mongodb';
+import Dormitory from '@/models/Dormitory';
 
-const AdminPermission = () => {
+export async function getServerSideProps() {
+  try {
+    await connectDB();
+    const dormitories = await Dormitory.find({}).lean();
+    
+    // Serialize dormitory data
+    const serializedDormitories = dormitories.map(dormitory => ({
+      ...dormitory,
+      _id: dormitory._id.toString(),
+      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null
+    }));
+
+    return {
+      props: {
+        initialDormitories: serializedDormitories
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching dormitories:', error);
+    return {
+      props: {
+        initialDormitories: []
+      }
+    };
+  }
+}
+
+const OwnerDashboard = ({ initialDormitories }) => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   
-  // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Addmin Targarian',
-    username: 'Admin',
-    role: 'Admin',
-    profileImage: '/assets/admin1.jpeg'
+    name: '',
+    username: '',
+    role: '',
+    profileImage: ''
   });
 
-  // Mock admin users data
-  const [adminUsers, setAdminUsers] = useState([
-    {
-      id: 1,
-      username: 'onwer1',
-      email: 'onwer1@gmail.com',
-      lastUpdate: '24 Jun, 2023',
-      status: 'pending'
-    },
-    {
-      id: 2,
-      username: 'onwer2',
-      email: 'onwer2@gmail.com',
-      lastUpdate: '24 Aug, 2023',
-      status: 'pending'
-    },
-    {
-      id: 3,
-      username: 'onwer3',
-      email: 'onwer3@gmail.com',
-      lastUpdate: '18 Dec, 2023',
-      status: 'pending'
-    }
-  ]);
-
+  const [dormitories, setDormitories] = useState(initialDormitories);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [dormToDelete, setDormToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [notification, setNotification] = useState({ show: false, message: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // State for permission modal
-  const [showPermissionModal, setShowPermissionModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  // Fetch current user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/api/auth/me');
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            role: user.role,
+            profileImage: user.profile_picture
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        if (err.response?.status === 401) {
+          router.push('/signin');
+        }
+      }
+    };
 
-  // State for delete confirmation modal
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
+    fetchUserData();
+  }, [router]);
 
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
   
-  const handleLogout = () => {
-    // In a real app, this would clear auth state and redirect
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      localStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('Failed to logout. Please try again.');
+    }
   };
 
-  const handleAddOwner = () => {
-    // Navigate to add owner page or open modal
-    router.push("/create-owner");
+  const handleAddDorm = () => {
+    router.push("/create-dorm");
   };
 
-  const handleEditUser = (user) => {
-    setSelectedUser(user);
-    setShowPermissionModal(true);
+  const handleEditDorm = (dormId) => {
+    router.push(`/edit-dorm/${dormId}`);
+  };
+
+  const handleDeleteClick = (dormId) => {
+    setDormToDelete(dormId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`/api/dormitory/delete/${dormToDelete}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete dormitory');
+      }
+
+      // Update local state after successful deletion
+      setDormitories(dormitories.filter(dorm => dorm._id !== dormToDelete));
+      setShowDeleteModal(false);
+      setDormToDelete(null);
+      
+      setNotification({
+        show: true,
+        message: "Dormitory deleted successfully"
+      });
+    } catch (error) {
+      console.error('Error deleting dormitory:', error);
+      setNotification({
+        show: true,
+        message: "Failed to delete dormitory"
+      });
+    }
+    
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 3000);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDormToDelete(null);
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
-
-  const handlePermissionAction = (action) => {
-    // Update the user's status based on the action
-    const updatedUsers = adminUsers.map(user => 
-      user.id === selectedUser.id 
-        ? { ...user, status: action === 'accept' ? 'accepted' : 'denied' }
-        : user
-    ).filter(user => user.status === 'pending'); // Only show pending requests
-    
-    setAdminUsers(updatedUsers);
-    setShowPermissionModal(false);
-    setSelectedUser(null);
-  };
-
-  const handleDeleteUserPrompt = (userId) => {
-    // Show delete confirmation modal
-    setUserToDelete(userId);
-    setShowDeleteModal(true);
-  };
-
-  const cancelDelete = () => {
-    // Close delete confirmation modal
-    setShowDeleteModal(false);
-    setUserToDelete(null);
-  };
-
-  const confirmDelete = () => {
-    // Remove the user from the list
-    const updatedUsers = adminUsers.filter(user => user.id !== userToDelete);
-    setAdminUsers(updatedUsers);
-    
-    // Close delete confirmation modal
-    setShowDeleteModal(false);
-    setUserToDelete(null);
-  };
   
-  // Filter admin users based on search query and pending status
-  const filteredAdminUsers = adminUsers.filter(user => 
-    user.status === 'pending' && (
-      user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  // Filter dormitories based on search query
+  const filteredDormitories = dormitories.filter(dorm => 
+    dorm.name_dormitory.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dorm.type_dormitory.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dorm.category_dormitory.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
   // Close dropdown when clicking outside
@@ -136,7 +186,6 @@ const AdminPermission = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        {/* Sidebar */}
         <SidebarAdmin />
         
         <div className={styles.mainContent}>
@@ -149,7 +198,7 @@ const AdminPermission = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src="/assets/admin1.jpeg" alt="Profile" className={styles.profileImage} />
+                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -175,7 +224,7 @@ const AdminPermission = () => {
           </div>
           
           <div className={styles.dashboardHeader}>
-            <h2 className={styles.dashboardTitle}>Admin Owner Permissions</h2>
+            <h2 className={styles.dashboardTitle}>Admin Dashboard</h2>
           </div>
           
           <div className={styles.searchSortContainer}>
@@ -206,39 +255,58 @@ const AdminPermission = () => {
                   </svg>
                 </div>
               </div>
-              <button className={styles.addUserButton} onClick={handleAddOwner}>
-                Add Owner +
+              <button className={styles.addDormButton} onClick={handleAddDorm}>
+                Add Dorm
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
               </button>
             </div>
           </div>
           
-          <div className={styles.userListContainer}>
-            <h3 className={styles.listTitle}>List User Request</h3>
+          <div className={styles.dormListContainer}>
+            <h3 className={styles.listTitle}>List Dormitory</h3>
             
             <div className={styles.tableContainer}>
-              <table className={styles.userTable}>
+              <table className={styles.dormTable}>
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Last update</th>
-                    <th>Action</th>
+                    <th className={styles.idColumn}>ID</th>
+                    <th className={styles.nameColumn}>Name</th>
+                    <th className={styles.typeColumn}>Type</th>
+                    <th className={styles.categoryColumn}>Category</th>
+                    <th className={styles.updateColumn}>Last update</th>
+                    <th className={styles.actionColumn}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAdminUsers.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.username}</td>
-                      <td>{user.email}</td>
-                      <td>{user.lastUpdate}</td>
+                  {filteredDormitories.map((dorm, index) => (
+                    <tr 
+                      key={dorm._id}
+                      className={styles.dormRow}
+                      onClick={() => router.push(`/details/${dorm._id}`)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td>{index + 1}</td>
+                      <td>
+                        <div className={styles.dormName}>
+                          {dorm.name_dormitory}
+                          <div className={styles.dormCode}>{dorm.type_dormitory}</div>
+                        </div>
+                      </td>
+                      <td>{dorm.type_dormitory}</td>
+                      <td>{dorm.category_dormitory}</td>
+                      <td>{new Date(dorm.last_updated).toLocaleDateString()}</td>
                       <td className={styles.actions}>
                         <div className={styles.actionButtons}>
                           <button 
                             className={styles.editButton} 
-                            onClick={() => handleEditUser(user)}
-                            title="Edit Permissions"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent row click when clicking edit
+                              handleEditDorm(dorm._id);
+                            }}
+                            title="Edit"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -246,9 +314,12 @@ const AdminPermission = () => {
                             </svg>
                           </button>
                           <button 
-                            className={styles.deleteButton} 
-                            onClick={() => handleDeleteUserPrompt(user.id)}
-                            title="Delete User"
+                            className={styles.deleteButton}
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent row click when clicking delete
+                              handleDeleteClick(dorm._id);
+                            }}
+                            title="Delete"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <polyline points="3 6 5 6 21 6"></polyline>
@@ -268,7 +339,7 @@ const AdminPermission = () => {
             <div className={styles.pagination}>
               <button 
                 className={styles.paginationButton} 
-                onClick={() => setCurrentPage(currentPage - 1)}
+                onClick={goToPreviousPage}
                 disabled={currentPage === 1}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -280,7 +351,7 @@ const AdminPermission = () => {
               </span>
               <button 
                 className={styles.paginationButton} 
-                onClick={() => setCurrentPage(currentPage + 1)}
+                onClick={goToNextPage}
                 disabled={currentPage === totalPages}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -291,45 +362,7 @@ const AdminPermission = () => {
           </div>
         </div>
       </div>
-
-      {/* Permission Modal */}
-      {showPermissionModal && selectedUser && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.permissionModalContainer}>
-            <div className={styles.permissionModalHeader}>
-              <h2>Edit User Permissions</h2>
-              <button 
-                className={styles.permissionModalCloseButton} 
-                onClick={() => setShowPermissionModal(false)}
-              >
-                &times;
-              </button>
-            </div>
-            <div className={styles.permissionModalContent}>
-              <div className={styles.userDetails}>
-                <p><strong>Username:</strong> {selectedUser.username}</p>
-                <p><strong>Email:</strong> {selectedUser.email}</p>
-                <p><strong>Last Update:</strong> {selectedUser.lastUpdate}</p>
-              </div>
-              <div className={styles.permissionActions}>
-                <button 
-                  className={styles.acceptButton}
-                  onClick={() => handlePermissionAction('accept')}
-                >
-                  Accept
-                </button>
-                <button 
-                  className={styles.denyButton}
-                  onClick={() => handlePermissionAction('deny')}
-                >
-                  Deny
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
+      
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className={styles.modalOverlay}>
@@ -344,17 +377,39 @@ const AdminPermission = () => {
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p>Are you sure you want to delete this owner? <br></br>This action cannot be undone.</p>
+              <p>Are you sure you want to delete this dormitory? <br></br>This action cannot be undone.</p>
             </div>
-                          <div className={styles.modalFooter}>
+            <div className={styles.modalFooter}>
               <button className={styles.cancelButton} onClick={cancelDelete}>Cancel</button>
               <button className={styles.confirmButton} onClick={confirmDelete}>Delete</button>
             </div>
           </div>
         </div>
       )}
+      
+      {/* Notification */}
+      {notification.show && (
+        <div className={styles.notification}>
+          <div className={styles.notificationContent}>
+            <svg className={styles.notificationIcon} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>{notification.message}</span>
+          </div>
+          <button 
+            className={styles.notificationClose}
+            onClick={() => setNotification({ show: false, message: '' })}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
-export default AdminPermission;
+export default OwnerDashboard;

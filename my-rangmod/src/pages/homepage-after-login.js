@@ -47,7 +47,7 @@ const RangModDormitory = ({ dormitories }) => {
   useEffect(() => {
     // Check if user is logged in
     const userData = localStorage.getItem('user');
-    if (!userData) {
+    if (userData === null) {
       router.push('/signin');
       return;
     }

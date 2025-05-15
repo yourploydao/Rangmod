@@ -12,13 +12,14 @@ const SidebarUser = () => {
 
   // Function to check if a menu item is active
   const isActive = (path) => {
-    return activePath === path;
+    // Check if the current path includes 'user-account-setting' or 'user-edit-setting'
+    return activePath.includes('user-account-setting') || activePath.includes('user-edit-setting');
   };
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <a href="/homepage-after-login">
+        <a href="/homepage-before-login">
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText}>RANGMOD</span>

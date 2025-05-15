@@ -12,6 +12,8 @@ export interface IUser extends Document {
   resetPasswordOTPExpires: Date | null;
   verificationOTP: string | null;
   verificationOTPExpires: Date | null;
+  profile_picture: string;
+  dormitories: mongoose.Types.ObjectId[];
 }
 
 const UserSchema = new Schema<IUser>({
@@ -26,6 +28,15 @@ const UserSchema = new Schema<IUser>({
   resetPasswordOTPExpires: { type: Date, default: null },
   verificationOTP: { type: String, default: null },
   verificationOTPExpires: { type: Date, default: null },
+  profile_picture: { 
+    type: String, 
+    default: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+  },
+  dormitories: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Dormitory',
+    default: []
+  }]
 }, { timestamps: true });
 
 const User = models.User as mongoose.Model<IUser> || model<IUser>('User', UserSchema);

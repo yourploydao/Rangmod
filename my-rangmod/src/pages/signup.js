@@ -193,13 +193,14 @@ const handleSubmit = async (e) => {
     phone: phone,
     username: username,
     password: password,
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
   };
 
   try {
     const res = await axios.post("http://localhost:3000/api/auth/signup", payload);
     const data = res.data;
 
-    // แสดงข้อมูลที่ได้รับจาก API
+    // Log API response data
     console.log("Data from API:", data);
 
     if (res.status === 201) {

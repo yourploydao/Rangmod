@@ -48,7 +48,8 @@ export async function getServerSideProps() {
 }
 
 const DormitorySearch = ({ initialDormitories }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState(router.query.search || '');
   const [activeSortOption, setActiveSortOption] = useState('lowest price');
   const [priceRange, setPriceRange] = useState({ lowest: '', highest: '' });
   const [filteredDormitories, setFilteredDormitories] = useState(initialDormitories);
@@ -57,9 +58,6 @@ const DormitorySearch = ({ initialDormitories }) => {
   // Filters state
   const [filters, setFilters] = useState({
     dormType: {
-      'Female': false,
-      'Mixed': false,
-      'Male': false,
       'Apartment': false,
       'Mansion': false,
       'Dormitory': false,
@@ -96,6 +94,13 @@ const DormitorySearch = ({ initialDormitories }) => {
       'kitchen': false
     }
   });
+
+  // Update search query when URL changes
+  useEffect(() => {
+    if (router.query.search) {
+      setSearchQuery(router.query.search);
+    }
+  }, [router.query.search]);
 
   // Apply all filters to the dormitories
   const applyFilters = () => {
@@ -490,7 +495,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                     </div>
                     <div className={styles.dormTypeHorizontal}>{dorm.type_dormitory}</div>
                     <div className={styles.dormRefreshedHorizontal}>
-                      refreshed at: {new Date(dorm.last_updated).toLocaleDateString()}
+                      {dorm.distance_from_university?.toFixed(2)} km from KMUTT
                     </div>
                   </div>
                 </div>

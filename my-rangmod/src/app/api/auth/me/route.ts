@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
 import User from '@/models/User';
-import connectDB from '@/config/db';
+import { connectDB } from '@/lib/mongodb';
 
 // เอาไว้รู้ว่าคนที่ login คือใคร
 export async function GET(req: Request) {
@@ -29,6 +29,75 @@ export async function GET(req: Request) {
     return NextResponse.json(user);
   } catch (error) {
     return NextResponse.json({ message: 'Something went wrong' }, { status: 500 });
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    await connectDB();
+
+    const token = req.headers.get('cookie')?.split('token=')[1]?.split(';')[0];
+
+    if (!token) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const decoded = verify(token, process.env.JWT_SECRET!) as { id: string };
+
+    if (!decoded?.id) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { name, username, phone, profile_picture } = body;
+
+    // Validate required fields
+    if (!name || !username) {
+      return NextResponse.json(
+        { message: 'Name and username are required' },
+        { status: 400 }
+      );
+    }
+
+    // Check if username is already taken by another user
+    const existingUser = await User.findOne({
+      username,
+      _id: { $ne: decoded.id }
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        { message: 'Username is already taken' },
+        { status: 400 }
+      );
+    }
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      decoded.id,
+      {
+        name,
+        username,
+        phone: phone || undefined,
+        profile_picture: profile_picture || undefined
+      },
+      { new: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return NextResponse.json(
+        { message: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(updatedUser);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    return NextResponse.json(
+      { message: 'Something went wrong' },
+      { status: 500 }
+    );
   }
 }
 

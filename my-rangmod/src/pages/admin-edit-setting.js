@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
 import axios from 'axios';
-import styles from "../styles/user-account-setting.module.css";
-import SidebarUser from '@/components/sidebar-setting-user';
+import styles from "../styles/admin-account-setting.module.css";
+import SidebarAdmin from '@/components/sidebar-setting-admin';
 
-const UserAccountSettingEdit = () => {
+const AdminAccountSettingEdit = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -14,7 +14,7 @@ const UserAccountSettingEdit = () => {
     username: '',
     phone: '',
     email: '',
-    role: 'User',
+    role: 'Admin',
     profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
   });
 
@@ -37,7 +37,7 @@ const UserAccountSettingEdit = () => {
             username: user.username,
             phone: user.phone || 'Not set',
             email: user.email,
-            role: user.role || 'User',
+            role: user.role || 'Admin',
             profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
           });
         }
@@ -93,7 +93,7 @@ const UserAccountSettingEdit = () => {
       if (response.status === 200) {
         handleShowNotification("Changes saved successfully");
         setTimeout(() => {
-          router.push("/user-account-setting");
+          router.push("/admin-account-setting");
         }, 1500);
       }
     } catch (error) {
@@ -221,7 +221,7 @@ const UserAccountSettingEdit = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <SidebarUser activePage="settings" />
+        <SidebarAdmin />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
@@ -405,4 +405,4 @@ const UserAccountSettingEdit = () => {
   );
 };
 
-export default UserAccountSettingEdit;
+export default AdminAccountSettingEdit;

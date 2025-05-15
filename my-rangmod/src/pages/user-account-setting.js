@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
+import axios from 'axios';
 import styles from "../styles/user-account-setting.module.css";
 import SidebarUser from '@/components/sidebar-setting-user';
 
@@ -7,20 +8,66 @@ const UserAccountSetting = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   
-  // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Tinny Targarian',
-    username: 'Tinny',
-    phoneNumber: '0902301234',
-    email: 'tinny@gmail.com',
+    name: '',
+    username: '',
+    phone: '',
+    email: '',
     role: 'User',
-    profileImage: '/assets/user1.jpeg'
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
   });
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
+  const [requestStatus, setRequestStatus] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+          router.push('/signin');
+          return;
+        }
+
+        const response = await axios.get('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            phone: user.phone || 'Not set',
+            email: user.email,
+            role: user.role || 'User',
+            profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+          });
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
+          router.push('/signin');
+          return;
+        }
+        console.error('Error fetching user data:', err);
+        setError('Failed to load user data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
   
   const handleEditButtonClick = () => {
-    // Redirect to edit-user-setting page when Edit button is clicked
     router.push("/user-edit-setting");
   };
   
@@ -28,18 +75,67 @@ const UserAccountSetting = () => {
     setShowDropdown(!showDropdown);
   };
   
-  const handleLogout = () => {
-    // In a real app, this would clear auth state and redirect
-    alert("Logging out...");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      // Clear any local storage or state
+      localStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('Failed to logout. Please try again.');
+    }
   };
 
   const handleRequestPermission = () => {
-    // Redirect to owner permission page
-    router.push("/owner-permission");
+    setShowConfirmModal(true);
+  };
+
+  const confirmRequestPermission = async () => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) {
+        router.push('/signin');
+        return;
+      }
+
+      const response = await fetch('/api/owner-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit request');
+      }
+
+      const data = await response.json();
+      setRequestStatus('success');
+      setShowConfirmModal(false);
+      setNotification({
+        show: true,
+        message: 'Your request has been submitted successfully. Please wait for admin approval.',
+        type: 'success'
+      });
+    } catch (err) {
+      setError(err.message);
+      setShowConfirmModal(false);
+      setNotification({
+        show: true,
+        message: err.message || 'Failed to submit request. Please try again.',
+        type: 'error'
+      });
+    }
+  };
+
+  const cancelRequestPermission = () => {
+    setShowConfirmModal(false);
   };
   
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -53,10 +149,25 @@ const UserAccountSetting = () => {
     };
   }, [dropdownRef]);
 
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        {/* Use the imported Sidebar component */}
         <SidebarUser />
         
         <div className={styles.mainContent}>
@@ -69,7 +180,15 @@ const UserAccountSetting = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -98,10 +217,17 @@ const UserAccountSetting = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileHeaderLeft}>
                 <div className={styles.profileAvatar}>
-                  <img src={userData.profileImage} alt="Profile Avatar" />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile Avatar"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                 </div>
                 <div className={styles.profileInfo}>
-                  <h2 className={styles.profileName}>{userData.fullName}</h2>
+                  <h2 className={styles.profileName}>{userData.name}</h2>
                   <p className={styles.profileEmail}>{userData.email}</p>
                 </div>
               </div>
@@ -119,7 +245,7 @@ const UserAccountSetting = () => {
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label>Full Name</label>
-                  <div className={styles.readOnlyInput}>{userData.fullName}</div>
+                  <div className={styles.readOnlyInput}>{userData.name}</div>
                 </div>
                 <div className={styles.formGroup}>
                   <label>Username</label>
@@ -130,7 +256,7 @@ const UserAccountSetting = () => {
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label>Phone Number</label>
-                  <div className={styles.readOnlyInput}>{userData.phoneNumber}</div>
+                  <div className={styles.readOnlyInput}>{userData.phone}</div>
                 </div>
               </div>
               
@@ -149,17 +275,71 @@ const UserAccountSetting = () => {
               </div>
 
               <div className={styles.requestPermissionContainer}>
-                <button 
-                  className={styles.requestPermissionButton} 
-                  onClick={handleRequestPermission}
-                >
-                  request permission to create a dormitory
-                </button>
+                {requestStatus === 'success' ? (
+                  <div className={styles.successMessage}>
+                    Your request has been submitted successfully. Please wait for admin approval.
+                  </div>
+                ) : error ? (
+                  <div className={styles.errorMessage}>{error}</div>
+                ) : (
+                  <button 
+                    className={styles.requestPermissionButton} 
+                    onClick={handleRequestPermission}
+                  >
+                    request permission to be an owner
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Confirm Request</h3>
+            <p>Are you sure you want to request permission to become an owner? This request will be reviewed by the system administrator.</p>
+            <div className={styles.modalActions}>
+              <button
+                onClick={cancelRequestPermission}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRequestPermission}
+                className={styles.confirmButton}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification */}
+      {notification.show && (
+        <div className={`${styles.notification} ${styles[notification.type]}`}>
+          <div className={styles.notificationContent}>
+            <svg className={styles.notificationIcon} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>{notification.message}</span>
+          </div>
+          <button 
+            className={styles.notificationClose}
+            onClick={() => setNotification({ show: false, message: '', type: 'success' })}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

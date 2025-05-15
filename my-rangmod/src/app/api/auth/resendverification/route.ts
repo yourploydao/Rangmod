@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/User';
-import connectDB from '@/config/db';
+import { connectDB } from '@/lib/mongodb';
 import { sendEmail } from '@/config/mailer';
 
 export async function POST(req: NextRequest) {

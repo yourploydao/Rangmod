@@ -1,0 +1,186 @@
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี wifi บ้าง"},{"role":"assistant","content":"หอพักที่มี wifi (ไม่เกิน 5 รายชื่อ) เช่น: Dormitory 12, Apartment 1, House 14, Condominium 15, Apartment 2 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี air_conditioner บ้าง"},{"role":"assistant","content":"หอพักที่มี air_conditioner (ไม่เกิน 5 รายชื่อ) เช่น: Mansion 5, Mansion 10, House 3, Apartment 1, Dormitory 12 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี private_bathroom บ้าง"},{"role":"assistant","content":"หอพักที่มี private_bathroom (ไม่เกิน 5 รายชื่อ) เช่น: Townhouse 7, Mansion 5, Apartment 1, Apartment 11, Dormitory 6 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี refrigerator บ้าง"},{"role":"assistant","content":"หอพักที่มี refrigerator (ไม่เกิน 5 รายชื่อ) เช่น: Apartment 11, House 3, Condominium 15, Apartment 1, Townhouse 7 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี television บ้าง"},{"role":"assistant","content":"หอพักที่มี television (ไม่เกิน 5 รายชื่อ) เช่น: Townhouse 8, Mansion 10, Apartment 11, Dormitory 6, Mansion 5 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี balcony บ้าง"},{"role":"assistant","content":"หอพักที่มี balcony (ไม่เกิน 5 รายชื่อ) เช่น: Dormitory 6, Apartment 1, Apartment 11, Condominium 15, Apartment 2 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี cctv บ้าง"},{"role":"assistant","content":"หอพักที่มี cctv (ไม่เกิน 5 รายชื่อ) เช่น: Apartment 1, Condominium 9, House 14, Apartment 2, Townhouse 8 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี desk บ้าง"},{"role":"assistant","content":"หอพักที่มี desk (ไม่เกิน 5 รายชื่อ) เช่น: Apartment 11, Apartment 1, House 14, Townhouse 7, Apartment 2 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี parking บ้าง"},{"role":"assistant","content":"หอพักที่มี parking (ไม่เกิน 5 รายชื่อ) เช่น: Townhouse 8, Apartment 1, House 14, Dormitory 6, Apartment 2 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี closet บ้าง"},{"role":"assistant","content":"หอพักที่มี closet (ไม่เกิน 5 รายชื่อ) เช่น: Apartment 2, Townhouse 8, House 14, House 3, Townhouse 4 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี microwave บ้าง"},{"role":"assistant","content":"หอพักที่มี microwave (ไม่เกิน 5 รายชื่อ) เช่น: Mansion 5, Townhouse 4, Mansion 13, House 3, Condominium 15 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"มีหอพักไหนที่มี kitchen บ้าง"},{"role":"assistant","content":"หอพักที่มี kitchen (ไม่เกิน 5 รายชื่อ) เช่น: Condominium 9, Townhouse 4, Condominium 15, Apartment 11, Mansion 10 เป็นต้น."}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Apartment 1"},{"role":"assistant","content":"Apartment 1 ต้องทำสัญญาขั้นต่ำ 12 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"ที่ Apartment 1 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Apartment 1 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 1 เหมาะกับใคร"},{"role":"assistant","content":"Apartment 1 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น balcony, private_bathroom, refrigerator"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Apartment 1 มีอะไรบ้าง"},{"role":"assistant","content":"Apartment 1 มี: wifi, air_conditioner, private_bathroom, refrigerator, television, balcony, cctv, desk, parking"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 1 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Apartment 1 ตั้งอยู่ที่ ซอย Alley 3 67 Main Street, District 6 (Back Gate)"}]}
+{"messages":[{"role":"user","content":"อยากจอง Apartment 1 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08193488147"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Apartment 1 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 6 บาท/หน่วย, ค่าน้ำ 15 บาท"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ Apartment 1 ได้ไหม"},{"role":"assistant","content":"Apartment 1 ต้องทำสัญญาอย่างน้อย 12 เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 1 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"Apartment 1 เป็นหอสำหรับ Male"}]}
+{"messages":[{"role":"user","content":"ที่ Apartment 1 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 2939 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 1 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Apartment 1 เป็นหอสำหรับ Male"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Apartment 2 มีอะไรบ้าง"},{"role":"assistant","content":"Apartment 2 มี: closet, cctv, microwave, parking, wifi, air_conditioner, balcony, desk, kitchen, television, private_bathroom"}]}
+{"messages":[{"role":"user","content":"ที่ Apartment 2 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 2989 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 2 เหมาะกับใคร"},{"role":"assistant","content":"Apartment 2 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น air_conditioner, cctv, private_bathroom"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Apartment 2 มีอะไรบ้าง"},{"role":"assistant","content":"Apartment 2 มีห้องพักแบบ: Room 1 ราคา 3533 บาท, Room 2 ราคา 5314 บาท"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Apartment 2 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 5 บาท/หน่วย, ค่าน้ำ 17 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 2 มีจุดเด่นอะไร"},{"role":"assistant","content":"Apartment 2 มีสิ่งอำนวยความสะดวกเช่น closet, cctv, microwave, parking, wifi, air_conditioner, balcony, desk, kitchen, television, private_bathroom"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 2 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Apartment 2 อยู่ห่าง 0.8551023231362884 กม."}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Apartment 2"},{"role":"assistant","content":"Apartment 2 ต้องทำสัญญาขั้นต่ำ 3 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 2 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Apartment 2 ตั้งอยู่ที่ ซอย Alley 10 17 Main Street, District 9 (Back Gate)"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 2 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Apartment 2 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ Apartment 2 ได้ไหม"},{"role":"assistant","content":"Apartment 2 ต้องทำสัญญาอย่างน้อย 3 เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 2 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Apartment 2 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"หอพัก House 3 เหมาะกับใคร"},{"role":"assistant","content":"House 3 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น refrigerator, air_conditioner, cctv"}]}
+{"messages":[{"role":"user","content":"ที่ House 3 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"House 3 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}
+{"messages":[{"role":"user","content":"หอพัก House 3 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"House 3 อยู่ห่าง 0.5941865227042782 กม."}]}
+{"messages":[{"role":"user","content":"หอพัก House 3 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"House 3 ตั้งอยู่ที่ ซอย Alley 9 20 Main Street, District 6 (Front Gate)"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ House 3 ได้ไหม"},{"role":"assistant","content":"House 3 ต้องทำสัญญาอย่างน้อย 12 เดือน"}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1 ของ House 3 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 5799 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก House 3 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"House 3 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ House 3 มีอะไรบ้าง"},{"role":"assistant","content":"House 3 มี: refrigerator, closet, parking, cctv, air_conditioner, private_bathroom, wifi, desk, kitchen, microwave, television, balcony"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ House 3 เท่าไหร่"},{"role":"assistant","content":"House 3 มีราคาห้องอยู่ในช่วง 4324 - 8734 บาท"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ House 3"},{"role":"assistant","content":"House 3 ต้องทำสัญญาขั้นต่ำ 12 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"สามารถอยู่ที่ Townhouse 4 ได้สั้นสุดกี่เดือน"},{"role":"assistant","content":"Townhouse 4 ต้องอยู่ขั้นต่ำ 3 เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 4 เหมาะกับใคร"},{"role":"assistant","content":"Townhouse 4 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น refrigerator, wifi, balcony"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ Townhouse 4 เท่าไหร่"},{"role":"assistant","content":"Townhouse 4 มีราคาห้องอยู่ในช่วง 3755 - 8782 บาท"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Townhouse 4 มีอะไรบ้าง"},{"role":"assistant","content":"Townhouse 4 มี: refrigerator, balcony, private_bathroom, microwave, desk, closet, kitchen, parking, wifi, cctv, television"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Townhouse 4 มีอะไรบ้าง"},{"role":"assistant","content":"Townhouse 4 มีห้องพักแบบ: Room 1 ราคา 4384 บาท, Room 2 ราคา 5037 บาท"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Townhouse 4"},{"role":"assistant","content":"Townhouse 4 ต้องทำสัญญาขั้นต่ำ 3 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 4 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Townhouse 4 เป็นหอสำหรับ Female"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ Townhouse 4 ได้ไหม"},{"role":"assistant","content":"Townhouse 4 ต้องทำสัญญาอย่างน้อย 3 เดือน"}]}
+{"messages":[{"role":"user","content":"ที่ Townhouse 4 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Townhouse 4 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 4 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"Townhouse 4 เป็นหอสำหรับ Female"}]}
+{"messages":[{"role":"user","content":"ที่ Townhouse 4 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 2996 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Townhouse 4 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 7 บาท/หน่วย, ค่าน้ำ 19 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 4 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Townhouse 4 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 5 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Mansion 5 ตั้งอยู่ที่ ซอย Alley 6 31 Main Street, District 1 (Front Gate)"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Mansion 5 มีอะไรบ้าง"},{"role":"assistant","content":"Mansion 5 มี: microwave, closet, private_bathroom, air_conditioner, cctv, wifi, desk, kitchen, balcony, television, parking"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Mansion 5"},{"role":"assistant","content":"Mansion 5 ต้องทำสัญญาขั้นต่ำ 3 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"อยากจอง Mansion 5 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08197230019"}]}
+{"messages":[{"role":"user","content":"สามารถอยู่ที่ Mansion 5 ได้สั้นสุดกี่เดือน"},{"role":"assistant","content":"Mansion 5 ต้องอยู่ขั้นต่ำ 3 เดือน"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ Mansion 5 เท่าไหร่"},{"role":"assistant","content":"Mansion 5 มีราคาห้องอยู่ในช่วง 3469 - 6297 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 5 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"Mansion 5 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 5 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Mansion 5 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 5 เป็นที่พักประเภทอะไร"},{"role":"assistant","content":"Mansion 5 เป็นที่พักประเภท Mansion"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 5 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Mansion 5 อยู่ห่าง 2.257115616798844 กม."}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Dormitory 6 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 6 บาท/หน่วย, ค่าน้ำ 18 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 6 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Dormitory 6 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 6 มีจุดเด่นอะไร"},{"role":"assistant","content":"Dormitory 6 มีสิ่งอำนวยความสะดวกเช่น microwave, private_bathroom, parking, balcony, wifi, kitchen, refrigerator, closet, television, air_conditioner"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 6 เหมาะกับใคร"},{"role":"assistant","content":"Dormitory 6 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น private_bathroom, kitchen, television"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Dormitory 6"},{"role":"assistant","content":"Dormitory 6 ต้องทำสัญญาขั้นต่ำ 3 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 6 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Dormitory 6 อยู่ห่าง 2.453288111538646 กม."}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 6 เป็นที่พักประเภทอะไร"},{"role":"assistant","content":"Dormitory 6 เป็นที่พักประเภท Dormitory"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 6 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"Dormitory 6 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Dormitory 6 มีอะไรบ้าง"},{"role":"assistant","content":"Dormitory 6 มีห้องพักแบบ: Room 1 ราคา 3836 บาท, Room 2 ราคา 3878 บาท"}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1 ของ Dormitory 6 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 3836 บาท"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ Dormitory 6 เท่าไหร่"},{"role":"assistant","content":"Dormitory 6 มีราคาห้องอยู่ในช่วง 3174 - 7998 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 6 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Dormitory 6 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"อยากจอง Townhouse 7 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08182195726"}]}
+{"messages":[{"role":"user","content":"ที่ Townhouse 7 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 2986 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 7 เหมาะกับใคร"},{"role":"assistant","content":"Townhouse 7 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น balcony, desk, parking"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Townhouse 7 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 6 บาท/หน่วย, ค่าน้ำ 17 บาท"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Townhouse 7"},{"role":"assistant","content":"Townhouse 7 ต้องทำสัญญาขั้นต่ำ 6 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 7 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Townhouse 7 อยู่ห่าง 1.1109756277923046 กม."}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 7 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Townhouse 7 เป็นหอสำหรับ Male"}]}
+{"messages":[{"role":"user","content":"สามารถอยู่ที่ Townhouse 7 ได้สั้นสุดกี่เดือน"},{"role":"assistant","content":"Townhouse 7 ต้องอยู่ขั้นต่ำ 6 เดือน"}]}
+{"messages":[{"role":"user","content":"ที่ Townhouse 7 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Townhouse 7 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 7 มีจุดเด่นอะไร"},{"role":"assistant","content":"Townhouse 7 มีสิ่งอำนวยความสะดวกเช่น balcony, wifi, kitchen, air_conditioner, private_bathroom, parking, closet, desk, refrigerator, cctv"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Townhouse 7 มีอะไรบ้าง"},{"role":"assistant","content":"Townhouse 7 มีห้องพักแบบ: Room 1 ราคา 5249 บาท, Room 2 ราคา 3665 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 7 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"Townhouse 7 เป็นหอสำหรับ Male"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ Townhouse 7 เท่าไหร่"},{"role":"assistant","content":"Townhouse 7 มีราคาห้องอยู่ในช่วง 3336 - 8445 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 8 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Townhouse 8 ตั้งอยู่ที่ ซอย Alley 3 59 Main Street, District 9 (Back Gate)"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 8 มีจุดเด่นอะไร"},{"role":"assistant","content":"Townhouse 8 มีสิ่งอำนวยความสะดวกเช่น closet, balcony, kitchen, parking, television, private_bathroom, cctv, refrigerator, desk"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Townhouse 8 มีอะไรบ้าง"},{"role":"assistant","content":"Townhouse 8 มีห้องพักแบบ: Room 1 ราคา 4679 บาท, Room 2 ราคา 5221 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 8 เหมาะกับใคร"},{"role":"assistant","content":"Townhouse 8 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น television, refrigerator, private_bathroom"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ Townhouse 8 ได้ไหม"},{"role":"assistant","content":"Townhouse 8 ต้องทำสัญญาอย่างน้อย 3 เดือน"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Townhouse 8"},{"role":"assistant","content":"Townhouse 8 ต้องทำสัญญาขั้นต่ำ 3 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Townhouse 8 มีอะไรบ้าง"},{"role":"assistant","content":"Townhouse 8 มี: closet, balcony, kitchen, parking, television, private_bathroom, cctv, refrigerator, desk"}]}
+{"messages":[{"role":"user","content":"หอพัก Townhouse 8 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Townhouse 8 อยู่ห่าง 2.2832300610662104 กม."}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1,Room 2 ของ Townhouse 8 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 4679 บาท,Room 2 ราคา 5221 บาท"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ Townhouse 8 เท่าไหร่"},{"role":"assistant","content":"Townhouse 8 มีราคาห้องอยู่ในช่วง 4406 - 8302 บาท"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Townhouse 8 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 7 บาท/หน่วย, ค่าน้ำ 16 บาท"}]}
+{"messages":[{"role":"user","content":"ที่ Townhouse 8 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 1576 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Condominium 9"},{"role":"assistant","content":"Condominium 9 ต้องทำสัญญาขั้นต่ำ 3 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 9 เหมาะกับใคร"},{"role":"assistant","content":"Condominium 9 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น television, wifi, kitchen"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 9 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Condominium 9 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1,Room 2 ของ Condominium 9 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 5054 บาท,Room 2 ราคา 5604 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 9 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Condominium 9 เป็นหอสำหรับ Female"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 9 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Condominium 9 ตั้งอยู่ที่ ซอย Alley 10 82 Main Street, District 8 (Front Gate)"}]}
+{"messages":[{"role":"user","content":"ที่ Condominium 9 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 2890 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"อยากจอง Condominium 9 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08107684170"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Condominium 9 มีอะไรบ้าง"},{"role":"assistant","content":"Condominium 9 มี: balcony, kitchen, television, cctv, closet, wifi, desk"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Condominium 9 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 6 บาท/หน่วย, ค่าน้ำ 15 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 9 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Condominium 9 อยู่ห่าง 0.5543588314304491 กม."}]}
+{"messages":[{"role":"user","content":"สามารถอยู่ที่ Condominium 9 ได้สั้นสุดกี่เดือน"},{"role":"assistant","content":"Condominium 9 ต้องอยู่ขั้นต่ำ 3 เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 10 เป็นที่พักประเภทอะไร"},{"role":"assistant","content":"Mansion 10 เป็นที่พักประเภท Mansion"}]}
+{"messages":[{"role":"user","content":"ที่ Mansion 10 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Mansion 10 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 10 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Mansion 10 ตั้งอยู่ที่ ซอย Alley 9 46 Main Street, District 3 (Back Gate)"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Mansion 10 มีอะไรบ้าง"},{"role":"assistant","content":"Mansion 10 มี: balcony, television, wifi, air_conditioner, closet, kitchen, microwave, refrigerator, cctv"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 10 มีจุดเด่นอะไร"},{"role":"assistant","content":"Mansion 10 มีสิ่งอำนวยความสะดวกเช่น balcony, television, wifi, air_conditioner, closet, kitchen, microwave, refrigerator, cctv"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Mansion 10 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 6 บาท/หน่วย, ค่าน้ำ 16 บาท"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ Mansion 10 ได้ไหม"},{"role":"assistant","content":"Mansion 10 ต้องทำสัญญาอย่างน้อย 6 เดือน"}]}
+{"messages":[{"role":"user","content":"อยากจอง Mansion 10 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08161044365"}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1,Room 2 ของ Mansion 10 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 4618 บาท,Room 2 ราคา 4421 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 10 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Mansion 10 เป็นหอสำหรับ Male"}]}
+{"messages":[{"role":"user","content":"ที่ Apartment 11 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 2840 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ Apartment 11 เท่าไหร่"},{"role":"assistant","content":"Apartment 11 มีราคาห้องอยู่ในช่วง 4200 - 8032 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 11 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Apartment 11 อยู่ห่าง 1.675434124327969 กม."}]}
+{"messages":[{"role":"user","content":"อยากจอง Apartment 11 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08146939748"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Apartment 11 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 5 บาท/หน่วย, ค่าน้ำ 19 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 11 เป็นที่พักประเภทอะไร"},{"role":"assistant","content":"Apartment 11 เป็นที่พักประเภท Apartment"}]}
+{"messages":[{"role":"user","content":"ที่ Apartment 11 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Apartment 11 มีระบบรักษาความปลอดภัย เช่น ไม่ระบุ"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Apartment 11"},{"role":"assistant","content":"Apartment 11 ต้องทำสัญญาขั้นต่ำ 12 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 11 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Apartment 11 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Apartment 11 มีอะไรบ้าง"},{"role":"assistant","content":"Apartment 11 มี: kitchen, private_bathroom, balcony, parking, television, desk, refrigerator, air_conditioner"}]}
+{"messages":[{"role":"user","content":"สามารถอยู่ที่ Apartment 11 ได้สั้นสุดกี่เดือน"},{"role":"assistant","content":"Apartment 11 ต้องอยู่ขั้นต่ำ 12 เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Apartment 11 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Apartment 11 มีห้องทั้งหมด 3 ห้อง"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 12 เป็นที่พักประเภทอะไร"},{"role":"assistant","content":"Dormitory 12 เป็นที่พักประเภท Dormitory"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Dormitory 12 มีอะไรบ้าง"},{"role":"assistant","content":"Dormitory 12 มีห้องพักแบบ: Room 1 ราคา 3490 บาท, Room 2 ราคา 3429 บาท"}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1 ของ Dormitory 12 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 3490 บาท"}]}
+{"messages":[{"role":"user","content":"ที่ Dormitory 12 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Dormitory 12 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ Dormitory 12 ได้ไหม"},{"role":"assistant","content":"Dormitory 12 ต้องทำสัญญาอย่างน้อย 12 เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 12 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"Dormitory 12 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ Dormitory 12 เท่าไหร่"},{"role":"assistant","content":"Dormitory 12 มีราคาห้องอยู่ในช่วง 3246 - 6610 บาท"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Dormitory 12"},{"role":"assistant","content":"Dormitory 12 ต้องทำสัญญาขั้นต่ำ 12 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 12 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"Dormitory 12 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Dormitory 12 มีอะไรบ้าง"},{"role":"assistant","content":"Dormitory 12 มี: microwave, television, parking, balcony, wifi, closet, air_conditioner, cctv, private_bathroom, refrigerator"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 12 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Dormitory 12 อยู่ห่าง 0.9901318934809327 กม."}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Dormitory 12 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 7 บาท/หน่วย, ค่าน้ำ 17 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Dormitory 12 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Dormitory 12 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"สามารถอยู่ที่ Mansion 13 ได้สั้นสุดกี่เดือน"},{"role":"assistant","content":"Mansion 13 ต้องอยู่ขั้นต่ำ 3 เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 13 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Mansion 13 อยู่ห่าง 1.8051090015989733 กม."}]}
+{"messages":[{"role":"user","content":"อยากจอง Mansion 13 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08196796154"}]}
+{"messages":[{"role":"user","content":"ที่ Mansion 13 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Mansion 13 มีระบบรักษาความปลอดภัย เช่น ไม่ระบุ"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Mansion 13 มีอะไรบ้าง"},{"role":"assistant","content":"Mansion 13 มีห้องพักแบบ: Room 1 ราคา 4952 บาท, Room 2 ราคา 5173 บาท, Room 3 ราคา 5301 บาท"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Mansion 13"},{"role":"assistant","content":"Mansion 13 ต้องทำสัญญาขั้นต่ำ 3 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 13 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Mansion 13 ตั้งอยู่ที่ ซอย Alley 3 74 Main Street, District 5 (Back Gate)"}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1 ของ Mansion 13 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 4952 บาท"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Mansion 13 มีอะไรบ้าง"},{"role":"assistant","content":"Mansion 13 มี: air_conditioner, microwave, wifi, closet, balcony, parking, desk, private_bathroom"}]}
+{"messages":[{"role":"user","content":"ที่ Mansion 13 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 1279 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"หอพัก Mansion 13 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"Mansion 13 มีห้องทั้งหมด 3 ห้อง"}]}
+{"messages":[{"role":"user","content":"หอพัก House 14 เหมาะกับใคร"},{"role":"assistant","content":"House 14 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น air_conditioner, cctv, closet"}]}
+{"messages":[{"role":"user","content":"หอพัก House 14 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"House 14 ตั้งอยู่ที่ ซอย Alley 9 96 Main Street, District 10 (Back Gate)"}]}
+{"messages":[{"role":"user","content":"หอพัก House 14 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"House 14 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ House 14 มีอะไรบ้าง"},{"role":"assistant","content":"House 14 มี: desk, microwave, refrigerator, cctv, air_conditioner, balcony, parking, wifi, closet, private_bathroom"}]}
+{"messages":[{"role":"user","content":"ที่ House 14 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"House 14 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ House 14 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 5 บาท/หน่วย, ค่าน้ำ 18 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก House 14 เป็นหอชายหรือหอหญิง"},{"role":"assistant","content":"House 14 เป็นหอสำหรับ Mixed"}]}
+{"messages":[{"role":"user","content":"สามารถทำสัญญาระยะสั้นกับ House 14 ได้ไหม"},{"role":"assistant","content":"House 14 ต้องทำสัญญาอย่างน้อย 12 เดือน"}]}
+{"messages":[{"role":"user","content":"สามารถอยู่ที่ House 14 ได้สั้นสุดกี่เดือน"},{"role":"assistant","content":"House 14 ต้องอยู่ขั้นต่ำ 12 เดือน"}]}
+{"messages":[{"role":"user","content":"ห้องพักแบบ Room 1,Room 2 ของ House 14 ราคาเท่าไร"},{"role":"assistant","content":"Room 1 ราคา 3461 บาท,Room 2 ราคา 5077 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก House 14 มีทั้งหมดกี่ห้อง"},{"role":"assistant","content":"House 14 มีห้องทั้งหมด 2 ห้อง"}]}
+{"messages":[{"role":"user","content":"ราคาเช่าห้องของ House 14 เท่าไหร่"},{"role":"assistant","content":"House 14 มีราคาห้องอยู่ในช่วง 4819 - 6209 บาท"}]}
+{"messages":[{"role":"user","content":"ค่าไฟ ค่าน้ำ ที่ Condominium 15 เป็นยังไง"},{"role":"assistant","content":"ค่าไฟ 6 บาท/หน่วย, ค่าน้ำ 18 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 15 เหมาะกับใคร"},{"role":"assistant","content":"Condominium 15 เหมาะกับผู้ต้องการความสะดวกสบาย เช่น television, kitchen, refrigerator"}]}
+{"messages":[{"role":"user","content":"ต้องทำสัญญานานเท่าไรกับ Condominium 15"},{"role":"assistant","content":"Condominium 15 ต้องทำสัญญาขั้นต่ำ 12 เดือน (Standard dormitory agreement terms and conditions apply.)"}]}
+{"messages":[{"role":"user","content":"อยากจอง Condominium 15 ต้องติดต่อใคร"},{"role":"assistant","content":"โทรจองได้ที่ 08188378101"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 15 ตั้งอยู่แถวไหน"},{"role":"assistant","content":"Condominium 15 ตั้งอยู่ที่ ซอย Alley 1 94 Main Street, District 2 (Front Gate)"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 15 รับผู้พักกลุ่มไหน"},{"role":"assistant","content":"Condominium 15 เป็นหอสำหรับ Female"}]}
+{"messages":[{"role":"user","content":"รายละเอียดห้องพักของ Condominium 15 มีอะไรบ้าง"},{"role":"assistant","content":"Condominium 15 มีห้องพักแบบ: Room 3 ราคา 3130 บาท, Room 1 ราคา 5920 บาท, Room 2 ราคา 4879 บาท"}]}
+{"messages":[{"role":"user","content":"หอพัก Condominium 15 อยู่ไกลจากมหาวิทยาลัยแค่ไหน"},{"role":"assistant","content":"Condominium 15 อยู่ห่าง 2.028266325154775 กม."}]}
+{"messages":[{"role":"user","content":"ที่ Condominium 15 มีบริการอื่นเพิ่มเติมไหม"},{"role":"assistant","content":"มีค่าใช้จ่ายเพิ่มเติมประมาณ 2674 บาท/เดือน"}]}
+{"messages":[{"role":"user","content":"สิ่งอำนวยความสะดวกของ Condominium 15 มีอะไรบ้าง"},{"role":"assistant","content":"Condominium 15 มี: wifi, private_bathroom, refrigerator, television, closet, microwave, balcony, cctv, kitchen"}]}
+{"messages":[{"role":"user","content":"ที่ Condominium 15 ปลอดภัยแค่ไหน"},{"role":"assistant","content":"Condominium 15 มีระบบรักษาความปลอดภัย เช่น CCTV"}]}

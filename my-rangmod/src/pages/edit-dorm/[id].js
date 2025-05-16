@@ -440,27 +440,26 @@ useEffect(() => {
   }
 }, [dormitory.location]);
 
-  useEffect(() => {
-    if (!mapLocation && dormitory?.location) {
-      const [latStr, lngStr] = dormitory.location.split(',').map(part => part.trim());
-      const lat = parseFloat(latStr);
-      const lng = parseFloat(lngStr);
-      
-      if (!isNaN(lat) && !isNaN(lng)) {
-        // ดึง address ถ้าต้องการ หรือใช้เป็นค่าชั่วคราว
-        setMapLocation({
-          lat,
-          lng,
-          address: dormitory.address || 'ตำแหน่งที่บันทึกไว้',
-        });
-      }
+useEffect(() => {
+  if (!mapLocation && dormitory?.location) {
+    const [latStr, lngStr] = dormitory.location.split(',').map(part => part.trim());
+    const lat = parseFloat(latStr);
+    const lng = parseFloat(lngStr);
+    
+    if (!isNaN(lat) && !isNaN(lng)) {
+      setMapLocation({
+        lat,
+        lng,
+        address: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,  // แปลงเลขทศนิยม 5 ตำแหน่ง
+      });
     }
-  }, [dormitory, mapLocation]);
+  }
+}, [dormitory, mapLocation]);
 
   useEffect(() => {
   if (mapLocation) {
-    const referenceLat = 13.65115; // ตัวอย่างพิกัดอ้างอิง
-    const referenceLng = 100.48839;
+    const referenceLat = 13.651057; // ตัวอย่างพิกัดอ้างอิง
+    const referenceLng = 100.496321;
 
     const toRad = (value) => (value * Math.PI) / 180;
 
@@ -866,21 +865,6 @@ useEffect(() => {
                   onChange={handleInputChange}
                   rows={4}
                   placeholder="Enter agreement terms"
-                />
-              </div>
-
-              {/* Distance from University */}
-              <div className={styles.formGroup}>
-                <label htmlFor="distance_from_university" className={styles.formLabel}>Distance from University (km)</label>
-                <input
-                  type="number"
-                  id="distance_from_university"
-                  name="distance_from_university"
-                  className={styles.formInput}
-                  value={formData.distance_from_university}
-                  onChange={handleInputChange}
-                  placeholder="Enter distance"
-                  step="0.1"
                 />
               </div>
 

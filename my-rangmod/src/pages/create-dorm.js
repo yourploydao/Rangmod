@@ -269,8 +269,8 @@ const CreateDormitoryPage = () => {
   
 
 const handleMapSelect = (lat, lng) => {
-  const referenceLat = 13.65147;
-  const referenceLng = 100.49620;
+  const referenceLat = 13.651057; 
+  const referenceLng = 100.496321;
 
   const distance = calculateDistance(lat, lng, referenceLat, referenceLng);
 

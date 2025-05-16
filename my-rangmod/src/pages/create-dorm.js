@@ -28,6 +28,8 @@ const CreateDormitoryPage = () => {
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
   const roomFileInputRefs = useRef({});
+  const [distanceKm, setDistanceKm] = useState(null);
+
   
   const [formData, setFormData] = useState({
     dormitoryName: '',
@@ -163,10 +165,34 @@ const CreateDormitoryPage = () => {
   };
   
 
-   const handleMapSelect = (lat, lng) => {
-    setMapLocation({ lat, lng, address: `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
-    setShowMapModal(false); // ปิด modal หลังจากเลือกตำแหน่ง
-  };
+const handleMapSelect = (lat, lng) => {
+  const referenceLat = 13.65147;
+  const referenceLng = 100.49620;
+
+  const distance = calculateDistance(lat, lng, referenceLat, referenceLng);
+
+  setMapLocation({ lat, lng, address: `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
+  setDistanceKm(distance.toFixed(2));  // เก็บระยะทาง
+  setShowMapModal(false);
+};
+
+
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => (value * Math.PI) / 180;
+  const R = 6371; // Radius of Earth in km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -419,10 +445,15 @@ const CreateDormitoryPage = () => {
           style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
         />
           </div>
-          <div className={styles.mapAddress}>
-            <MapPin size={16} className={styles.mapPinSmall} />
+          {distanceKm && (
+            <div className={styles.mapAddress}>
+              <MapPin size={24} className={styles.mapPinSmall} />
             <span>{mapLocation.address}</span>
-          </div>
+              <span style={{ marginLeft: '24px', color: '#555', marginBottom: '5px' }}>
+                ระยะห่างจากจุดอ้างอิง: {distanceKm} กม.
+              </span>
+            </div>
+          )}
         </>
       ) : (
         <div 

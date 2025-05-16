@@ -130,16 +130,10 @@ const Navigation = () => {
               Search
             </a>
             <a 
-              href="/about" 
-              className={`${styles.navLink} ${isActive('/about') ? styles.activeLink : ''}`}
+              href="/chatbot" 
+              className={`${styles.navLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
-              About
-            </a>
-            <a 
-              href="/contact" 
-              className={`${styles.navLink} ${isActive('/contact') ? styles.activeLink : ''}`}
-            >
-              Contact
+              Chatbot
             </a>
           </nav>
           
@@ -219,16 +213,10 @@ const Navigation = () => {
               Search
             </a>
             <a 
-              href="/about" 
-              className={`${styles.mobileNavLink} ${isActive('/about') ? styles.activeLink : ''}`}
+              href="/chatbot" 
+              className={`${styles.mobileNavLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
-              About
-            </a>
-            <a 
-              href="/contact" 
-              className={`${styles.mobileNavLink} ${isActive('/contact') ? styles.activeLink : ''}`}
-            >
-              Contact
+              Chatbot
             </a>
           </div>
         )}

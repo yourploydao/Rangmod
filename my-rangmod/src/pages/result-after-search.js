@@ -136,7 +136,8 @@ const DormitorySearch = ({ initialDormitories }) => {
       results = results.filter(dorm => 
         dorm.name_dormitory.toLowerCase().includes(query) || 
         dorm.type_dormitory.toLowerCase().includes(query) ||
-        dorm.address.toLowerCase().includes(query)
+        (dorm.address && dorm.address.toLowerCase().includes(query)) ||
+        (dorm.alley && dorm.alley.toLowerCase().includes(query))
       );
     }
     
@@ -296,10 +297,6 @@ const DormitorySearch = ({ initialDormitories }) => {
             </div>
 
             <div className={styles.filterButtons}>
-              <button type="button" className={styles.filterBtn}>
-                <span className={styles.filterIcon}>🔍</span>
-                Filter
-              </button>
               <button onClick={handleSearchClick} className={styles.searchButton}>Search</button>
             </div>
           </form>
@@ -308,13 +305,6 @@ const DormitorySearch = ({ initialDormitories }) => {
 
       <div className={styles.content}>
         <div className={styles.sidebar}>
-          {/* Map Search */}
-          <div className={styles.mapSearch}>
-            <div className={styles.mapContainer}>
-              <img src="https://1033609670.rsc.cdn77.org/maps/sky-dairy-and-takeaway-tokoroa-map.jpg" alt="Map" className={styles.map} />
-            </div>
-            <div className={styles.mapSearchText}>Search on the map</div>
-          </div>
 
           {/* Rental Price Range */}
           <div className={styles.filterSection}>

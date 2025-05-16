@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
 import axios from 'axios';
-import styles from "../styles/admin-account-setting.module.css";
+import styles from "../../styles/admin-account-setting.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 
 const AdminAccountSettingEdit = () => {
@@ -93,7 +93,7 @@ const AdminAccountSettingEdit = () => {
       if (response.status === 200) {
         handleShowNotification("Changes saved successfully");
         setTimeout(() => {
-          router.push("/admin-account-setting");
+          router.push("/admin/account-setting");
         }, 1500);
       }
     } catch (error) {

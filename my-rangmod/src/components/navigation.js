@@ -43,12 +43,12 @@ const Navigation = () => {
   };
 
   const handleLogoClick = () => {
-    router.push('/homepage-before-login');
+    router.push('/homepage');
   };
 
   const handleMyAccountClick = () => {
     if (userData.role === 'admin') {
-      router.push('/admin-dashboard');
+      router.push('/admin/dashboard');
     } else if (userData.role === 'owner') {
       router.push('/owner-dashboard');
     } else {
@@ -118,8 +118,8 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <nav className={styles.navigation}>
             <a 
-              href="/homepage-before-login" 
-              className={`${styles.navLink} ${isActive('/homepage-before-login') ? styles.activeLink : ''}`}
+              href="/homepage" 
+              className={`${styles.navLink} ${isActive('/homepage') ? styles.activeLink : ''}`}
             >
               Home
             </a>

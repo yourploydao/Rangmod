@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
 import axios from 'axios';
-import styles from "../styles/admin-permission.module.css";
+import styles from "../../styles/admin-permission.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 
 const AdminPermission = () => {
@@ -12,7 +12,7 @@ const AdminPermission = () => {
     name: '',
     username: '',
     role: '',
-    profileImage: ''
+    profileImage: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
   });
 
   // Fetch current user data
@@ -26,7 +26,7 @@ const AdminPermission = () => {
             name: user.name || user.username,
             username: user.username,
             role: user.role,
-            profileImage: user.profile_picture
+            profileImage: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
           });
         }
       } catch (err) {
@@ -184,7 +184,15 @@ const AdminPermission = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <img 
+                    src={userData.profileImage || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'} 
+                    alt="Profile" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>

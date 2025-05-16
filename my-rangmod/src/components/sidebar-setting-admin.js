@@ -26,12 +26,6 @@ const SidebarAdmin = () => {
       path: "/admin/user"
     },
     {
-      key: 'permissions',
-      icon: "https://cdn-icons-png.flaticon.com/128/4757/4757254.png",
-      text: "Owner Permissions",
-      path: "/admin/permission"
-    },
-    {
       key: 'settings',
       icon: "https://cdn-icons-png.flaticon.com/128/503/503822.png",
       text: "Setting",

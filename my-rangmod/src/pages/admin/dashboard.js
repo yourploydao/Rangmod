@@ -169,6 +169,13 @@ const OwnerDashboard = ({ initialDormitories }) => {
     dorm.category_dormitory.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
+  // Sort dormitories by latest update (descending)
+  const sortedDormitories = [...filteredDormitories].sort((a, b) => {
+    const dateA = new Date(a.last_updated || 0);
+    const dateB = new Date(b.last_updated || 0);
+    return dateB - dateA;
+  });
+  
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -280,7 +287,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
               <table className={styles.dormTable}>
                 <thead>
                   <tr>
-                    <th className={styles.idColumn}>ID</th>
+                    <th className={styles.idColumn}>No.</th>
                     <th className={styles.nameColumn}>Name</th>
                     <th className={styles.typeColumn}>Type</th>
                     <th className={styles.categoryColumn}>Category</th>
@@ -289,7 +296,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredDormitories.map((dorm, index) => (
+                  {sortedDormitories.map((dorm, index) => (
                     <tr 
                       key={dorm._id}
                       className={styles.dormRow}

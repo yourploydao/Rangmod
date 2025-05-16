@@ -1,7 +1,7 @@
 // RangMod Dormitory Search Component
 import { useState } from "react";
 import { useRouter } from "next/router";
-import styles from "../styles/homepage-before-login.module.css";
+import styles from "../styles/homepage.module.css";
 import Header from "../components/navigation";
 import Footer from "../components/footer";
 import { connectDB } from '@/lib/mongodb';

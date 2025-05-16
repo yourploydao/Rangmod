@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
 import axios from 'axios';
-import styles from "../styles/admin-account-setting.module.css";
+import styles from "../../styles/admin-account-setting.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 
 const AdminAccountSetting = () => {
@@ -53,7 +53,7 @@ const AdminAccountSetting = () => {
   const handleEditButtonClick = () => {
     console.log('Edit button clicked');
     try {
-      router.push("/admin-edit-setting");
+      router.push("/admin/edit-setting");
     } catch (error) {
       console.error('Error navigating to edit page:', error);
     }

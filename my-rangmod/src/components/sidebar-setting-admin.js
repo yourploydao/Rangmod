@@ -17,25 +17,25 @@ const SidebarAdmin = () => {
       key: 'dashboard',
       icon: "https://cdn-icons-png.flaticon.com/128/2948/2948025.png",
       text: "Dashboard",
-      path: "/admin-dashboard"
+      path: "/admin/dashboard"
     },
     {
       key: 'users',
       icon: "https://cdn-icons-png.flaticon.com/128/511/511587.png",
       text: "Users",
-      path: "/admin-user"
+      path: "/admin/user"
     },
     {
       key: 'permissions',
       icon: "https://cdn-icons-png.flaticon.com/128/4757/4757254.png",
       text: "Owner Permissions",
-      path: "/admin-permission"
+      path: "/admin/permission"
     },
     {
       key: 'settings',
       icon: "https://cdn-icons-png.flaticon.com/128/503/503822.png",
       text: "Setting",
-      path: "/admin-account-setting"
+      path: "/admin/account-setting"
     }
   ];
 
@@ -45,8 +45,8 @@ const SidebarAdmin = () => {
 
   const isActive = (path) => {
     // Special handling for settings pages
-    if (path === '/admin-account-setting') {
-      return activePath.includes('admin-account-setting') || activePath.includes('admin-edit-setting');
+    if (path === '/admin/account-setting') {
+      return activePath.includes('admin/account-setting') || activePath.includes('admin/edit-setting');
     }
     // For all other menu items, do exact path matching
     return activePath === path;
@@ -55,7 +55,7 @@ const SidebarAdmin = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <Link href="/homepage-before-login">
+        <Link href="/homepage">
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText}>RANGMOD</span>

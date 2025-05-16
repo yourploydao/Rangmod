@@ -46,10 +46,10 @@ const RangModSignIn = () => {
 
         if (me.data.role === "admin") {
           // ถ้าเป็น admin ให้ไปที่ /admin/dashboard
-          router.push("/admin-dashboard");
+          router.push("/admin/dashboard");
         } else if (me.data.role === "user") {
           // ถ้าเป็น user ให้ไปที่ /user/dashboard
-          router.push("/homepage-before-login");
+          router.push("/homepage");
         } else if (me.data.role === "owner") {
           // ถ้าเป็น user ให้ไปที่ /owner/dashboard
           router.push("/owner-dashboard");

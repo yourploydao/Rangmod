@@ -36,7 +36,7 @@ const SidebarOwner = () => {
                   className={styles.navIcon} 
                 />
               </div>
-              <span className={styles.navText}>Setting</span>
+              <span className={styles.navText}>ตั้งค่า</span>
             </a>
           </li>
           <li className={`${styles.navItem} ${isActive('/owner-dashboard') ? styles.active : ''}`}>
@@ -48,7 +48,7 @@ const SidebarOwner = () => {
                   className={styles.navIcon} 
                 />
               </div>
-              <span className={styles.navText}>Edit</span>
+              <span className={styles.navText}>แก้ไข</span>
             </a>
           </li>
         </ul>

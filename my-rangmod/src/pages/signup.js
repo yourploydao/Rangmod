@@ -21,7 +21,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (!agreeTerms) {
-    alert("You must agree to the terms of service and privacy policy.");
+    alert("คุณต้องยอมรับเงื่อนไขการให้บริการและนโยบายความเป็นส่วนตัวก่อน");
     return;
   }
 
@@ -35,7 +35,7 @@ const handleSubmit = async (e) => {
   };
 
   try {
-    const res = await axios.post("http://localhost:3000/api/auth/signup", payload);
+    const res = await axios.post("/api/auth/signup", payload);
     const data = res.data;
 
     // Log API response data
@@ -46,19 +46,19 @@ const handleSubmit = async (e) => {
       localStorage.setItem('email', email);
       
       // Show success message
-      alert(data.message || "Account created successfully!");
+      alert(data.message || "สร้างบัญชีสำเร็จแล้ว!");
       
       // Redirect to verify email page
       router.push("/verifyemail");
     } else {
-      alert(data.message || "Registration failed");
+      alert(data.message || "ลงทะเบียนไม่สำเร็จ");
     }
   } catch (err) {
     console.error("Registration error:", err);
     if (err.response?.data?.message) {
       alert(err.response.data.message);
     } else {
-      alert("Something went wrong. Please try again later.");
+      alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง");
     }
   }
   };
@@ -72,11 +72,11 @@ const handleSubmit = async (e) => {
         </div>
         
         <div className={styles.formContainer}>
-          <h1 className={styles.title}>Sign up to RangMod</h1>
+          <h1 className={styles.title}>ลงทะเบียนเพื่อใช้งานเว็บไซต์ Rangmod</h1>
           
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>NAME</label>
+              <label className={styles.fieldLabel}>ชื่อ-นามสกุล</label>
               <input
                 type="text"
                 value={name}
@@ -86,7 +86,7 @@ const handleSubmit = async (e) => {
             </div>
             
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>EMAIL ADDRESS</label>
+              <label className={styles.fieldLabel}>อีเมล</label>
               <input
                 type="email"
                 value={email}
@@ -96,7 +96,7 @@ const handleSubmit = async (e) => {
             </div>
             
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>PHONE NUMBER</label>
+              <label className={styles.fieldLabel}>เบอร์ไทรศัพท์</label>
               <input
                 type="tel"
                 value={phone}
@@ -106,7 +106,7 @@ const handleSubmit = async (e) => {
             </div>
             
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>USERNAME</label>
+              <label className={styles.fieldLabel}>ชื่อผู้ใช้</label>
               <input
                 type="text"
                 value={username}
@@ -116,7 +116,7 @@ const handleSubmit = async (e) => {
             </div>
             
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>PASSWORD</label>
+              <label className={styles.fieldLabel}>รหัสผ่าน</label>
               <div className={styles.passwordWrapper}>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -130,7 +130,11 @@ const handleSubmit = async (e) => {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   <img 
-                    src="https://cdn-icons-png.flaticon.com/128/4855/4855030.png" 
+                    src={
+                      showPassword
+                      ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon
+                      : "https://cdn-icons-png.flaticon.com/128/4855/4855030.png" // hide password icon
+                    }
                     alt="Toggle password visibility"
                     width="28"
                     height="28"
@@ -148,22 +152,22 @@ const handleSubmit = async (e) => {
                 className={styles.checkbox} 
               />
               <label htmlFor="terms" className={styles.checkboxLabel}>
-                I agree to the <a href="#" className={styles.termsLink}>Terms of Service</a> and <a href="#" className={styles.termsLink}>Privacy Policy</a>
+              ข้าพเจ้ายอมรับ <a href="#" className={styles.termsLink}>เงื่อนไขการให้บริการ</a> และ <a href="#" className={styles.termsLink}>นโยบายความเป็นส่วนตัว</a>
               </label>
             </div>
             
             <button type="submit" className={styles.createButton}>
-              CREATE AN ACCOUNT
+            สร้างบัญชี
             </button>
           </form>
           
           <div className={styles.signInSection}>
-            <p>Already have an account? <a href="/signin" className={styles.signInLink}>SIGN IN</a></p>
+            <p>มีบัญชีอยู่แล้ว? <a href="/signin" className={styles.signInLink}>เข้าสู่ระบบ</a></p>
           </div>
         </div>
         
         <div className={styles.footer}>
-          <p>© 2025 All Rights Reserved.</p>
+          <p>สงวนลิขสิทธิ์ทุกประการ © 2025</p>
         </div>
       </div>
       

@@ -79,7 +79,7 @@ const UserAccountSettingEdit = () => {
       
       // Validate required fields
       if (!userData.name || !userData.username) {
-        handleShowNotification('Name and username are required', 'error');
+        handleShowNotification('ต้องกรอกชื่อและชื่อผู้ใช้', 'error');
         return;
       }
 
@@ -91,7 +91,7 @@ const UserAccountSettingEdit = () => {
       });
 
       if (response.status === 200) {
-        handleShowNotification("Changes saved successfully");
+        handleShowNotification("บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว");
         setTimeout(() => {
           router.push("/user-account-setting");
         }, 1500);
@@ -99,7 +99,7 @@ const UserAccountSettingEdit = () => {
     } catch (error) {
       console.error('Error updating profile:', error);
       handleShowNotification(
-        error.response?.data?.message || "Failed to save changes",
+        error.response?.data?.message || "บันทึกการเปลี่ยนแปลงไม่สำเร็จ",
         "error"
       );
     } finally {
@@ -118,7 +118,7 @@ const UserAccountSettingEdit = () => {
       router.push("/signin");
     } catch (err) {
       console.error('Logout error:', err);
-      handleShowNotification("Failed to logout. Please try again.", "error");
+      handleShowNotification("ออกจากระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "เกิดข้อผิดพลาด");
     }
   };
   
@@ -128,13 +128,13 @@ const UserAccountSettingEdit = () => {
       try {
         // Validate file type
         if (!file.type.startsWith('image/')) {
-          handleShowNotification('Please select an image file', 'error');
+          handleShowNotification('กรุณาเลือกไฟล์รูปภาพ', 'เกิดข้อผิดพลาด');
           return;
         }
 
         // Validate file size (5MB)
         if (file.size > 5 * 1024 * 1024) {
-          handleShowNotification('Image size must be less than 5MB', 'error');
+          handleShowNotification('ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB', 'เกิดข้อผิดพลาด');
           return;
         }
 
@@ -155,7 +155,7 @@ const UserAccountSettingEdit = () => {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to upload image');
+          throw new Error('อัปโหลดรูปภาพไม่สำเร็จ');
         }
 
         const result = await response.json();
@@ -173,12 +173,12 @@ const UserAccountSettingEdit = () => {
             ...userData,
             profile_picture: result.url
           });
-          handleShowNotification("Profile picture updated successfully");
+          handleShowNotification("รูปโปรไฟล์ได้รับการอัปเดตเรียบร้อยแล้ว");
         }
       } catch (err) {
         console.error('Error uploading image:', err);
         handleShowNotification(
-          err.response?.data?.message || "Failed to update profile picture",
+          err.response?.data?.message || "อัปเดตรูปโปรไฟล์ไม่สำเร็จ",
           "error"
         );
       }
@@ -205,7 +205,7 @@ const UserAccountSettingEdit = () => {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
       </div>
     );
   }
@@ -221,13 +221,13 @@ const UserAccountSettingEdit = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <SidebarUser activePage="settings" />
+        <SidebarUser activePage="ตั้งค่า" />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -257,7 +257,7 @@ const UserAccountSettingEdit = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -304,7 +304,7 @@ const UserAccountSettingEdit = () => {
                   onClick={handleSave}
                   disabled={isSaving}
                 >
-                  {isSaving ? 'Saving...' : 'Save'}
+                  {isSaving ? 'กำลังบันทึก...' : 'บันทึก'}
                 </button>
               </div>
             </div>
@@ -312,7 +312,7 @@ const UserAccountSettingEdit = () => {
             <div className={styles.profileForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Full Name</label>
+                  <label>ชื่อ-นามสกุล</label>
                   <input
                     type="text"
                     name="name"
@@ -323,7 +323,7 @@ const UserAccountSettingEdit = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Username</label>
+                  <label>ชื่อผู้ใช้</label>
                   <input
                     type="text"
                     name="username"
@@ -337,7 +337,7 @@ const UserAccountSettingEdit = () => {
               
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Phone Number</label>
+                  <label>เบอร์โทรศัพท์</label>
                   <input
                     type="text"
                     name="phone"
@@ -350,7 +350,7 @@ const UserAccountSettingEdit = () => {
               </div>
               
               <div className={styles.formSection}>
-                <div className={styles.email}>My email Address</div>
+                <div className={styles.email}>อีเมลของฉัน</div>
                 <div className={styles.emailList}>
                   <div className={styles.emailItem}>
                     <div className={styles.emailIcon}>

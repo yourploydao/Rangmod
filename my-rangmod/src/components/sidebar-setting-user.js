@@ -37,7 +37,7 @@ const SidebarUser = () => {
                   className={styles.navIcon} 
                 />
               </div>
-              <span className={styles.navText}>Setting</span>
+              <span className={styles.navText}>ตั้งค่า</span>
             </a>
           </li>
         </ul>

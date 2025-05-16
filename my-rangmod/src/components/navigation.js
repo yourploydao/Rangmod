@@ -121,19 +121,19 @@ const Navigation = () => {
               href="/homepage" 
               className={`${styles.navLink} ${isActive('/homepage') ? styles.activeLink : ''}`}
             >
-              Home
+              หน้าหลัก
             </a>
             <a 
               href="/result-after-search" 
               className={`${styles.navLink} ${isActive('/result-after-search') ? styles.activeLink : ''}`}
             >
-              Search
+              ค้นหา
             </a>
             <a 
               href="/chatbot" 
               className={`${styles.navLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
-              Chatbot
+              แชทบอท
             </a>
           </nav>
           
@@ -164,7 +164,7 @@ const Navigation = () => {
                             <circle cx="12" cy="7" r="4"></circle>
                           </svg>
                         </div>
-                        <span>My account</span>
+                        <span>บัญชีของฉัน</span>
                       </div>
                       <div className={styles.dropdownItem} onClick={handleLogout}>
                         <div className={styles.dropdownIcon}>
@@ -174,15 +174,15 @@ const Navigation = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากรบบ</span>
                       </div>
                     </div>
                   )}
                 </div>
               ) : (
-                <button className={styles.signInButton} onClick={handleSignIn}>
-                  Sign In
-                </button>
+              <button className={styles.signInButton} onClick={handleSignIn}>
+                เข้าสู่ระบบ
+              </button>
               )}
             </>
           )}

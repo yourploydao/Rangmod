@@ -58,40 +58,40 @@ const DormitorySearch = ({ initialDormitories }) => {
   // Filters state
   const [filters, setFilters] = useState({
     dormType: {
-      'Apartment': false,
-      'Mansion': false,
-      'Dormitory': false,
-      'Condominium': false,
-      'House': false,
-      'Townhouse': false
+      'อพาร์ทเมนท์': false,
+      'แมนชัน': false,
+      'หอพัก': false,
+      'คอนโดมิเนียม': false,
+      'บ้าน': false,
+      'ทาวน์เฮาส์': false
     },
     category: {
-      'Female': false,
-      'Mixed': false,
-      'Male': false
+      'ที่พักอาศัยหญิง': false,
+      'ที่พักอาศัยชาย': false,
+      'ที่พักอาศัยรวม': false
     },
     contractDuration: {
-      '3': false,
-      '6': false,
-      '12': false
+      '3 เดือน': false,
+      '6 เดือน': false,
+      '12 ปี': false
     },
     gateLocation: {
-      'Front Gate': false,
-      'Back Gate': false
+      'หน้ามหาวิทยาลัย': false,
+      'หลังมหาวิทยาลัย': false
     },
     facilities: {
-      'wifi': false,
-      'airConditioner': false,
-      'privateBathroom': false,
-      'refrigerator': false,
-      'television': false,
-      'closet': false,
-      'microwave': false,
-      'balcony': false,
-      'cctv': false,
-      'desk': false,
-      'parking': false,
-      'kitchen': false
+      'ไวไฟ': false,
+      'เครื่องปรับอากาศ': false,
+      'ห้องน้ำส่วนตัว': false,
+      'ตู้เย็น': false,
+      'โทรทัศน์': false,
+      'ตู้เสื้อผ้า': false,
+      'ไมโครเวฟ': false,
+      'ระเบียง': false,
+      'กล้องวงจรปิด': false,
+      'โต๊ะทำงาน': false,
+      'ที่จอดรถ': false,
+      'ห้องครัว': false
     }
   });
 
@@ -200,8 +200,8 @@ const DormitorySearch = ({ initialDormitories }) => {
         // Check if all selected facilities are present in the dorm's facilities array
         return selectedFacilities.every(facility => {
           // Convert facility name to match the database field name
-          const dbFacilityName = facility === 'airConditioner' ? 'air_conditioner' : 
-                               facility === 'privateBathroom' ? 'private_bathroom' :
+          const dbFacilityName = facility === 'เครื่องปรับอากาศ' ? 'air_conditioner' : 
+                               facility === 'ห้องน้ำส่วนตัว' ? 'private_bathroom' :
                                facility.toLowerCase();
           
           return dorm.facilities.includes(dbFacilityName);
@@ -218,21 +218,21 @@ const DormitorySearch = ({ initialDormitories }) => {
     const sortedDorms = [...dorms];
     
     switch (sortOption) {
-      case 'lowest price':
+      case 'ราคาต่ำที่สุด':
         return sortedDorms.sort((a, b) => {
           const aPrice = a.price_range?.min || 0;
           const bPrice = b.price_range?.min || 0;
           return aPrice - bPrice;
         });
       
-      case 'highest price':
+      case 'ราคาสูงที่สุด':
         return sortedDorms.sort((a, b) => {
           const aPrice = a.price_range?.max || 0;
           const bPrice = b.price_range?.max || 0;
           return bPrice - aPrice;
         });
       
-      case 'closest to KMUTT':
+      case 'ใกล้มหาวิทยาลัยที่สุด':
         return sortedDorms.sort((a, b) => {
           const aDistance = a.distance_from_university || Infinity;
           const bDistance = b.distance_from_university || Infinity;
@@ -286,18 +286,20 @@ const DormitorySearch = ({ initialDormitories }) => {
           <form onSubmit={handleSearch} className={styles.searchForm}>
             <div className={styles.searchField}>
               <div className={styles.inputWithIcon}>
-                <span className={styles.searchIcon}>🔍</span>
+                <span className={styles.searchIcon}>
+                  <img src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
+                </span>
                 <input 
                   type="text" 
-                  placeholder="Search Your Interest Dormitory..." 
+                  placeholder="ค้นหาหอพักที่คุณสนใจ..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className={styles.filterButtons}>
-              <button onClick={handleSearchClick} className={styles.searchButton}>Search</button>
+            <div className={styles.SearchButtons}>
+              <button onClick={handleSearchClick} className={styles.searchButton}>ค้นหา</button>
             </div>
           </form>
         </div>
@@ -308,18 +310,18 @@ const DormitorySearch = ({ initialDormitories }) => {
 
           {/* Rental Price Range */}
           <div className={styles.filterSection}>
-            <h3>Rental price</h3>
+            <h3>ราคาค่าเช่าที่พักอาศัย</h3>
             <div className={styles.priceInputs}>
               <input 
                 type="text" 
-                placeholder="lowest" 
+                placeholder="ราคาต่ำที่สุด" 
                 value={priceRange.lowest}
                 onChange={(e) => setPriceRange({...priceRange, lowest: e.target.value})}
                 className={styles.priceInput}
               />
               <input 
                 type="text" 
-                placeholder="highest" 
+                placeholder="ราคาสูงที่สุด" 
                 value={priceRange.highest}
                 onChange={(e) => setPriceRange({...priceRange, highest: e.target.value})}
                 className={styles.priceInput}
@@ -329,7 +331,7 @@ const DormitorySearch = ({ initialDormitories }) => {
 
           {/* Contract Duration Filter */}
           <div className={styles.filterSection}>
-            <h3>Contract Duration</h3>
+            <h3>ระยะเวลาขั้นต่ำของสัญญา</h3>
             <div className={styles.filterList}>
               {Object.entries(filters.contractDuration).map(([duration, checked]) => (
                 <div key={duration} className={styles.filterItem}>
@@ -341,7 +343,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                     className={styles.checkboxHidden}
                   />
                   <label htmlFor={`duration-${duration}`} className={styles.checkboxLabel}>
-                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                    {checked && <span className={styles.checkIcon} style={{ color: 'white' }}>✓</span>}
                   </label>
                   <span>{duration} Months</span>
                 </div>
@@ -351,7 +353,7 @@ const DormitorySearch = ({ initialDormitories }) => {
 
           {/* Gate Location Filter */}
           <div className={styles.filterSection}>
-            <h3>Gate Location</h3>
+            <h3>ตำแหน่งประตูทางเข้า</h3>
             <div className={styles.filterList}>
               {Object.entries(filters.gateLocation).map(([gate, checked]) => (
                 <div key={gate} className={styles.filterItem}>
@@ -363,7 +365,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                     className={styles.checkboxHidden}
                   />
                   <label htmlFor={`gate-${gate}`} className={styles.checkboxLabel}>
-                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                    {checked && <span className={styles.checkIcon} style={{ color: 'white' }}>✓</span>}
                   </label>
                   <span>{gate}</span>
                 </div>
@@ -373,7 +375,7 @@ const DormitorySearch = ({ initialDormitories }) => {
 
           {/* Category Filter */}
           <div className={styles.filterSection}>
-            <h3>Category</h3>
+            <h3>หมวดหมู่ที่พักอาศัย</h3>
             <div className={styles.filterList}>
               {Object.entries(filters.category).map(([category, checked]) => (
                 <div key={category} className={styles.filterItem}>
@@ -385,7 +387,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                     className={styles.checkboxHidden}
                   />
                   <label htmlFor={`category-${category}`} className={styles.checkboxLabel}>
-                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                    {checked && <span className={styles.checkIcon} style={{ color: 'white' }}>✓</span>}
                   </label>
                   <span>{category}</span>
                 </div>
@@ -395,7 +397,7 @@ const DormitorySearch = ({ initialDormitories }) => {
 
           {/* Dormitory Type */}
           <div className={styles.filterSection}>
-            <h3>Dormitory Type</h3>
+            <h3>ประเภทที่พักอาศัย</h3>
             <div className={styles.filterList}>
               {Object.entries(filters.dormType).map(([type, checked]) => (
                 <div key={type} className={styles.filterItem}>
@@ -407,7 +409,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                     className={styles.checkboxHidden}
                   />
                   <label htmlFor={`dorm-${type}`} className={styles.checkboxLabel}>
-                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                    {checked && <span className={styles.checkIcon} style={{ color: 'white' }}>✓</span>}
                   </label>
                   <span>{type}</span>
                 </div>
@@ -417,7 +419,7 @@ const DormitorySearch = ({ initialDormitories }) => {
 
           {/* Facilities */}
           <div className={styles.filterSection}>
-            <h3>Facilities</h3>
+            <h3>สิ่งอำนวยความสะดวก</h3>
             <div className={styles.filterList}>
               {Object.entries(filters.facilities).map(([facility, checked]) => (
                 <div key={facility} className={styles.filterItem}>
@@ -429,7 +431,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                     className={styles.checkboxHidden}
                   />
                   <label htmlFor={`facility-${facility}`} className={styles.checkboxLabel}>
-                    {checked && <span className={styles.checkIcon} style={{ color: 'black' }}>✓</span>}
+                    {checked && <span className={styles.checkIcon} style={{ color: 'white' }}>✓</span>}
                   </label>
                   <span>{facility === 'airConditioner' ? 'Air Conditioner' : 
                          facility === 'privateBathroom' ? 'Private Bathroom' :
@@ -443,25 +445,25 @@ const DormitorySearch = ({ initialDormitories }) => {
         <div className={styles.results}>
           {/* Sort Options */}
           <div className={styles.sortOptions}>
-            <span className={styles.sortText}>Sort by</span>
+            <span className={styles.sortText}>เรียงลำดับตาม</span>
             <div className={styles.sortSlot}>
               <button 
-                className={`${styles.sortButton} ${activeSortOption === 'lowest price' ? styles.active : ''}`}
-                onClick={() => handleSortChange('lowest price')}
+                className={`${styles.sortButton} ${activeSortOption === 'ราคาต่ำที่สุด' ? styles.active : ''}`}
+                onClick={() => handleSortChange('ราคาต่ำที่สุด')}
               >
-                Lowest price
+                ราคาต่ำที่สุด
               </button>
               <button 
-                className={`${styles.sortButton} ${activeSortOption === 'closest to KMUTT' ? styles.active : ''}`}
-                onClick={() => handleSortChange('closest to KMUTT')}
+                className={`${styles.sortButton} ${activeSortOption === 'ราคาสูงที่สุด' ? styles.active : ''}`}
+                onClick={() => handleSortChange('ราคาสูงที่สุด')}
               >
-                Closest to KMUTT
+                ราคาสูงที่สุด
               </button>
               <button 
-                className={`${styles.sortButton} ${activeSortOption === 'highest price' ? styles.active : ''}`}
-                onClick={() => handleSortChange('highest price')}
+                className={`${styles.sortButton} ${activeSortOption === 'ใกล้มหาวิทยาลัยที่สุด' ? styles.active : ''}`}
+                onClick={() => handleSortChange('ใกล้มหาวิทยาลัยที่สุด')}
               >
-                Highest price
+                ใกล้มหาวิทยาลัยที่สุด
               </button>
             </div>
           </div>
@@ -481,11 +483,11 @@ const DormitorySearch = ({ initialDormitories }) => {
                   <div className={styles.dormInfoHorizontal}>
                     <h3 className={styles.dormNameHorizontal}>{dorm.name_dormitory}</h3>
                     <div className={styles.dormPriceHorizontal}>
-                      {dorm.price_range?.min?.toLocaleString()} - {dorm.price_range?.max?.toLocaleString()} THB/Month
+                      {dorm.price_range?.min?.toLocaleString()} - {dorm.price_range?.max?.toLocaleString()} บาท/เดือน
                     </div>
                     <div className={styles.dormTypeHorizontal}>{dorm.type_dormitory}</div>
                     <div className={styles.dormRefreshedHorizontal}>
-                      {dorm.distance_from_university?.toFixed(2)} km from KMUTT
+                      {dorm.distance_from_university?.toFixed(2)} กิโลเมตร จากมหาวิทยาลัย
                     </div>
                   </div>
                 </div>

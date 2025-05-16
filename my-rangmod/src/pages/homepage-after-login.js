@@ -40,8 +40,8 @@ const RangModDormitory = ({ dormitories }) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
-  const [selectedDuration, setSelectedDuration] = useState("1 Year");
-  const [selectedGate, setSelectedGate] = useState("Front Gate");
+  const [selectedDuration, setSelectedDuration] = useState("3 เดือน");
+  const [selectedGate, setSelectedGate] = useState("หน้ามหาวิทยาลัย");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -83,12 +83,12 @@ const RangModDormitory = ({ dormitories }) => {
   const getDormitoriesByDuration = (duration) => {
     return dormitories.filter(dormitory => {
       const agreement = dormitory.agreement?.toLowerCase() || '';
-      if (duration === "3 Months") {
-        return agreement.includes('3 month') || agreement.includes('3-month');
-      } else if (duration === "6 Months") {
-        return agreement.includes('6 month') || agreement.includes('6-month');
-      } else if (duration === "1 Year") {
-        return agreement.includes('1 year') || agreement.includes('12 month') || agreement.includes('12-month');
+      if (duration === "3 เดือน") {
+        return agreement.includes('3 เดือน') || agreement.includes('3-month');
+      } else if (duration === "6 เดือน") {
+        return agreement.includes('6 เดือน') || agreement.includes('6-month');
+      } else if (duration === "1 ปี") {
+        return agreement.includes('1 ปี') || agreement.includes('12 month') || agreement.includes('12-month');
       }
       return true;
     });
@@ -114,11 +114,11 @@ const RangModDormitory = ({ dormitories }) => {
         {/* Hero Section */}
         <section className={styles.heroSection}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Welcome back, {user.username}!</h1>
-            <h2 className={styles.heroSubtitle}>Find your perfect dormitory today.</h2>
+            <h1 className={styles.heroTitle}>ยินดีต้อนรับกลับมา!, {user.username}!</h1>
+            <h2 className={styles.heroSubtitle}>มาค้นหาหอพักที่ใช่สำหรับคุณ<br />ใกล้มหาวิทยาลัยกันเถอะ</h2>
             <p className={styles.heroText}>
-              Helping you find the right place, right near campus.<br />
-              Because your next chapter deserves the perfect start.
+            ช่วยคุณค้นหาที่พักที่ใช่ รอบๆ มหาวิทยาลัย<br />
+            เพราะบทต่อไปของคุณสมควรเริ่มต้นอย่างสมบูรณ์แบบ
             </p>
           </div>
           <div className={styles.heroImage}>
@@ -132,10 +132,12 @@ const RangModDormitory = ({ dormitories }) => {
             <form onSubmit={handleSearch} className={styles.searchForm}>
               <div className={styles.searchField}>
                 <div className={styles.inputWithIcon}>
-                  <span className={styles.searchIcon}>🔍</span>
+                  <span className={styles.searchIcon}>
+                    <img src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
+                  </span>
                   <input 
                     type="text" 
-                    placeholder="Search Your Interest Dormitory..." 
+                    placeholder="ค้นหาหอพักที่คุณสนใจ..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -143,37 +145,71 @@ const RangModDormitory = ({ dormitories }) => {
               </div>
 
               <div className={styles.filterButtons}>
-                <button type="button" className={styles.filterBtn}>
-                  <span className={styles.filterIcon}>🔍</span>
-                  Filter
+                <button type="button" className={styles.filterBtn} onClick={handleFilterClick}>
+                  <span className={styles.filterIcon}>
+                    <img src="https://cdn-icons-png.flaticon.com/128/9628/9628531.png" alt="Filter" className={styles.iconImage} />
+                  </span>
+                  ตัวกรอง
                 </button>
-                <button type="submit" className={styles.searchButton}>Search</button>
+                <button onClick={handleSearchClick} className={styles.searchButton}>ค้นหา</button>
               </div>
             </form>
           </div>
         </div>
 
+        {/* Recommendations Section with Server-Side Random Dormitories */}
+          <section className={styles.recommendationsSection}>
+          <h2 className={styles.sectionTitle}>แนะนำ</h2>
+
+          <div className={styles.dormCards}>
+            {recommendedDormitories.map((dormitory) => (
+              <div 
+                key={dormitory._id} 
+                className={styles.dormCard}
+                onClick={() => handleDormitoryClick(dormitory._id)}
+              >
+                <div className={styles.cardImage}>
+                  <img 
+                    src={dormitory.images[0] || '/images/placeholder.jpg'} 
+                    alt={dormitory.name_dormitory} 
+                  />
+                </div>
+                <div className={styles.cardContent}>
+                  <h3 className={styles.dormTitle}>{dormitory.name_dormitory}</h3>
+                  <p className={styles.priceRange}>
+                    {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} บาท/เดือน
+                  </p>
+                  <p className={styles.dormType}>{dormitory.type_dormitory}</p>
+                  <p className={styles.refreshDate}>
+                    {dormitory.distance_from_university?.toFixed(2)} กิโลเมตร จากมหาวิทยาลัย
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Contract Duration Section */}
         <section className={styles.contractSection}>
-          <h3 className={styles.contractTitle}>Minimum Contract Duration</h3>
+          <h3 className={styles.contractTitle}>ระยะเวลาขั้นต่ำของสัญญา</h3>
           <div className={styles.contractButtons}>
             <button 
-              className={`${styles.contractButton} ${selectedDuration === "3 Months" ? styles.active : ""}`}
-              onClick={() => handleContractClick("3 Months")}
+              className={`${styles.contractButton} ${selectedDuration === "3 เดือน" ? styles.active : ""}`}
+              onClick={() => handleContractClick("3 เดือน")}
             >
-              3 Months
+              3 เดือน
             </button>
             <button 
-              className={`${styles.contractButton} ${selectedDuration === "6 Months" ? styles.active : ""}`}
-              onClick={() => handleContractClick("6 Months")}
+              className={`${styles.contractButton} ${selectedDuration === "6 เดือน" ? styles.active : ""}`}
+              onClick={() => handleContractClick("6 เดือน")}
             >
-              6 Months
+              6 เดือน
             </button>
             <button 
-              className={`${styles.contractButton} ${selectedDuration === "1 Year" ? styles.active : ""}`}
-              onClick={() => handleContractClick("1 Year")}
+              className={`${styles.contractButton} ${selectedDuration === "1 ปี" ? styles.active : ""}`}
+              onClick={() => handleContractClick("1 ปี")}
             >
-              1 Year
+              1 ปี
             </button>
           </div>
         </section>
@@ -197,7 +233,7 @@ const RangModDormitory = ({ dormitories }) => {
                 <div className={styles.cardInfo}>
                   <h3 className={styles.dormTitle}>{dormitory.name_dormitory}</h3>
                   <p className={styles.priceRange}>
-                    {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} THB/Month
+                    {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} บาท/เดือน
                   </p>
                   <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
@@ -211,20 +247,20 @@ const RangModDormitory = ({ dormitories }) => {
 
         {/* University-Affiliated Section */}
         <section className={styles.universitySection}>
-          <h2 className={styles.sectionTitle}>University-Affiliated Dormitory</h2>
+          <h2 className={styles.sectionTitle}>หอพักที่ได้รับการรับรองโดยมหาวิทยาลัย</h2>
           
           <div className={styles.gateButtons}>
             <button 
-              className={`${styles.gateButton} ${selectedGate === "Front Gate" ? styles.activeGate : ""}`}
-              onClick={() => handleGateSelection("Front Gate")}
+              className={`${styles.gateButton} ${selectedGate === "หน้ามหาวิทยาลัย" ? styles.activeGate : ""}`}
+              onClick={() => handleGateSelection("หน้ามหาวิทยาลัย")}
             >
-              Front Gate
+              หน้ามหาวิทยาลัย
             </button>
             <button 
-              className={`${styles.gateButton} ${selectedGate === "Back Gate" ? styles.activeGate : ""}`}
-              onClick={() => handleGateSelection("Back Gate")}
+              className={`${styles.gateButton} ${selectedGate === "หลังมหาวิทยาลัย" ? styles.activeGate : ""}`}
+              onClick={() => handleGateSelection("หลังมหาวิทยาลัย")}
             >
-              Back Gate
+              หลังมหาวิทยาลัย
             </button>
           </div>
 
@@ -244,7 +280,7 @@ const RangModDormitory = ({ dormitories }) => {
                 <div className={styles.cardInfo}>
                   <h3 className={styles.dormTitle}>{dormitory.name_dormitory}</h3>
                   <p className={styles.priceRange}>
-                    {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} THB/Month
+                    {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} บาท/เดือน
                   </p>
                   <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>

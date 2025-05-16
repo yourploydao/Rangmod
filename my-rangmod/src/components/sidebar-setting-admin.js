@@ -14,19 +14,19 @@ const SidebarAdmin = () => {
 
   const menuItems = [
     {
-      key: 'dashboard',
+      key: 'ศูนย์ข้อมูล',
       icon: "https://cdn-icons-png.flaticon.com/128/2948/2948025.png",
       text: "Dashboard",
       path: "/admin/dashboard"
     },
     {
-      key: 'users',
+      key: 'ผู้ใช้งาน',
       icon: "https://cdn-icons-png.flaticon.com/128/511/511587.png",
       text: "Users",
       path: "/admin/user"
     },
     {
-      key: 'settings',
+      key: 'ตั้งค่า',
       icon: "https://cdn-icons-png.flaticon.com/128/503/503822.png",
       text: "Setting",
       path: "/admin/account-setting"

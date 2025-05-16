@@ -1,8 +1,7 @@
-// RangMod Dormitory Search Component
 import { useState } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/homepage-before-login.module.css";
-import Header from "../components/navigation";
+import NavBeforeLogin from "../components/nav-before-login";
 import Footer from "../components/footer";
 
 const RangModDormitory = () => {
@@ -26,6 +25,10 @@ const RangModDormitory = () => {
     router.push('/search-results');
   };
 
+  const handleFilterClick = () => {
+    router.push('/result-after-search');
+  };
+
   const handleDormitoryClick = (dormitory) => {
     router.push(`/dormitory/${dormitory}`);
   };
@@ -45,7 +48,7 @@ const RangModDormitory = () => {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <Header />
+      <NavBeforeLogin  />
 
       {/* Main Content */}
       <div className={styles.mainContent}>
@@ -70,7 +73,9 @@ const RangModDormitory = () => {
             <form onSubmit={handleSearch} className={styles.searchForm}>
               <div className={styles.searchField}>
                 <div className={styles.inputWithIcon}>
-                  <span className={styles.searchIcon}>🔍</span>
+                  <span className={styles.searchIcon}>
+                    <img src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
+                  </span>
                   <input 
                     type="text" 
                     placeholder="Search Your Interest Dormitory..." 
@@ -81,8 +86,10 @@ const RangModDormitory = () => {
               </div>
 
               <div className={styles.filterButtons}>
-                <button type="button" className={styles.filterBtn}>
-                  <span className={styles.filterIcon}>🔍</span>
+                <button type="button" className={styles.filterBtn} onClick={handleFilterClick}>
+                  <span className={styles.filterIcon}>
+                    <img src="https://cdn-icons-png.flaticon.com/128/9628/9628531.png" alt="Filter" className={styles.iconImage} />
+                  </span>
                   Filter
                 </button>
                 <button onClick={handleSearchClick} className={styles.searchButton}>Search</button>
@@ -93,7 +100,7 @@ const RangModDormitory = () => {
 
          {/* Updated Recommendations Section */}
       <section className={styles.recommendationsSection}>
-        <h2 className={styles.sectionTitle}>Recommand</h2>
+        <h2 className={styles.sectionTitle}>Recommanded</h2>
 
         <div className={styles.dormCards}>
           <div className={styles.dormCard}>
@@ -224,22 +231,22 @@ const RangModDormitory = () => {
           </div>
         </section>
 
-        {/* University-Affiliated Section */}
+        {/* University-VerifySection */}
         <section className={styles.universitySection}>
-          <h2 className={styles.sectionTitle}>University-Affiliated Dormitory</h2>
+          <h2 className={styles.sectionTitle}>University-Verified Dormitory</h2>
           
           <div className={styles.gateButtons}>
             <button 
               className={`${styles.gateButton} ${selectedGate === "Front Gate" ? styles.activeGate : ""}`}
               onClick={() => handleGateSelection("Front Gate")}
             >
-              Front Gate
+              Main Entrance
             </button>
             <button 
               className={`${styles.gateButton} ${selectedGate === "Back Gate" ? styles.activeGate : ""}`}
               onClick={() => handleGateSelection("Back Gate")}
             >
-              Back Gate
+              Back Entrance
             </button>
           </div>
 

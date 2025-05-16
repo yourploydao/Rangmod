@@ -7,6 +7,7 @@ const RangModVerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
   const [countdown, setCountdown] = useState(0);
+  const [showOtp, setShowOtp] = useState(false);
 
   // Handle OTP input change
   const handleOtpChange = (e) => {
@@ -121,7 +122,7 @@ const RangModVerifyEmail = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
@@ -131,13 +132,31 @@ const RangModVerifyEmail = () => {
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
               <label className={styles.fieldLabel}>OTP IN YOUR EMAIL</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={handleOtpChange}
-                className={styles.fieldInput}
-                maxLength={6}
-              />
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showOtp ? "text" : "password"}
+                  value={otp}
+                  onChange={handleOtpChange}
+                  className={styles.fieldInput}
+                  maxLength={6}
+                />
+                <button 
+                  type="button" 
+                  className={styles.togglePassword}
+                  onClick={() => setShowOtp(!showOtp)}
+                >
+                  <img 
+                    src={
+                      showOtp
+                      ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon
+                      : "https://cdn-icons-png.flaticon.com/128/4855/4855030.png" // hide password icon
+                    }
+                    alt="Toggle OTP visibility"
+                    width="28"
+                    height="28"
+                  />
+                </button>
+              </div>
             </div>
             
             {message.text && (

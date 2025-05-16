@@ -1,7 +1,9 @@
-/* Global and Base Styles */
-:local(*) {
+:global(*) {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-}
+  }
 
 /* Container and Layout */
 .container {
@@ -530,7 +532,7 @@
   .permissionModalCloseButton:hover {
     color: #0f172a;
   }
-  
+
 /* Animations */
 @keyframes fadeIn {
     from {

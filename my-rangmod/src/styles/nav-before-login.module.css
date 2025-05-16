@@ -1,0 +1,344 @@
+:global(*) {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .header {
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0; /* Increased padding to match the image */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem; /* Increased horizontal padding */
+    position: relative;
+  }
+  
+  .leftSection {
+    display: flex;
+    align-items: center;
+    position: relative; /* Changed from absolute */
+    /* removed left: 0 */
+  }
+  
+  .rightSection {
+    display: flex;
+    align-items: center;
+    position: relative; /* Changed from absolute */
+    /* removed right: 1rem */
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .logoImage {
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-left: -100px;
+  }
+  
+  .logoText {
+    color: #0099ff;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
+  .navigation {
+    display: flex;
+    gap: 2rem; /* Adjusted gap between nav items */
+    margin-left: auto; /* Push navigation to the right */
+    margin-right: 1rem; /* Add space between nav and user profile */
+  }
+  
+  .navLink {
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem; /* Adjusted size */
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 0.5rem 0;
+  }
+  
+  .navLink:hover {
+    color: #0099ff;
+  }
+  
+  .activeLink {
+    color: #0099ff;
+    font-weight: 600;
+  }
+  
+  /* Sign In Button */
+  .signInButton {
+    background-color: #3a56e4;
+    color: white;
+    margin-right: -100px;
+    margin-left: 20px;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem; /* Adjusted padding */
+    font-size: 0.9rem; /* Adjusted size */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .signInButton:hover {
+    background-color: #2a46d4;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(58, 86, 228, 0.3);
+  }
+  
+  /* Hamburger Menu */
+  .hamburgerMenu {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1010;
+    position: relative;
+  }
+  
+  .hamburgerIcon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  /* Mobile Navigation */
+  .mobileNavigation {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    z-index: 1000;
+    flex-direction: column;
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .mobileNavLink {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 1rem 1.5rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .mobileNavLink:hover {
+    background-color: #f5f5f5;
+    color: #0099ff;
+  }
+  
+  .mobileSignInLink {
+    color: #3a56e4;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  
+  .userProfile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .userProfile:hover {
+    background-color: #a7cce4;
+  }
+  
+  .profileImage {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .profileName {
+    margin: 0 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .dropdownArrow {
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-left: 0.2rem;
+  }
+  
+  /* Dropdown menu */
+  .profileDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 250px;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    overflow: hidden;
+    z-index: 1000;
+  }
+  
+  .profileHeader {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  .dropdownProfileImage {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .profileInfo {
+    margin-left: 0.75rem;
+  }
+  
+  .profileFullName {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .dropdownDivider {
+    height: 1px;
+    background-color: #eeeeee;
+    margin: 0;
+  }
+  
+  .dropdownItem {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dropdownItem:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .dropdownIcon {
+    margin-right: 0.75rem;
+    color: #666;
+  }
+  
+  .arrowIcon {
+    margin-left: auto;
+    color: #999;
+  }
+  
+  /* Media Queries for Responsive Design */
+  @media (max-width: 1024px) {
+    .navigation {
+      gap: 1.5rem;
+    }
+    
+    .headerContainer {
+      max-width: 100%;
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .navLink {
+      font-size: 0.95rem;
+    }
+    
+    .navigation {
+      gap: 1.25rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .navigation {
+      display: none;
+    }
+    
+    .headerContainer {
+      justify-content: space-between;
+    }
+    
+    .leftSection {
+      flex: 1;
+    }
+    
+    /* Keep logo visible in mobile view */
+    .logo {
+      margin-left: 0;
+    }
+    
+    .logoImage {
+      width: 2.5rem;
+      height: 2.5rem;
+      margin-left: 0;
+    }
+    
+    .hamburgerMenu {
+      display: flex;
+      margin-left: auto;
+    }
+    
+    .mobileNavigation {
+      display: flex;
+    }
+    
+    .signInButton {
+      display: none;
+    }
+    
+    .rightSection {
+      margin-left: auto;
+      margin-right: 0;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .logoText {
+      font-size: 1rem;
+    }
+    
+    .logoImage {
+      width: 2.25rem;
+      height: 2.25rem;
+      margin-left: 0;
+    }
+    
+    .headerContainer {
+      padding: 0 1rem;
+    }
+    
+    .hamburgerIcon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }

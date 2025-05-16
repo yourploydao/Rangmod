@@ -1,12 +1,15 @@
-:local(*) {
+:global(*) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
 
 .header {
-  width: 100%; /* Make header take full width */
+  width: 100%;
   background-color: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 0;
+  padding: 1rem 0; /* Increased padding to match the design */
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -17,24 +20,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px; /* Match this with your content container */
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0; /* Removed padding to allow elements to be flush with edges */
+  padding: 0 2rem; /* Increased horizontal padding */
   position: relative;
 }
 
 .leftSection {
   display: flex;
   align-items: center;
-  padding-left: 0; /* Ensure the logo is flush with the left edge */
+  position: relative;
 }
 
 .rightSection {
   display: flex;
   align-items: center;
-  margin-left: auto;
-  padding-right: 0; /* Ensure profile is flush with the right edge */
+  position: relative;
 }
 
 .logo {
@@ -44,14 +46,15 @@
 }
 
 .logoImage {
-  width: 4rem;
-  height: 4rem;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-left: -100px;
 }
 
 .logoText {
   color: #0099ff;
   font-weight: bold;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   margin-left: 0.5rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -59,17 +62,15 @@
 
 .navigation {
   display: flex;
-  justify-content: center; /* Changed to center the navigation links */
-  gap: 2rem;
-  margin-right: 2rem;
-  margin-left: 0;
-  flex: 1; /* Allow navigation to take available space */
+  gap: 2rem; /* Adjusted gap between nav items */
+  margin-left: auto; /* Push navigation to the right */
+  margin-right: 1rem; /* Add space between nav and user profile */
 }
 
 .navLink {
   color: #333;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1rem; /* Adjusted size */
   font-weight: 500;
   transition: color 0.3s ease;
   padding: 0.5rem 0;
@@ -84,51 +85,7 @@
   font-weight: 600;
 }
 
-/* Hamburger Menu */
-.hamburgerMenu {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1010;
-  position: absolute;
-  right: 1rem;
-}
-
-.hamburgerIcon {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-/* Mobile Navigation */
-.mobileNavigation {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 1rem 0;
-  z-index: 1000;
-  flex-direction: column;
-  border-radius: 0 0 8px 8px;
-}
-
-.mobileNavLink {
-  color: #333;
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 0.75rem 1.5rem;
-  transition: background-color 0.3s ease;
-}
-
-.mobileNavLink:hover {
-  background-color: #f5f5f5;
-  color: #0099ff;
-}
-
+/* User profile styles */
 .userProfile {
   display: flex;
   align-items: center;
@@ -136,6 +93,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: 1rem;
   transition: background-color 0.3s ease;
+  margin-right: -100px;
 }
 
 .userProfile:hover {
@@ -161,11 +119,55 @@
   margin-left: 0.2rem;
 }
 
+/* Hamburger Menu */
+.hamburgerMenu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1010;
+  position: relative;
+}
+
+.hamburgerIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+/* Mobile Navigation */
+.mobileNavigation {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  z-index: 1000;
+  flex-direction: column;
+  border-radius: 0 0 8px 8px;
+}
+
+.mobileNavLink {
+  color: #333;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 1rem 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.mobileNavLink:hover {
+  background-color: #f5f5f5;
+  color: #0099ff;
+}
+
 /* Dropdown menu */
 .profileDropdown {
   position: absolute;
   top: 100%;
-  right: 0; /* Changed to align with the right edge */
+  right: 0;
   width: 250px;
   background-color: #ffffff;
   border-radius: 0.5rem;
@@ -233,16 +235,18 @@
     gap: 1.5rem;
   }
   
-  .logo {
-    margin-left: 0;
-  }
-  
-  .userProfile {
-    margin-right: 0;
-  }
-  
   .headerContainer {
-    padding: 0 1rem; /* Add some padding for medium screens */
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .navLink {
+    font-size: 0.95rem;
+  }
+  
+  .navigation {
+    gap: 1.25rem;
   }
 }
 
@@ -251,17 +255,37 @@
     display: none;
   }
   
+  .headerContainer {
+    justify-content: space-between;
+  }
+  
+  .leftSection {
+    flex: 1;
+  }
+  
+  /* Keep logo visible in mobile view */
+  .logo {
+    margin-left: 0;
+  }
+  
+  .logoImage {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: 0;
+  }
+  
   .hamburgerMenu {
     display: flex;
+    margin-left: auto;
   }
   
   .mobileNavigation {
     display: flex;
   }
   
-  .headerContainer {
-    justify-content: space-between;
-    padding: 0 1rem; /* Add some padding for small screens */
+  .rightSection {
+    margin-left: auto;
+    margin-right: 0;
   }
   
   .profileName {
@@ -272,17 +296,8 @@
     display: none;
   }
   
-  .profileDropdown {
-    right: 0;
-    width: 220px;
-  }
-  
-  .leftSection {
-    padding-left: 0;
-  }
-  
-  .rightSection {
-    padding-right: 0; 
+  .userProfile {
+    margin-right: 1rem;
   }
 }
 
@@ -291,7 +306,18 @@
     font-size: 1rem;
   }
   
+  .logoImage {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-left: 0;
+  }
+  
   .headerContainer {
     padding: 0 1rem;
+  }
+  
+  .hamburgerIcon {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }

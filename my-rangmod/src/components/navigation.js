@@ -16,7 +16,7 @@ const Navigation = () => {
 
   const handleLogoClick = () => {
     // Navigate to home page
-    window.location.href = '/';
+    window.location.href = '/homepage-after-login';
   };
 
   const handleMyAccountClick = () => {
@@ -68,35 +68,28 @@ const Navigation = () => {
           </div>
         </div>
         
+        <nav className={styles.navigation}>
+          <a 
+            href="/homepage-after-login" 
+            className={`${styles.navLink} ${isActive('/homepage-after-login') ? styles.activeLink : ''}`}
+          >
+            Home
+          </a>
+          <a 
+            href="/result-after-search" 
+            className={`${styles.navLink} ${isActive('/result-after-search') ? styles.activeLink : ''}`}
+          >
+            Search
+          </a>
+          <a 
+            href="/chatbot" 
+            className={`${styles.navLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
+          >
+            Chat Bot
+          </a>
+        </nav>
+        
         <div className={styles.rightSection}>
-          {/* Desktop Navigation */}
-          <nav className={styles.navigation}>
-            <a 
-              href="/homepage-after-login" 
-              className={`${styles.navLink} ${isActive('/homepage-after-login') ? styles.activeLink : ''}`}
-            >
-              Home
-            </a>
-            <a 
-              href="/search" 
-              className={`${styles.navLink} ${isActive('/search') ? styles.activeLink : ''}`}
-            >
-              Search
-            </a>
-            <a 
-              href="/about" 
-              className={`${styles.navLink} ${isActive('/about') ? styles.activeLink : ''}`}
-            >
-              About
-            </a>
-            <a 
-              href="/contact" 
-              className={`${styles.navLink} ${isActive('/contact') ? styles.activeLink : ''}`}
-            >
-              Contact
-            </a>
-          </nav>
-          
           <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
             <img src="/assets/user1.jpeg" alt="tinny" className={styles.profileImage} />
             <span className={styles.profileName}>tinny</span>
@@ -128,21 +121,15 @@ const Navigation = () => {
             </a>
             <a 
               href="/search" 
-              className={`${styles.mobileNavLink} ${isActive('/search') ? styles.activeLink : ''}`}
+              className={`${styles.mobileNavLink} ${isActive('/result-after-search') ? styles.activeLink : ''}`}
             >
               Search
             </a>
             <a 
-              href="/about" 
-              className={`${styles.mobileNavLink} ${isActive('/about') ? styles.activeLink : ''}`}
+              href="/chatbot" 
+              className={`${styles.mobileNavLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
-              About
-            </a>
-            <a 
-              href="/contact" 
-              className={`${styles.mobileNavLink} ${isActive('/contact') ? styles.activeLink : ''}`}
-            >
-              Contact
+              Chat Bot
             </a>
           </div>
         )}

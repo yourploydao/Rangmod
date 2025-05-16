@@ -1,7 +1,9 @@
-/* rangmod-dormitory.module.css */
-:local(*) {
-    font-family: 'Poppins', sans-serif;
-  }
+:global(*) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
 
 .container {
   display: flex;
@@ -25,7 +27,7 @@
     margin: 2rem 0;
     padding: 3rem;
     border-radius: 1rem;
-    background-color: #dcdcdc;
+    background-color: #e7e7e7;
     overflow: hidden;
   }
   
@@ -102,9 +104,17 @@
     position: absolute;
     left: 1rem;
     color: #718096;
-    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
+  .iconImage {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
   .searchField input {
     width: 100%;
     padding: 1rem 1rem 1rem 3rem;
@@ -141,9 +151,11 @@
   }
   
   .filterIcon {
-    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  
+
   .searchButton {
     padding: 1rem 2rem;
     background-color: #2563eb;

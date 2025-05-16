@@ -45,12 +45,12 @@ const RangModSignIn = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
         <div className={styles.formContainer}>
-          <h1 className={styles.title}>Sign In to RangMod</h1>
+          <h1 className={styles.title}>Sign in to Rangmod</h1>
           
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
@@ -71,7 +71,6 @@ const RangModSignIn = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={styles.fieldInput}
-                  // placeholder="••••••••••"
                 />
                 <button 
                   type="button" 
@@ -79,7 +78,11 @@ const RangModSignIn = () => {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   <img 
-                    src="https://cdn-icons-png.flaticon.com/128/4855/4855030.png" 
+                    src={
+                      showPassword
+                      ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon
+                      : "https://cdn-icons-png.flaticon.com/128/4855/4855030.png" // hide password icon
+                    }
                     alt="Toggle password visibility"
                     width="28"
                     height="28"
@@ -101,7 +104,7 @@ const RangModSignIn = () => {
                   Remember Me
                 </label>
               </div>
-              <a href="#" className={styles.forgotPasswordLink}>Forgot Password?</a>
+              <a href="/forgotpassword" className={styles.forgotPasswordLink}>Forgot Password?</a>
             </div>
             
             <button type="submit" className={styles.createButton}>
@@ -109,8 +112,8 @@ const RangModSignIn = () => {
             </button>
           </form>
           
-          <div className={styles.signInSection}>
-            <p>Don't have an account? <a href="/signup" className={styles.signInLink}>SIGN UP</a></p>
+          <div className={styles.resendSection}>
+            <p>Don't have an account? <a href="/signup" className={styles.resendLink}>SIGN UP</a></p>
           </div>
         </div>
         

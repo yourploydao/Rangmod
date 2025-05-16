@@ -216,7 +216,9 @@ const DormitorySearch = () => {
           <form onSubmit={handleSearch} className={styles.searchForm}>
             <div className={styles.searchField}>
               <div className={styles.inputWithIcon}>
-                <span className={styles.searchIcon}>🔍</span>
+                <span className={styles.searchIcon}>
+                  <img src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
+                </span>
                 <input 
                   type="text" 
                   placeholder="Search Your Interest Dormitory..." 
@@ -226,11 +228,7 @@ const DormitorySearch = () => {
               </div>
             </div>
 
-            <div className={styles.filterButtons}>
-              <button type="button" className={styles.filterBtn}>
-                <span className={styles.filterIcon}>🔍</span>
-                Filter
-              </button>
+            <div className={styles.SearchButtons}>
               <button onClick={handleSearchClick} className={styles.searchButton}>Search</button>
             </div>
           </form>
@@ -420,16 +418,16 @@ const DormitorySearch = () => {
                 Lowest price
               </button>
               <button 
-                className={`${styles.sortButton} ${activeSortOption === 'closest to KMUTT' ? styles.active : ''}`}
-                onClick={() => handleSortChange('closest to KMUTT')}
-              >
-                Closest to KMUTT.
-              </button>
-              <button 
                 className={`${styles.sortButton} ${activeSortOption === 'highest price' ? styles.active : ''}`}
                 onClick={() => handleSortChange('highest price')}
               >
                 Highest price
+              </button>
+              <button 
+                className={`${styles.sortButton} ${activeSortOption === 'closest to KMUTT' ? styles.active : ''}`}
+                onClick={() => handleSortChange('closest to KMUTT')}
+              >
+                Closest to KMUTT.
               </button>
             </div>
           </div>

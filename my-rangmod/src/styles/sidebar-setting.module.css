@@ -40,15 +40,12 @@
   padding: 1.5rem;
 }
 
-.sidebarHeader a {
-  text-decoration: none;
-}
-
 .logoContainer {
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .logo {

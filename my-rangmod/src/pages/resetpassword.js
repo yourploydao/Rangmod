@@ -50,7 +50,7 @@ const RangModResetPassword = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         

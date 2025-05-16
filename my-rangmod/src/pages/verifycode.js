@@ -1,19 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/verifycode.module.css";
 
 const VerifyCodeForgotpassword = () => {
-  // State variable for OTP input
+  // State variables
   const [otp, setOtp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
+  const [showOtp, setShowOtp] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
+  // Handle OTP input change
+  const handleOtpChange = (e) => {
+    // Only allow numbers
+    const value = e.target.value.replace(/[^\d]/g, '');
+    // Limit to 6 digits
+    setOtp(value.slice(0, 6));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage({ text: "", isError: false });
 
-    if (!otp) {
-      setMessage({ text: "Please enter the verification code", isError: true });
+    if (!otp || otp.length < 6) {
+      setMessage({ text: "Please enter a valid 6-digit OTP", isError: true });
       setIsSubmitting(false);
       return;
     }
@@ -59,12 +69,59 @@ const VerifyCodeForgotpassword = () => {
       setIsSubmitting(false);
     }
   };
+  
+  // Handle resend OTP
+  const handleResendOtp = async () => {
+    if (countdown > 0) return;
+    
+    setMessage({ text: "", isError: false });
+    
+    try {
+      // Replace with your actual API endpoint
+      const res = await fetch("https://api.rangmod.com/resend-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.status === "ok") {
+        setMessage({ 
+          text: "A new OTP has been sent to your email", 
+          isError: false 
+        });
+        // Start countdown timer
+        setCountdown(60);
+      } else {
+        setMessage({ 
+          text: data.error || data.message || "Failed to resend OTP", 
+          isError: true 
+        });
+      }
+    } catch (err) {
+      console.error("Resend OTP error:", err);
+      setMessage({ 
+        text: "Something went wrong. Please try again later.", 
+        isError: true 
+      });
+    }
+  };
+
+  // Countdown timer
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   return (
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
@@ -74,13 +131,31 @@ const VerifyCodeForgotpassword = () => {
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
               <label className={styles.fieldLabel}>OTP IN YOUR EMAIL</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className={styles.fieldInput}
-                maxLength="6"
-              />
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showOtp ? "text" : "password"}
+                  value={otp}
+                  onChange={handleOtpChange}
+                  className={styles.fieldInput}
+                  maxLength={6}
+                />
+                <button 
+                  type="button" 
+                  className={styles.togglePassword}
+                  onClick={() => setShowOtp(!showOtp)}
+                >
+                  <img 
+                    src={
+                      showOtp
+                      ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon
+                      : "https://cdn-icons-png.flaticon.com/128/4855/4855030.png" // hide password icon
+                    }
+                    alt="Toggle OTP visibility"
+                    width="28"
+                    height="28"
+                  />
+                </button>
+              </div>
             </div>
             
             {message.text && (
@@ -98,8 +173,17 @@ const VerifyCodeForgotpassword = () => {
             </button>
           </form>
           
-          <div className={styles.signInSection}>
-            <p>Didn't receive code? <a href="/forgot-password" className={styles.signInLink}>RESEND</a></p>
+          <div className={styles.resendSection}>
+            <p>
+              Didn't receive code?{" "}
+              <button 
+                onClick={handleResendOtp} 
+                className={`${styles.resendLink} ${countdown > 0 ? styles.resendLinkDisabled : ""}`}
+                disabled={countdown > 0}
+              >
+                {countdown > 0 ? `Resend in ${countdown}s` : "RESEND OTP"}
+              </button>
+            </p>
           </div>
         </div>
         

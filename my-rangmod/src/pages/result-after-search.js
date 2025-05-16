@@ -95,6 +95,27 @@ const DormitorySearch = ({ initialDormitories }) => {
     }
   });
 
+  // Mapping objects for converting between Thai and English values
+  const gateLocationMapping = {
+    'หน้ามหาวิทยาลัย': 'Front Gate',
+    'หลังมหาวิทยาลัย': 'Back Gate'
+  };
+
+  const dormTypeMapping = {
+    'อพาร์ทเมนท์': 'Apartment',
+    'แมนชัน': 'Mansion',
+    'หอพัก': 'Dormitory',
+    'คอนโดมิเนียม': 'Condominium',
+    'บ้าน': 'House',
+    'ทาวน์เฮาส์': 'Townhouse'
+  };
+
+  const categoryMapping = {
+    'ที่พักอาศัยหญิง': 'Female',
+    'ที่พักอาศัยชาย': 'Male',
+    'ที่พักอาศัยรวม': 'Mixed'
+  };
+
   // Update search query when URL changes
   useEffect(() => {
     if (router.query.search) {
@@ -107,26 +128,16 @@ const DormitorySearch = ({ initialDormitories }) => {
     let results = [...allDormitories];
     
     // Filter by price range if provided
-    if (priceRange.lowest && priceRange.highest) {
-      const lowest = parseInt(priceRange.lowest.replace(/,/g, ''));
-      const highest = parseInt(priceRange.highest.replace(/,/g, ''));
+    if (priceRange.lowest || priceRange.highest) {
+      const lowest = priceRange.lowest ? parseInt(priceRange.lowest.replace(/[^0-9]/g, '')) : 0;
+      const highest = priceRange.highest ? parseInt(priceRange.highest.replace(/[^0-9]/g, '')) : Infinity;
       
-      if (!isNaN(lowest) && !isNaN(highest)) {
+      if (!isNaN(lowest) || !isNaN(highest)) {
         results = results.filter(dorm => {
           const min = dorm.price_range?.min || 0;
           const max = dorm.price_range?.max || 0;
           return (min <= highest && max >= lowest);
         });
-      }
-    } else if (priceRange.lowest) {
-      const lowest = parseInt(priceRange.lowest.replace(/,/g, ''));
-      if (!isNaN(lowest)) {
-        results = results.filter(dorm => (dorm.price_range?.max || 0) >= lowest);
-      }
-    } else if (priceRange.highest) {
-      const highest = parseInt(priceRange.highest.replace(/,/g, ''));
-      if (!isNaN(highest)) {
-        results = results.filter(dorm => (dorm.price_range?.min || 0) <= highest);
       }
     }
     
@@ -144,7 +155,12 @@ const DormitorySearch = ({ initialDormitories }) => {
     // Filter by contract duration
     const selectedDurations = Object.entries(filters.contractDuration)
       .filter(([, selected]) => selected)
-      .map(([duration]) => parseInt(duration));
+      .map(([duration]) => {
+        // Extract number from duration string (e.g., "3 เดือน" -> 3)
+        const match = duration.match(/(\d+)/);
+        return match ? parseInt(match[1]) : null;
+      })
+      .filter(duration => duration !== null);
     
     if (selectedDurations.length > 0) {
       results = results.filter(dorm => 
@@ -155,7 +171,7 @@ const DormitorySearch = ({ initialDormitories }) => {
     // Filter by gate location
     const selectedGates = Object.entries(filters.gateLocation)
       .filter(([, selected]) => selected)
-      .map(([gate]) => gate);
+      .map(([gate]) => gateLocationMapping[gate]);
     
     if (selectedGates.length > 0) {
       results = results.filter(dorm => 
@@ -166,25 +182,23 @@ const DormitorySearch = ({ initialDormitories }) => {
     // Filter by dormitory type
     const selectedDormTypes = Object.entries(filters.dormType)
       .filter(([, selected]) => selected)
-      .map(([type]) => type.toLowerCase());
+      .map(([type]) => dormTypeMapping[type]);
     
     if (selectedDormTypes.length > 0) {
-      results = results.filter(dorm => {
-        const dormType = dorm.type_dormitory.toLowerCase();
-        return selectedDormTypes.some(type => dormType.includes(type));
-      });
+      results = results.filter(dorm => 
+        selectedDormTypes.includes(dorm.type_dormitory)
+      );
     }
 
     // Filter by category (Male/Female/Mixed)
     const selectedCategories = Object.entries(filters.category)
       .filter(([, selected]) => selected)
-      .map(([category]) => category);
+      .map(([category]) => categoryMapping[category]);
     
     if (selectedCategories.length > 0) {
-      results = results.filter(dorm => {
-        // Exact match for category
-        return selectedCategories.includes(dorm.category_dormitory);
-      });
+      results = results.filter(dorm => 
+        selectedCategories.includes(dorm.category_dormitory)
+      );
     }
     
     // Filter by facilities
@@ -193,17 +207,26 @@ const DormitorySearch = ({ initialDormitories }) => {
       .map(([facility]) => facility);
     
     if (selectedFacilities.length > 0) {
+      const facilityMapping = {
+        'ไวไฟ': 'wifi',
+        'เครื่องปรับอากาศ': 'air_conditioner',
+        'ห้องน้ำส่วนตัว': 'private_bathroom',
+        'ตู้เย็น': 'refrigerator',
+        'โทรทัศน์': 'television',
+        'ตู้เสื้อผ้า': 'wardrobe',
+        'ไมโครเวฟ': 'microwave',
+        'ระเบียง': 'balcony',
+        'กล้องวงจรปิด': 'cctv',
+        'โต๊ะทำงาน': 'desk',
+        'ที่จอดรถ': 'parking',
+        'ห้องครัว': 'kitchen'
+      };
+
       results = results.filter(dorm => {
-        // Check if dorm has facilities array
         if (!Array.isArray(dorm.facilities)) return false;
         
-        // Check if all selected facilities are present in the dorm's facilities array
         return selectedFacilities.every(facility => {
-          // Convert facility name to match the database field name
-          const dbFacilityName = facility === 'เครื่องปรับอากาศ' ? 'air_conditioner' : 
-                               facility === 'ห้องน้ำส่วนตัว' ? 'private_bathroom' :
-                               facility.toLowerCase();
-          
+          const dbFacilityName = facilityMapping[facility] || facility.toLowerCase();
           return dorm.facilities.includes(dbFacilityName);
         });
       });

@@ -1,6 +1,15 @@
-:local(*) {
-    font-family: 'Poppins', sans-serif;
-  }
+:global(*) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Remove text-decoration from all links */
+:global(a) {
+  text-decoration: none;
+  color: inherit;
+}
 
 .container {
   display: flex;
@@ -9,30 +18,30 @@
   background-color: #f5f5f5;
 }
 
+/* Search Box Updated to Match Homepage */
 .searchBoxWrapper {
+  padding: 0.8rem 2rem;
   background-color: #f5f5f5;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: center;
+  width: 100%;
 }
 
 .searchBox {
-  width: 100%;
-  max-width: 1200px;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 1340px;
+  margin: 0 auto;
 }
 
 .searchForm {
   display: flex;
   align-items: center;
+  gap: 1.2rem;
 }
 
 .searchField {
   flex: 1;
-  margin-right: 1rem;
 }
 
 .inputWithIcon {
@@ -43,48 +52,80 @@
 
 .searchIcon {
   position: absolute;
-  left: 10px;
-  font-size: 1.2rem;
+  left: 1rem;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconImage {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .searchField input {
   width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
   font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.filterButtons {
+.SearchButtons {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 .filterBtn {
-  padding: 0.75rem 1.5rem;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.5rem;
+  padding: 1rem 1.8rem;
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.filterBtn:hover {
+  background-color: #f8fafc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .filterIcon {
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .searchButton {
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   background-color: #2563eb;
   color: white;
+  font-weight: 600;
+  font-size: 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.5rem;
   cursor: pointer;
-  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
 }
 
+.searchButton:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Content Section */
 .content {
   display: flex;
   padding: 1rem 2rem;
@@ -94,8 +135,9 @@
   width: 100%;
 }
 
+/* Sidebar with increased width */
 .sidebar {
-  width: 280px;
+  width: 320px;
   margin-right: 2rem;
   flex-shrink: 0;
 }
@@ -105,12 +147,12 @@
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .mapContainer {
   position: relative;
-  height: 150px;
+  height: 180px;
 }
 
 .map {
@@ -131,43 +173,47 @@
   padding: 1rem;
   font-weight: 500;
   text-align: center;
+  color: #2d3748;
 }
 
 .filterSection {
   background-color: white;
   border-radius: 10px;
-  padding: 1rem;
+  padding: 1.2rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .filterSection h3 {
   margin-top: 0;
   margin-bottom: 1rem;
-  font-weight: 500;
+  font-weight: 600;
+  color: #2d3748;
 }
 
 .priceInputs {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .priceInput {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #e0e0e0;
+  padding: 0.8rem;
+  border: 1px solid #e2e8f0;
   border-radius: 5px;
+  font-size: 0.95rem;
 }
 
 .filterList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .filterItem {
   display: flex;
   align-items: center;
+  padding: 0.3rem 0;
 }
 
 .checkboxHidden {
@@ -178,15 +224,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  margin-right: 8px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  margin-right: 10px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.checkboxLabel:has(+ input:checked) {
+.checkboxLabel:hover {
+  border-color: #2563eb;
+}
+
+input:checked + .checkboxLabel {
   background-color: #2563eb;
   border-color: #2563eb;
 }
@@ -194,13 +245,9 @@
 .checkIcon {
   color: white;
   font-size: 14px;
-  display: none;
 }
 
-input:checked + label .checkIcon {
-  display: block;
-}
-
+/* Results Section */
 .results {
   flex: 1;
 }
@@ -208,28 +255,34 @@ input:checked + label .checkIcon {
 .sortOptions {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .sortText {
-  margin-right: 1rem;
+  margin-right: 1.2rem;
   font-weight: 500;
+  color: #4a5568;
 }
 
 .sortSlot {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .sortButton {
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1.2rem;
   border: none;
   border-radius: 20px;
   background-color: #f0f0f0;
   cursor: pointer;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   line-height: 1.2;
+  transition: all 0.2s ease;
+}
+
+.sortButton:hover {
+  background-color: #e2e8f0;
 }
 
 .sortButton.active {
@@ -237,12 +290,12 @@ input:checked + label .checkIcon {
   color: white;
 }
 
-/* New horizontal card layout styles */
+/* Dormitory Cards */
 .dormCardsList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  width: 93%;
+  gap: 1.2rem;
+  width: 100%;
 }
 
 .dormCardHorizontal {
@@ -250,70 +303,100 @@ input:checked + label .checkIcon {
   background-color: white;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dormCardHorizontal:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
 }
 
 .dormImageContainerHorizontal {
-  width: 200px;
+  width: 220px;
   flex-shrink: 0;
-  height: 150px;
+  height: 160px;
 }
 
 .dormImageHorizontal {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.dormCardHorizontal:hover .dormImageHorizontal {
+  transform: scale(1.05);
 }
 
 .dormInfoHorizontal {
-  padding: 1rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .dormNameHorizontal {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: #1e3a8a;
+  text-decoration: none;
 }
 
 .dormPriceHorizontal {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #2563eb;
+  color: #3182ce;
   margin-bottom: 0.5rem;
+  text-decoration: none;
 }
 
 .dormTypeHorizontal {
-  font-size: 0.95rem;
-  color: #666;
+  font-size: 1rem;
+  color: #4a5568;
   margin-bottom: 0.5rem;
+  text-decoration: none;
 }
 
 .dormRefreshedHorizontal {
   font-size: 0.85rem;
-  color: #999;
-}
-
-.dormCardLink {
+  color: #718096;
+  margin-top: 0.5rem;
   text-decoration: none;
-  color: inherit;
-  display: block;
-  transition: transform 0.2s ease-in-out;
-}
-
-.dormCardLink:hover {
-  transform: translateY(-2px);
-}
-
-.dormCardLink:hover .dormCardHorizontal {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* For mobile responsiveness */
+@media (max-width: 991px) {
+  .content {
+    padding: 1rem;
+  }
+  
+  .sidebar {
+    width: 280px;
+  }
+}
+
 @media (max-width: 768px) {
+  .searchBoxWrapper {
+    padding: 0.8rem 1rem;
+  }
+  
+  .searchBox {
+    padding: 1.2rem;
+  }
+  
+  .searchForm {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .filterButtons {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
   .content {
     flex-direction: column;
     padding: 1rem;
@@ -322,24 +405,7 @@ input:checked + label .checkIcon {
   .sidebar {
     width: 100%;
     margin-right: 0;
-    margin-bottom: 1rem;
-  }
-  
-  .searchForm {
-    flex-direction: column;
-  }
-  
-  .searchField {
-    margin-right: 0;
-    margin-bottom: 1rem;
-  }
-  
-  .filterButtons {
-    width: 100%;
-  }
-  
-  .filterBtn, .searchButton {
-    flex: 1;
+    margin-bottom: 1.5rem;
   }
   
   .dormCardHorizontal {
@@ -349,5 +415,28 @@ input:checked + label .checkIcon {
   .dormImageContainerHorizontal {
     width: 100%;
     height: 180px;
+  }
+  
+  .sortOptions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+  
+  .sortSlot {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchBox {
+    padding: 1rem;
+  }
+  
+  .filterBtn, .searchButton {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
   }
 }

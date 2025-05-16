@@ -30,7 +30,7 @@ const OwnerAccountSetting = () => {
   
   const handleLogout = () => {
     // In a real app, this would clear auth state and redirect
-    alert("Logging out...");
+    alert("กำลังออกจากระบบ...");
     router.push("/login");
   };
   
@@ -57,8 +57,8 @@ const OwnerAccountSetting = () => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -80,7 +80,7 @@ const OwnerAccountSetting = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -105,7 +105,7 @@ const OwnerAccountSetting = () => {
                   className={styles.editButton} 
                   onClick={handleEditButtonClick}
                 >
-                  Edit
+                  แก้ไข
                 </button>
               </div>
             </div>
@@ -113,24 +113,24 @@ const OwnerAccountSetting = () => {
             <div className={styles.profileForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Full Name</label>
+                  <label>ชื่อ-นามสกุล</label>
                   <div className={styles.readOnlyInput}>{userData.fullName}</div>
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Username</label>
+                  <label>ชื่อผู้ใช้</label>
                   <div className={styles.readOnlyInput}>{userData.username}</div>
                 </div>
               </div>
               
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Phone Number</label>
+                  <label>เบอร์โทรศัพท์</label>
                   <div className={styles.readOnlyInput}>{userData.phoneNumber}</div>
                 </div>
               </div>
               
               <div className={styles.formSection}>
-                <div className={styles.email}>My email Address</div>
+                <div className={styles.email}>อีเมลของฉัน</div>
                 <div className={styles.emailList}>
                   <div className={styles.emailItem}>
                     <div className={styles.emailIcon}>

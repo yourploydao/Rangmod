@@ -21,11 +21,11 @@ const RangModSignIn = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/signin", payload);
+      const res = await axios.post("/api/auth/signin", payload);
       const data = res.data;
 
       if (res.status === 200 ) {
-        alert(data.message || "Signed in successfully!");
+        alert(data.message || "เข้าสู่ระบบสำเร็จ!");
         
         // เก็บ JWT token ตามตัวเลือก rememberMe
         if (rememberMe) {
@@ -57,11 +57,11 @@ const RangModSignIn = () => {
           alert("Unknown role");
         }
       } else {
-        alert(data.error || data.message || "Sign in failed");
+        alert(data.error || data.message || "เข้าสู่ระบบไม่สำเร็จ");
       }
     } catch (err) {
       console.error("Sign in error:", err);
-      alert("Something went wrong. Please try again later.");
+      alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง");
     }
   };
 
@@ -74,11 +74,11 @@ const RangModSignIn = () => {
         </div>
         
         <div className={styles.formContainer}>
-          <h1 className={styles.title}>Sign In to RangMod</h1>
+          <h1 className={styles.title}>เข้าสู่ระบบเว็บไซต์ Rangmod</h1>
           
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>EMAIL ADDRESS</label>
+              <label className={styles.fieldLabel}>อีเมล</label>
               <input
                 type="email"
                 value={email}
@@ -88,14 +88,13 @@ const RangModSignIn = () => {
             </div>
             
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>PASSWORD</label>
+              <label className={styles.fieldLabel}>รหัสผ่าน</label>
               <div className={styles.passwordWrapper}>
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={styles.fieldInput}
-                  // placeholder="••••••••••"
                 />
                 <button 
                   type="button" 
@@ -103,7 +102,11 @@ const RangModSignIn = () => {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   <img 
-                    src="https://cdn-icons-png.flaticon.com/128/4855/4855030.png" 
+                    src={
+                      showPassword
+                      ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon
+                      : "https://cdn-icons-png.flaticon.com/128/4855/4855030.png" // hide password icon
+                    }
                     alt="Toggle password visibility"
                     width="28"
                     height="28"
@@ -122,24 +125,24 @@ const RangModSignIn = () => {
                   className={styles.checkbox} 
                 />
                 <label htmlFor="remember" className={styles.checkboxLabel}>
-                  Remember Me
+                จดจำข้อมูลฉันไว้
                 </label>
               </div>
-              <a href="/forgotpassword" className={styles.forgotPasswordLink}>Forgot Password?</a>
+              <a href="/forgotpassword" className={styles.forgotPasswordLink}>ลืมรหัสผ่าน?</a>
             </div>
             
             <button type="submit" className={styles.createButton}>
-              SIGN IN
+            เข้าสู่ระบบ
             </button>
           </form>
           
-          <div className={styles.signInSection}>
-            <p>Don't have an account? <a href="/signup" className={styles.signInLink}>SIGN UP</a></p>
+          <div className={styles.resendSection}>
+            <p>ยังไม่มีบัญชีใช่ไหม? <a href="/signup" className={styles.resendLink}>ลงทะเบียน</a></p>
           </div>
         </div>
         
         <div className={styles.footer}>
-          <p>© 2025 All Rights Reserved.</p>
+          <p>สงวนลิขสิทธิ์ทุกประการ © 2025</p>
         </div>
       </div>
       

@@ -23,6 +23,8 @@ const UserAccountSetting = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
   const [requestStatus, setRequestStatus] = useState(null);
+  const [showRequestButton, setShowRequestButton] = useState(true); // เพิ่มการประกาศตัวแปร
+  const [showInstructionPopup, setShowInstructionPopup] = useState(false); // เพิ่มการประกาศตัวแปร
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -83,12 +85,25 @@ const UserAccountSetting = () => {
       router.push("/signin");
     } catch (err) {
       console.error('Logout error:', err);
-      alert('Failed to logout. Please try again.');
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองอีกครั้ง');
     }
   };
 
   const handleRequestPermission = () => {
-    setShowConfirmModal(true);
+    // Show the instruction popup instead of confirming
+    setShowInstructionPopup(true);
+  };
+
+  const handleGotIt = () => {
+    // Close the popup, hide the request button, and redirect to user-account-setting page
+    setShowInstructionPopup(false);
+    setShowRequestButton(false);
+    router.push("/user-account-setting");
+  };
+  
+  const handleCancel = () => {
+    // Just close the popup
+    setShowInstructionPopup(false);
   };
 
   const confirmRequestPermission = async () => {
@@ -110,7 +125,7 @@ const UserAccountSetting = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit request');
+        throw new Error(errorData.message || 'ส่งคำขอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
       }
 
       const data = await response.json();
@@ -118,7 +133,7 @@ const UserAccountSetting = () => {
       setShowConfirmModal(false);
       setNotification({
         show: true,
-        message: 'Your request has been submitted successfully. Please wait for admin approval.',
+        message: 'ส่งคำขอของคุณเรียบร้อยแล้ว กรุณารอการอนุมัติจากผู้ดูแลระบบ',
         type: 'success'
       });
     } catch (err) {
@@ -126,7 +141,7 @@ const UserAccountSetting = () => {
       setShowConfirmModal(false);
       setNotification({
         show: true,
-        message: err.message || 'Failed to submit request. Please try again.',
+        message: err.message || 'ส่งคำขอไม่สำเร็จ กรุณาลองอีกครั้ง',
         type: 'error'
       });
     }
@@ -152,7 +167,7 @@ const UserAccountSetting = () => {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
       </div>
     );
   }
@@ -173,8 +188,8 @@ const UserAccountSetting = () => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -204,7 +219,7 @@ const UserAccountSetting = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -236,7 +251,7 @@ const UserAccountSetting = () => {
                   className={styles.editButton} 
                   onClick={handleEditButtonClick}
                 >
-                  Edit
+                  แก้ไข
                 </button>
               </div>
             </div>
@@ -244,24 +259,24 @@ const UserAccountSetting = () => {
             <div className={styles.profileForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Full Name</label>
+                  <label>ชื่อ-นามสกุล</label>
                   <div className={styles.readOnlyInput}>{userData.name}</div>
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Username</label>
+                  <label>ชื่อผู้ใช้</label>
                   <div className={styles.readOnlyInput}>{userData.username}</div>
                 </div>
               </div>
               
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Phone Number</label>
+                  <label>เบอร์โทรศัพท์</label>
                   <div className={styles.readOnlyInput}>{userData.phone}</div>
                 </div>
               </div>
               
               <div className={styles.formSection}>
-                <div className={styles.email}>My email Address</div>
+                <div className={styles.email}>อีเมลของฉัน</div>
                 <div className={styles.emailList}>
                   <div className={styles.emailItem}>
                     <div className={styles.emailIcon}>
@@ -274,46 +289,41 @@ const UserAccountSetting = () => {
                 </div>
               </div>
 
-              <div className={styles.requestPermissionContainer}>
-                {requestStatus === 'success' ? (
-                  <div className={styles.successMessage}>
-                    Your request has been submitted successfully. Please wait for admin approval.
-                  </div>
-                ) : error ? (
-                  <div className={styles.errorMessage}>{error}</div>
-                ) : (
+              {/* Only render the request permission button if showRequestButton is true */}
+              {showRequestButton && (
+                <div className={styles.requestPermissionContainer}>
                   <button 
                     className={styles.requestPermissionButton} 
                     onClick={handleRequestPermission}
                   >
-                    request permission to be an owner
+                    ขอสิทธิ์ในการแก้ไขหอพักของฉัน
                   </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Confirmation Modal */}
-      {showConfirmModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h3>Confirm Request</h3>
-            <p>Are you sure you want to request permission to become an owner? This request will be reviewed by the system administrator.</p>
-            <div className={styles.modalActions}>
-              <button
-                onClick={cancelRequestPermission}
-                className={styles.cancelButton}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmRequestPermission}
-                className={styles.confirmButton}
-              >
-                Confirm
-              </button>
+      {/* Instruction Popup */}
+      {showInstructionPopup && (
+        <div className={styles.popupOverlay}>
+          <div className={styles.instructionPopup}>
+            <div className={styles.instructionIcon}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div className={styles.instructionContent}>
+              <h3>จำเป็นต้องยืนยันตัวตน</h3>
+              <p>เพื่อยืนยันตัวตน<br></br>กรุณาแนบเอกสารที่แสดงว่าคุณเป็นเจ้าของหอพัก<br></br>
+              โดยส่งเอกสารมาที่อีเมล: rangmod@gmail.com</p>
+            </div>
+            <div className={styles.instructionActions}>
+              <button className={styles.gotItButton} onClick={handleGotIt}>เข้าใจแล้ว</button>
+              <button className={styles.cancelButton} onClick={handleCancel}>ยกเลิก</button>
             </div>
           </div>
         </div>

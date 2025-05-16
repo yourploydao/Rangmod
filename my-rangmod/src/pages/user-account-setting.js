@@ -95,9 +95,8 @@ const UserAccountSetting = () => {
   };
 
   const handleGotIt = () => {
-    // Close the popup, hide the request button, and redirect to user-account-setting page
+    // Close the popup but keep the request button visible
     setShowInstructionPopup(false);
-    setShowRequestButton(false);
     router.push("/user-account-setting");
   };
   

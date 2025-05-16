@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
+import axios from 'axios';
 import styles from "../styles/owner-account-setting.module.css";
 import SidebarOwner from '@/components/sidebar-setting-owner';
 
@@ -7,20 +8,61 @@ const OwnerAccountSetting = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   
-  // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Benny Targarian',
-    username: 'Benny',
-    phoneNumber: '0880001234',
-    email: 'Benny@gmail.com',
-    role: 'Dorm Owner',
-    profileImage: '/assets/owner1.jpeg'
+    name: '',
+    username: '',
+    phone: '',
+    email: '',
+    role: 'owner',
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
   });
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+          router.push('/signin');
+          return;
+        }
+
+        const response = await axios.get('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            phone: user.phone || 'Not set',
+            email: user.email,
+            role: user.role || 'owner',
+            profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setError('Failed to load user data');
+        if (err.response?.status === 401) {
+          router.push('/signin');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
   
   const handleEditButtonClick = () => {
-    // Redirect to edit-owner-setting page when Edit button is clicked
     router.push("/owner-edit-setting");
   };
   
@@ -28,13 +70,22 @@ const OwnerAccountSetting = () => {
     setShowDropdown(!showDropdown);
   };
   
-  const handleLogout = () => {
-    // In a real app, this would clear auth state and redirect
-    alert("Logging out...");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      setNotification({
+        show: true,
+        message: 'Failed to logout. Please try again.',
+        type: 'error'
+      });
+    }
   };
   
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -48,11 +99,26 @@ const OwnerAccountSetting = () => {
     };
   }, [dropdownRef]);
 
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        {/* Use the imported Sidebar component */}
-        <SidebarOwner />
+        <SidebarOwner activePage="settings" />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
@@ -64,7 +130,15 @@ const OwnerAccountSetting = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -93,10 +167,17 @@ const OwnerAccountSetting = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileHeaderLeft}>
                 <div className={styles.profileAvatar}>
-                  <img src={userData.profileImage} alt="Profile Avatar" />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile Avatar"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                 </div>
                 <div className={styles.profileInfo}>
-                  <h2 className={styles.profileName}>{userData.fullName}</h2>
+                  <h2 className={styles.profileName}>{userData.name}</h2>
                   <p className={styles.profileEmail}>{userData.email}</p>
                 </div>
               </div>
@@ -114,7 +195,7 @@ const OwnerAccountSetting = () => {
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label>Full Name</label>
-                  <div className={styles.readOnlyInput}>{userData.fullName}</div>
+                  <div className={styles.readOnlyInput}>{userData.name}</div>
                 </div>
                 <div className={styles.formGroup}>
                   <label>Username</label>
@@ -125,7 +206,7 @@ const OwnerAccountSetting = () => {
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label>Phone Number</label>
-                  <div className={styles.readOnlyInput}>{userData.phoneNumber}</div>
+                  <div className={styles.readOnlyInput}>{userData.phone}</div>
                 </div>
               </div>
               
@@ -146,6 +227,28 @@ const OwnerAccountSetting = () => {
           </div>
         </div>
       </div>
+
+      {/* Notification */}
+      {notification.show && (
+        <div className={`${styles.notification} ${styles[notification.type]}`}>
+          <div className={styles.notificationContent}>
+            <svg className={styles.notificationIcon} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>{notification.message}</span>
+          </div>
+          <button 
+            className={styles.notificationClose}
+            onClick={() => setNotification({ show: false, message: '', type: 'success' })}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

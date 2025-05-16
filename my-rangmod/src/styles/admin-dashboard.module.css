@@ -166,37 +166,60 @@
 }
 
 .searchContainer {
-  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0 12px;
   width: 100%;
-  max-width: 650px;
+  max-width: 600px;
+  position: relative;
 }
 
-.searchIcon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #94a3b8;
+.searchFieldSelect {
+  margin-right: 8px;
+  border-right: 1px solid #e0e0e0;
+  padding-right: 8px;
+}
+
+.searchSelect {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #666;
+  padding: 8px 4px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  background-size: 16px;
+  padding-right: 24px;
+}
+
+.searchSelect:hover {
+  color: #333;
+}
+
+.searchSelect:focus {
+  color: #333;
 }
 
 .searchInput {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  flex: 1;
   border: none;
-  border-radius: 0.5rem;
-  background-color: #fff;
-  font-size: 0.95rem;
-  color: #0f172a;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 12px 8px;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
 }
 
 .searchInput::placeholder {
-  color: #94a3b8;
-}
-
-.searchInput:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  color: #999;
 }
 
 .actionButtons {
@@ -611,4 +634,180 @@
   background: #fee2e2;
   border-radius: 4px;
   margin: 8px 0;
+}
+
+/* Ownership Button Styles */
+.ownershipButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  color: white;
+}
+
+.ownershipButton svg {
+  flex-shrink: 0;
+}
+
+.ownershipButton.owned {
+  background-color: #10B981;
+}
+
+.ownershipButton.owned:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.ownershipButton.other {
+  background-color: #6B7280;
+  cursor: not-allowed;
+}
+
+.ownershipButton.notOwned {
+  background-color: #3B82F6;
+}
+
+.ownershipButton.notOwned:hover:not(:disabled) {
+  background-color: #2563EB;
+}
+
+.ownershipButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Notification Styles */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  min-width: 300px;
+  max-width: 400px;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease;
+  border-left: 4px solid;
+}
+
+.notification.success {
+  border-left-color: #10B981;
+  background-color: #F0FDF4;
+}
+
+.notification.error {
+  border-left-color: #EF4444;
+  background-color: #FEF2F2;
+}
+
+.notificationContent {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  gap: 12px;
+}
+
+.notificationIcon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.notification.success .notificationIcon {
+  color: #10B981;
+}
+
+.notification.error .notificationIcon {
+  color: #EF4444;
+}
+
+.notificationMessage {
+  color: #1F2937;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.notificationClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6B7280;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notificationClose:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #1F2937;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.ownerInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ownerName {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.manageOwnerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.manageOwnerButton:hover {
+  background-color: #bae6fd;
+  transform: scale(1.05);
+}
+
+.notOwned {
+  color: #64748b;
+  font-style: italic;
 }

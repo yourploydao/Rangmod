@@ -25,6 +25,7 @@ const AdminUsers = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [notification, setNotification] = useState({ show: false, message: '', type: 'success' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchField, setSearchField] = useState('username');
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch current user data
@@ -57,7 +58,7 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`/api/users?page=${currentPage}&search=${searchQuery}`);
+        const response = await axios.get(`/api/users?page=${currentPage}&search=${searchQuery}&field=${searchField}`);
         setAdminUsers(response.data.users);
         setTotalPages(response.data.totalPages);
       } catch (error) {
@@ -69,7 +70,7 @@ const AdminUsers = () => {
     };
 
     fetchUsers();
-  }, [currentPage, searchQuery]);
+  }, [currentPage, searchQuery, searchField]);
 
   const showNotification = (message, type = 'success') => {
     setNotification({ show: true, message, type });
@@ -161,6 +162,12 @@ const AdminUsers = () => {
     setCurrentPage(1); // Reset to first page when searching
   };
 
+  const handleSearchFieldChange = (e) => {
+    setSearchField(e.target.value);
+    setSearchQuery(''); // Clear search query when changing field
+    setCurrentPage(1); // Reset to first page when changing search field
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -215,6 +222,16 @@ const AdminUsers = () => {
           
           <div className={styles.searchSortContainer}>
             <div className={styles.searchContainer}>
+              <div className={styles.searchFieldSelect}>
+                <select 
+                  value={searchField}
+                  onChange={handleSearchFieldChange}
+                  className={styles.searchSelect}
+                >
+                  <option value="username">Search by Username</option>
+                  <option value="email">Search by Email</option>
+                </select>
+              </div>
               <div className={styles.searchIcon}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -223,7 +240,7 @@ const AdminUsers = () => {
               </div>
               <input 
                 type="text" 
-                placeholder="Search" 
+                placeholder={`Search by ${searchField}...`}
                 className={styles.searchInput}
                 value={searchQuery}
                 onChange={handleSearchChange}
@@ -271,6 +288,18 @@ const AdminUsers = () => {
                         </td>
                         <td className={styles.actions}>
                           <div className={styles.actionButtons}>
+                            {user.role === 'owner' && (
+                              <button 
+                                className={styles.dormButton}
+                                onClick={() => router.push(`/admin/add-dorm-owner?userId=${user._id}`)}
+                                title="Manage Dormitories"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                              </button>
+                            )}
                             <button 
                               className={styles.roleButton}
                               onClick={() => handleRoleClick(user)}

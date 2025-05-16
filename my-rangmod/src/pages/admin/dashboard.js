@@ -5,17 +5,31 @@ import styles from "../../styles/admin-dashboard.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 import { connectDB } from '@/lib/mongodb';
 import Dormitory from '@/models/Dormitory';
+import User from '@/models/User';
 
 export async function getServerSideProps() {
   try {
     await connectDB();
     const dormitories = await Dormitory.find({}).lean();
+    const users = await User.find({ role: 'owner' }).lean();
     
-    // Serialize dormitory data
+    // Create a map of dormitory IDs to owner information
+    const dormitoryOwners = {};
+    users.forEach(user => {
+      user.dormitories?.forEach(dormId => {
+        dormitoryOwners[dormId.toString()] = {
+          username: user.username,
+          userId: user._id.toString()
+        };
+      });
+    });
+    
+    // Serialize dormitory data and add owner information
     const serializedDormitories = dormitories.map(dormitory => ({
       ...dormitory,
       _id: dormitory._id.toString(),
-      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null
+      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null,
+      owner: dormitoryOwners[dormitory._id.toString()] || null
     }));
 
     return {
@@ -24,7 +38,7 @@ export async function getServerSideProps() {
       }
     };
   } catch (error) {
-    console.error('Error fetching dormitories:', error);
+    console.error('Error fetching data:', error);
     return {
       props: {
         initialDormitories: []
@@ -52,6 +66,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [notification, setNotification] = useState({ show: false, message: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchField, setSearchField] = useState('name');
   const [pendingRequests, setPendingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -161,13 +176,29 @@ const OwnerDashboard = ({ initialDormitories }) => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
+  const handleSearchFieldChange = (e) => {
+    setSearchField(e.target.value);
+    setSearchQuery('');
+  };
   
-  // Filter dormitories based on search query
-  const filteredDormitories = dormitories.filter(dorm => 
-    dorm.name_dormitory.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    dorm.type_dormitory.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    dorm.category_dormitory.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter dormitories based on search query and selected field
+  const filteredDormitories = dormitories.filter(dorm => {
+    const query = searchQuery.toLowerCase();
+    
+    switch (searchField) {
+      case 'name':
+        return dorm.name_dormitory.toLowerCase().includes(query);
+      case 'type':
+        return dorm.type_dormitory.toLowerCase().includes(query);
+      case 'owner':
+        return dorm.owner ? dorm.owner.username.toLowerCase().includes(query) : false;
+      default:
+        return dorm.name_dormitory.toLowerCase().includes(query) ||
+               dorm.type_dormitory.toLowerCase().includes(query) ||
+               (dorm.owner && dorm.owner.username.toLowerCase().includes(query));
+    }
+  });
   
   // Sort dormitories by latest update (descending)
   const sortedDormitories = [...filteredDormitories].sort((a, b) => {
@@ -244,6 +275,17 @@ const OwnerDashboard = ({ initialDormitories }) => {
           
           <div className={styles.searchSortContainer}>
             <div className={styles.searchContainer}>
+              <div className={styles.searchFieldSelect}>
+                <select 
+                  value={searchField}
+                  onChange={handleSearchFieldChange}
+                  className={styles.searchSelect}
+                >
+                  <option value="name">Search by Name</option>
+                  <option value="type">Search by Type</option>
+                  <option value="owner">Search by Owner</option>
+                </select>
+              </div>
               <div className={styles.searchIcon}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -252,7 +294,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
               </div>
               <input 
                 type="text" 
-                placeholder="Search" 
+                placeholder={`Search by ${searchField}...`}
                 className={styles.searchInput}
                 value={searchQuery}
                 onChange={handleSearchChange}
@@ -260,16 +302,6 @@ const OwnerDashboard = ({ initialDormitories }) => {
             </div>
             
             <div className={styles.actionButtons}>
-              <div className={styles.sortByContainer}>
-                <span>Sort by</span>
-                <div className={styles.sortIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 6h18"></path>
-                    <path d="M6 12h12"></path>
-                    <path d="M9 18h6"></path>
-                  </svg>
-                </div>
-              </div>
               <button className={styles.addDormButton} onClick={handleAddDorm}>
                 Add Dorm
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -290,7 +322,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
                     <th className={styles.idColumn}>No.</th>
                     <th className={styles.nameColumn}>Name</th>
                     <th className={styles.typeColumn}>Type</th>
-                    <th className={styles.categoryColumn}>Category</th>
+                    <th className={styles.categoryColumn}>Owner</th>
                     <th className={styles.updateColumn}>Last update</th>
                     <th className={styles.actionColumn}>Action</th>
                   </tr>
@@ -311,7 +343,13 @@ const OwnerDashboard = ({ initialDormitories }) => {
                         </div>
                       </td>
                       <td>{dorm.type_dormitory}</td>
-                      <td>{dorm.category_dormitory}</td>
+                      <td>
+                        {dorm.owner ? (
+                          <span className={styles.ownerName}>{dorm.owner.username}</span>
+                        ) : (
+                          <span className={styles.notOwned}>Not owned</span>
+                        )}
+                      </td>
                       <td>{new Date(dorm.last_updated).toLocaleDateString()}</td>
                       <td className={styles.actions}>
                         <div className={styles.actionButtons}>

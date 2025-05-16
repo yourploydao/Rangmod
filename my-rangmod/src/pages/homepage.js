@@ -47,7 +47,13 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const [selectedDuration, setSelectedDuration] = useState("3 เดือน");
-  const [selectedGate, setSelectedGate] = useState("หน้ามหาวิทยาลัย");
+  const [selectedGate, setSelectedGate] = useState("Front Gate");
+
+  // Gate location mapping for display
+  const gateDisplayMapping = {
+    'Front Gate': 'หน้ามหาวิทยาลัย',
+    'Back Gate': 'หลังมหาวิทยาลัย'
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -258,16 +264,16 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
           
           <div className={styles.gateButtons}>
             <button 
-              className={`${styles.gateButton} ${selectedGate === "หน้ามหาวิทยาลัย" ? styles.activeGate : ""}`}
-              onClick={() => handleGateSelection("หน้ามหาวิทยาลัย")}
+              className={`${styles.gateButton} ${selectedGate === "Front Gate" ? styles.activeGate : ""}`}
+              onClick={() => handleGateSelection("Front Gate")}
             >
-              หน้ามหาวิทยาลัย
+              {gateDisplayMapping["Front Gate"]}
             </button>
             <button 
-              className={`${styles.gateButton} ${selectedGate === "หลังมหาวิทยาลัย" ? styles.activeGate : ""}`}
-              onClick={() => handleGateSelection("หลังมหาวิทยาลัย")}
+              className={`${styles.gateButton} ${selectedGate === "Back Gate" ? styles.activeGate : ""}`}
+              onClick={() => handleGateSelection("Back Gate")}
             >
-              หลังมหาวิทยาลัย
+              {gateDisplayMapping["Back Gate"]}
             </button>
           </div>
 

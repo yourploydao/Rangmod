@@ -50,7 +50,7 @@ export async function getServerSideProps() {
 const DormitorySearch = ({ initialDormitories }) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(router.query.search || '');
-  const [activeSortOption, setActiveSortOption] = useState('lowest price');
+  const [activeSortOption, setActiveSortOption] = useState('ราคาต่ำที่สุด');
   const [priceRange, setPriceRange] = useState({ lowest: '', highest: '' });
   const [filteredDormitories, setFilteredDormitories] = useState(initialDormitories);
   const [allDormitories, setAllDormitories] = useState(initialDormitories);

@@ -55,12 +55,6 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
     'Back Gate': 'หลังมหาวิทยาลัย'
   };
 
-  // Gate location mapping
-  const gateLocationMapping = {
-    'หน้ามหาวิทยาลัย': 'Front Gate',
-    'หลังมหาวิทยาลัย': 'Back Gate'
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -119,9 +113,8 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
 
   // Filter dormitories based on university gate location
   const getDormitoriesByGate = (gate) => {
-    const englishGate = gateLocationMapping[gate];
     return dormitories.filter(dormitory => {
-      return dormitory.gate_location === englishGate;
+      return dormitory.gate_location === gate;
     });
   };
 

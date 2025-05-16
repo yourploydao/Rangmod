@@ -37,15 +37,15 @@
 }
  
 .logo img {
-  height: 60px;
-  width: 60px;
+  height: 70px;
+  width: 70px;
   margin-right: 10px;
 }
 
 .logoText {
-  font-size: 20px;
+  font-size: 30px;
   font-weight: 700;
-  color: #333;
+  color: #0099ff;
   letter-spacing: 0.5px;
 }
 

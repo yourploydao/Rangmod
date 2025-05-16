@@ -18,6 +18,9 @@ const UserAccountSetting = () => {
   });
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showInstructionPopup, setShowInstructionPopup] = useState(false);
+  // Add a new state to track if the request button should show
+  const [showRequestButton, setShowRequestButton] = useState(true);
   
   const handleEditButtonClick = () => {
     // Redirect to edit-user-setting page when Edit button is clicked
@@ -35,8 +38,20 @@ const UserAccountSetting = () => {
   };
 
   const handleRequestPermission = () => {
-    // Redirect to owner permission page
-    router.push("/owner-permission");
+    // Show the instruction popup instead of redirecting
+    setShowInstructionPopup(true);
+  };
+  
+  const handleGotIt = () => {
+    // Close the popup, hide the request button, and redirect to user-account-setting page
+    setShowInstructionPopup(false);
+    setShowRequestButton(false);
+    router.push("/user-account-setting");
+  };
+  
+  const handleCancel = () => {
+    // Just close the popup
+    setShowInstructionPopup(false);
   };
   
   // Close dropdown when clicking outside
@@ -148,18 +163,45 @@ const UserAccountSetting = () => {
                 </div>
               </div>
 
-              <div className={styles.requestPermissionContainer}>
-                <button 
-                  className={styles.requestPermissionButton} 
-                  onClick={handleRequestPermission}
-                >
-                  request permission to create a dormitory
-                </button>
-              </div>
+              {/* Only render the request permission button if showRequestButton is true */}
+              {showRequestButton && (
+                <div className={styles.requestPermissionContainer}>
+                  <button 
+                    className={styles.requestPermissionButton} 
+                    onClick={handleRequestPermission}
+                  >
+                    request permission to create a dormitory
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Instruction Popup */}
+      {showInstructionPopup && (
+        <div className={styles.popupOverlay}>
+          <div className={styles.instructionPopup}>
+            <div className={styles.instructionIcon}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div className={styles.instructionContent}>
+              <h3>Verification Required</h3>
+              <p>To verify your identity, please provide documentation confirming that you are the actual owner of the dormitory.
+              You may send the verification documents to our email: rangmod@gmail.com.</p>
+            </div>
+            <div className={styles.instructionActions}>
+              <button className={styles.gotItButton} onClick={handleGotIt}>Got it</button>
+              <button className={styles.cancelButton} onClick={handleCancel}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

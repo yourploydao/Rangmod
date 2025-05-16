@@ -18,7 +18,8 @@ const SidebarUser = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <a href="/homepage-after-login">
+        {/* Add explicit style to remove underline */}
+        <a href="/homepage-after-login" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText}>RANGMOD</span>

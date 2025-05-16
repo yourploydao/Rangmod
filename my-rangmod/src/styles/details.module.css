@@ -275,17 +275,19 @@
   
   /* Room Types */
   .roomTypes {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
   
   .roomCard {
-    flex: 1;
-    min-width: 280px;
     background-color: #f9f9f9;
     border-radius: 8px;
     overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
   }
   
   .roomImageContainer {
@@ -454,6 +456,6 @@
     }
     
     .roomTypes {
-      flex-direction: column;
+      grid-template-columns: 1fr;
     }
   }

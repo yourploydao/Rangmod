@@ -297,71 +297,78 @@ const handleMapSelect = (lat, lng) => {
 };
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (photos.length < 5) {
-      alert('Please upload at least 5 photos of the dormitory');
-      return;
-    }
-    
-    // Validate all rooms have at least one photo
-    const roomsWithoutPhotos = rooms.filter(room => room.photos.length === 0);
-    if (roomsWithoutPhotos.length > 0) {
-      alert(`Please upload at least one photo for each room. ${roomsWithoutPhotos.map(r => r.name).join(', ')} missing photos.`);
-      return;
-    }
-    
-    if (!mapLocation) {
-      alert('Please select a location on the map');
-      return;
+ const handleSubmit = async (e) => { 
+  e.preventDefault();
+  
+  if (photos.length < 5) {
+    alert('Please upload at least 5 photos of the dormitory');
+    return;
+  }
+
+  const roomsWithoutPhotos = rooms.filter(room => room.photos.length === 0);
+  if (roomsWithoutPhotos.length > 0) {
+    alert(`Please upload at least one photo for each room. ${roomsWithoutPhotos.map(r => r.name).join(', ')} missing photos.`);
+    return;
+  }
+
+  if (!mapLocation) {
+    alert('Please select a location on the map');
+    return;
+  }
+
+  if (rooms.length < 2) {
+    alert('Please add at least 2 rooms');
+    return;
+  }
+
+  if (![3, 6, 12].includes(Number(formData.contract_duration))) {
+    alert('Please select a valid contract duration (3, 6, or 12 months)');
+    return;
+  }
+
+  if (!formData.gate_location || !['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
+    alert('Please select a valid gate location (Front Gate or Back Gate)');
+    return;
+  }
+
+  try {
+    // เตรียม location string และ distance
+ const combinedLocation = mapLocation?.lat && mapLocation?.lng 
+  ? `${mapLocation.lat},${mapLocation.lng}`
+  : formData.location;
+
+formData.location = combinedLocation;
+    const distance = distanceKm != null ? distanceKm.toString() : '';
+
+    const response = await fetch(`/api/dormitory/edit/${dormitory._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...formData,
+        location: combinedLocation,
+        distance_from_university: distance,
+        rooms,
+        photos,
+        contract_duration: Number(formData.contract_duration),
+        gate_location: formData.gate_location
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to create dormitory');
     }
 
-    if (rooms.length < 2) {
-      alert('Please add at least 2 rooms');
-      return;
-    }
+    window.location.href = `/details/${data.dormitoryId}`;
+  } catch (error) {
+    alert(error.message);
+    console.error('Error creating dormitory:', error);
+  }
+};
 
-    // Validate contract duration
-    if (![3, 6, 12].includes(Number(formData.contract_duration))) {
-      alert('Please select a valid contract duration (3, 6, or 12 months)');
-      return;
-    }
-
-    // Validate gate location
-    if (!formData.gate_location || !['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
-      alert('Please select a valid gate location (Front Gate or Back Gate)');
-      return;
-    }
-    
-    try {
-      const response = await fetch('/api/dormitory/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          rooms,
-          photos,
-          mapLocation,
-          contract_duration: Number(formData.contract_duration),
-          gate_location: formData.gate_location
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to create dormitory');
-      }
-
-      // Redirect to the dormitory details page
-      window.location.href = `/details/${data.dormitoryId}`;
-    } catch (error) {
-      alert(error.message);
-      console.error('Error creating dormitory:', error);
-    }
-  };
 
   return (
     <div className={styles.container}>

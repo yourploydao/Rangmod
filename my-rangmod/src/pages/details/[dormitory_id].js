@@ -10,28 +10,6 @@ import mongoose from 'mongoose';
 
 export async function getServerSideProps(context) {
   const { dormitory_id } = context.params;
-  console.log('Fetching dormitory with ID:', dormitory_id);
-
-  try {
-    await connectDB();
-    
-    // Validate if the ID is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(dormitory_id)) {
-      console.error('Invalid dormitory ID format:', dormitory_id);
-      return { notFound: true };
-    }
-
-    // Convert string ID to ObjectId
-    const dormitoryObjectId = new mongoose.Types.ObjectId(dormitory_id);
-    
-    // Fetch dormitory with error logging
-    const dormitory = await Dormitory.findById(dormitoryObjectId).lean();
-    console.log('Found dormitory:', dormitory ? 'Yes' : 'No');
-    
-    if (!dormitory) {
-      console.error('Dormitory not found with ID:', dormitory_id);
-      return { notFound: true };
-    }
 
     // Fetch related data
     const rooms = await Room.find({ dormitoryID: dormitoryObjectId }).lean();
@@ -66,13 +44,9 @@ export async function getServerSideProps(context) {
         facility: serializedFacility
       },
     };
-  } catch (error) {
-    console.error('Error in getServerSideProps:', error);
-    return {
-      notFound: true,
-    };
-  }
-}
+  } 
+
+
 
 const DormitoryDetail = ({ dormitory, rooms, facility }) => {
   const [activePhoto, setActivePhoto] = useState(0);
@@ -205,15 +179,25 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
         {/* Details and Map */}
         <div className={styles.detailsMapSection}>
           <div className={styles.mapContainer}>
-            <img src="https://1033609670.rsc.cdn77.org/maps/ross-js-aloha-grill-las-vegas-map.jpg" alt="Map Location" className={styles.map} />
+            <a
+              href="https://www.google.com/maps?q=13.65115,100.48839"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=13.65115,100.48839&zoom=15&size=700x150&markers=icon:large-red-cutout|13.65115,100.48839`}
+                alt="Map Location"
+                className={styles.map}
+              />
+            </a>
             <div className={styles.mapDetails}>
               <div className={styles.mapDetail}>
                 <span className={styles.detailIcon}>📍</span>
-                <span>{dormitory.distance_from_university} kilometers away</span>
+                <span>0.36 kilometers away</span>
               </div>
               <div className={styles.mapDetail}>
                 <span className={styles.detailIcon}>📱</span>
-                <span>{dormitory.phone_number}</span>
+                <span>012-345-6789</span>
               </div>
             </div>
           </div>

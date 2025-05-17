@@ -29,7 +29,7 @@ export default function ChatbotPage() {
     <div className={styles.container}>
       <Header />
       <main className={styles.mainWide}>
-        <h1 className={styles.title}>Chatbot</h1>
+        <h1 className={styles.title}>พูดคุยกับเรา</h1>
         <div className={styles.chatbox} ref={chatBoxRef}>
           {messages.map((msg, idx) => (
             <div key={idx} className={msg.sender === "user" ? styles.userMsg : styles.botMsg}>

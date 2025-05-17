@@ -4,6 +4,7 @@ import styles from "../styles/navigation.module.css";
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Navigation = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -110,7 +111,7 @@ const Navigation = () => {
       <div className={styles.headerContainer}>
         <div className={styles.leftSection}>
           <div className={styles.logo} onClick={handleLogoClick}>
-            <img src="/assets/rangmodlogo.png" alt="RANGMOD" className={styles.logoImage} />
+            <Image src="/assets/rangmodlogo.png" alt="RANGMOD" className={styles.logoImage} />
             <span className={styles.logoText}>RANGMOD</span>
           </div>
         </div>
@@ -142,7 +143,7 @@ const Navigation = () => {
             <>
               {isLoggedIn ? (
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img 
+                  <Image 
                     src={userData.profileImage} 
                     alt={userData.username} 
                     className={styles.profileImage}
@@ -191,7 +192,7 @@ const Navigation = () => {
         
         {/* Hamburger Menu Button */}
         <div className={styles.hamburgerMenu} onClick={toggleMobileMenu}>
-          <img 
+          <Image 
             src="https://cdn-icons-png.flaticon.com/128/13958/13958298.png" 
             alt="Menu" 
             className={styles.hamburgerIcon} 

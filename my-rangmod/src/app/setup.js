@@ -13,14 +13,15 @@ export default function AuthRouter() {
 
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
+useEffect(() => {
+  setMounted(true);
 
-    // redirect ถ้าไม่มี auth
-    if (router.isReady && typeof auth !== 'string') {
-      router.replace('/home');
-    }
-  }, [router.isReady, auth]);
+  // redirect ถ้าไม่มี auth
+  if (router.isReady && typeof auth !== 'string') {
+    router.replace('/home');
+  }
+}, [router, router.isReady, auth]);
+
 
   if (!mounted || !router.isReady || typeof auth !== 'string') return null;
 

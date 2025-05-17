@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from "../styles/sidebar-setting.module.css";
+import Image from 'next/image';
 
 const SidebarAdmin = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ const SidebarAdmin = () => {
       <div className={styles.sidebarHeader}>
         <Link href="/homepage" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
-            <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
+            <Image src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
         </Link>
@@ -66,7 +67,7 @@ const SidebarAdmin = () => {
               style={{ cursor: 'pointer' }}
             >
               <div className={styles.iconContainer}>
-                <img 
+                <Image 
                   src={item.icon}
                   alt={`${item.text} Icon`}
                   className={styles.navIcon} 

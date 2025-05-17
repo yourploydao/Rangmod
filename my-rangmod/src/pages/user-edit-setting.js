@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import axios from 'axios';
 import styles from "../styles/user-account-setting.module.css";
 import SidebarUser from '@/components/sidebar-setting-user';
+import Image from 'next/image';
 
 const UserAccountSettingEdit = () => {
   const router = useRouter();
@@ -233,7 +234,7 @@ const UserAccountSettingEdit = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img 
+                  <Image 
                     src={userData.profile_picture} 
                     alt="Profile" 
                     className={styles.profileImage}
@@ -270,7 +271,7 @@ const UserAccountSettingEdit = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileHeaderLeft}>
                 <div className={styles.profileAvatar}>
-                  <img 
+                  <Image 
                     src={userData.profile_picture} 
                     alt="Profile Avatar"
                     onError={(e) => {

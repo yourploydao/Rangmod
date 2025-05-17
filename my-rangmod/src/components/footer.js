@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "../styles/footer.module.css";
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer = () => {
   return (
@@ -10,19 +11,19 @@ const Footer = () => {
           <p>ติดตามเราได้ที่นี่</p>
           <div className={styles.socialIcons}>
             <Link href="https://facebook.com" className={styles.socialIcon}>
-              <img src="https://cdn-icons-png.flaticon.com/128/5968/5968764.png" alt="Facebook" />
+              <Image src="https://cdn-icons-png.flaticon.com/128/5968/5968764.png" alt="Facebook" />
             </Link>
             <Link href="https://instagram.com" className={styles.socialIcon}>
-              <img src="https://cdn-icons-png.flaticon.com/128/3955/3955024.png" alt="Instagram" />
+              <Image src="https://cdn-icons-png.flaticon.com/128/3955/3955024.png" alt="Instagram" />
             </Link>
             <Link href="https://line.me" className={styles.socialIcon}>
-              <img src="https://cdn-icons-png.flaticon.com/128/3670/3670089.png" alt="Line" />
+              <Image src="https://cdn-icons-png.flaticon.com/128/3670/3670089.png" alt="Line" />
             </Link>
             <Link href="https://twitter.com" className={styles.socialIcon}>
-              <img src="https://cdn-icons-png.flaticon.com/128/5969/5969020.png" alt="Twitter" />
+              <Image src="https://cdn-icons-png.flaticon.com/128/5969/5969020.png" alt="Twitter" />
             </Link>
             <Link href="https://threads.net" className={styles.socialIcon}>
-              <img src="https://cdn-icons-png.flaticon.com/128/12105/12105338.png" alt="Threads" />
+              <Image src="https://cdn-icons-png.flaticon.com/128/12105/12105338.png" alt="Threads" />
             </Link>
           </div>
         </div>

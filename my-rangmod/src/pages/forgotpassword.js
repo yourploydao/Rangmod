@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "../styles/forgotpassword.module.css";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const RangModForgotPassword = () => {
   // State variable for email input
@@ -57,7 +58,7 @@ const RangModForgotPassword = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
-          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
+          <Image src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         

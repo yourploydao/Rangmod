@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../styles/verifyemail.module.css";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 
 const RangModVerifyEmail = () => {
   // State variables
@@ -119,7 +120,7 @@ const RangModVerifyEmail = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
-          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
+          <Image src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
@@ -142,7 +143,7 @@ const RangModVerifyEmail = () => {
                   className={styles.togglePassword}
                   onClick={() => setShowOtp(!showOtp)}
                 >
-                  <img 
+                  <Image 
                     src={
                       showOtp
                       ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import axios from 'axios';
 import styles from "../../styles/admin-permission.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
+import Image from 'next/image';
 
 const AdminPermission = () => {
   const router = useRouter();
@@ -184,7 +185,7 @@ const AdminPermission = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img 
+                  <Image 
                     src={userData.profileImage || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'} 
                     alt="Profile" 
                     className={styles.profileImage}

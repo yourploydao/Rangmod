@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from "../styles/sidebar-setting.module.css";
 import Link from 'next/link';
+import Image from 'next/image';
 
 const SidebarUser = () => {
   const [activePath, setActivePath] = useState('');
@@ -22,7 +23,7 @@ const SidebarUser = () => {
       <div className={styles.sidebarHeader}>
         <Link href="/homepage" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
-            <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
+            <Image src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
         </Link>
@@ -32,7 +33,7 @@ const SidebarUser = () => {
           <li className={`${styles.navItem} ${isActive('/user-account-setting') ? styles.active : ''}`}>
             <Link href="/user-account-setting" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
               <div className={styles.iconContainer}>
-                <img 
+                <Image 
                   src="https://cdn-icons-png.flaticon.com/128/503/503822.png" 
                   alt="Settings Icon"
                   className={styles.navIcon} 

@@ -7,6 +7,7 @@ import { connectDB } from '@/lib/mongodb';
 import Dormitory from '@/models/Dormitory';
 import Header from "../components/navigation";
 import Link from 'next/link';
+import Image from 'next/image';
 
 export async function getServerSideProps() {
   try {
@@ -137,7 +138,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
             </p>
           </div>
           <div className={styles.heroImage}>
-            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/534785066.jpg?k=1927ac9bd502bc207108657e4e11b87b30820061666a0ab83e75a7d48d9e4163&o=&hp=1" alt="Cozy Dorm Room" />
+            <Image src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/534785066.jpg?k=1927ac9bd502bc207108657e4e11b87b30820061666a0ab83e75a7d48d9e4163&o=&hp=1" alt="Cozy Dorm Room" />
           </div>
         </section>
 
@@ -148,7 +149,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
               <div className={styles.searchField}>
                 <div className={styles.inputWithIcon}>
                   <span className={styles.searchIcon}>
-                    <img src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
+                    <Image src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
                   </span>
                   <input 
                     type="text" 
@@ -162,7 +163,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
               <div className={styles.filterButtons}>
                 <button type="button" className={styles.filterBtn} onClick={handleFilterClick}>
                   <span className={styles.filterIcon}>
-                    <img src="https://cdn-icons-png.flaticon.com/128/9628/9628531.png" alt="Filter" className={styles.iconImage} />
+                    <Image src="https://cdn-icons-png.flaticon.com/128/9628/9628531.png" alt="Filter" className={styles.iconImage} />
                   </span>
                   ตัวกรอง
                 </button>
@@ -184,7 +185,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                 onClick={() => handleDormitoryClick(dormitory._id)}
               >
                 <div className={styles.cardImage}>
-                  <img 
+                  <Image 
                     src={dormitory.images[0] || '/images/placeholder.jpg'} 
                     alt={dormitory.name_dormitory} 
                   />
@@ -239,7 +240,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                 onClick={() => handleDormitoryClick(dormitory._id)}
               >
                 <div className={styles.cardImage}>
-                  <img 
+                  <Image 
                     src={dormitory.images[0] || '/images/placeholder.jpg'} 
                     alt={dormitory.name_dormitory} 
                   />
@@ -286,7 +287,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                 onClick={() => handleDormitoryClick(dormitory._id)}
               >
                 <div className={styles.cardImage}>
-                  <img 
+                  <Image 
                     src={dormitory.images[0] || '/images/placeholder.jpg'} 
                     alt={dormitory.name_dormitory} 
                   />

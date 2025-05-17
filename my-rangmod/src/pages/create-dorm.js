@@ -6,6 +6,7 @@ import styles from "../styles/create-dorm.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 import 'leaflet/dist/leaflet.css';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 const MapSelector = dynamic(() => import('../components/MapSelector'), {
   ssr: false, // ปิดการโหลดในฝั่ง Server
@@ -459,7 +460,7 @@ const CreateDormitoryPage = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img 
+                  <Image 
                     src={userData.profile_picture} 
                     alt="รูปโปรไฟล์" 
                     className={styles.profileImage}
@@ -516,7 +517,7 @@ const CreateDormitoryPage = () => {
                 <div className={styles.photoGallery}>
                   {photos.map(photo => (
                     <div key={photo.id} className={styles.photoPreview}>
-                      <img src={photo.url} alt={photo.name} />
+                      <Image src={photo.url} alt={photo.name} />
                       <button 
                         type="button" 
                         onClick={() => removePhoto(photo.id)}
@@ -894,7 +895,7 @@ const CreateDormitoryPage = () => {
                  {mapLocation ? (
                    <>
                      <div className={styles.mapPreview}>
-                 <img
+                 <Image
                    src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
                    alt="Map location"
                    className={styles.mapImage}
@@ -985,7 +986,7 @@ const CreateDormitoryPage = () => {
                     <div className={styles.photoGallery}>
                       {room.photos.map(photo => (
                         <div key={photo.id} className={styles.photoPreview}>
-                          <img src={photo.url} alt={photo.name} />
+                          <Image src={photo.url} alt={photo.name} />
                           <button 
                             type="button" 
                             onClick={() => removeRoomPhoto(room.id, photo.id)}

@@ -8,6 +8,7 @@ import Room from '@/models/Room';
 import Facility from '@/models/Facility';
 import mongoose from 'mongoose';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export async function getServerSideProps(context) {
   const { dormitory_id } = context.params;
@@ -159,7 +160,7 @@ const dormitoryTypeTranslations = {
         {/* Photo Gallery */}
         <div className={styles.photoGrid}>
           <div className={styles.mainPhoto}>
-            <img 
+            <Image 
               src={dormitory.images[0]} 
               alt={dormitory.name_dormitory}
               onClick={() => handlePhotoClick(0)}
@@ -168,7 +169,7 @@ const dormitoryTypeTranslations = {
           <div className={styles.smallPhotos}>
             {dormitory.images.slice(1, 4).map((photo, index) => (
               <div key={`photo-${index + 1}`} className={styles.smallPhoto}>
-                <img 
+                <Image 
                   src={photo} 
                   alt={`${dormitory.name_dormitory} - ${index + 1}`}
                   onClick={() => handlePhotoClick(index + 1)}
@@ -177,7 +178,7 @@ const dormitoryTypeTranslations = {
             ))}
             {dormitory.images.length > 4 && (
               <div className={styles.smallPhoto}>
-                <img 
+                <Image 
                   src={dormitory.images[4]} 
                   alt={`${dormitory.name_dormitory} - more`}
                   onClick={() => handlePhotoClick(4)}
@@ -260,7 +261,7 @@ const dormitoryTypeTranslations = {
         
           return (
             <Link href={googleMapUrl} target="_blank" rel="noopener noreferrer">
-              <img
+              <Image
                 src={staticMapUrl}
                 alt="Map Location"
                 className={styles.map}
@@ -319,7 +320,7 @@ const dormitoryTypeTranslations = {
             {rooms.map((room) => (
               <div key={room._id} className={styles.roomCard}>
                 <div className={styles.roomImageContainer}>
-                  <img 
+                  <Image 
                     src={room.room_image[0] || '/images/placeholder.jpg'} 
                     alt={room.room_type} 
                     className={styles.roomImage} 
@@ -359,7 +360,7 @@ const dormitoryTypeTranslations = {
             <button className={styles.closeGallery} onClick={closeGallery}>×</button>
             <button className={styles.navButton} onClick={() => navigatePhoto(-1)}>❮</button>
             <div className={styles.galleryImageContainer}>
-              <img 
+              <Image 
                 src={dormitory.images[activePhoto]}
                 alt={`Gallery ${activePhoto + 1}`} 
                 className={styles.galleryImage}

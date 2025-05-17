@@ -5,6 +5,7 @@ import styles from "../../styles/admin-dashboard.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 import { connectDB } from '@/lib/mongodb';
 import Dormitory from '@/models/Dormitory';
+import Image from 'next/image';
 
 export async function getServerSideProps() {
   try {
@@ -205,7 +206,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img 
+                  <Image 
                     src={userData.profileImage || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'} 
                     alt="Profile" 
                     className={styles.profileImage}

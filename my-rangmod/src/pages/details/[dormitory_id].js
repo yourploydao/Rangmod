@@ -83,7 +83,7 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
   // Facility icons mapping
 const facilityIcons = {
   'wifi': '📶',
-  'air conditioner': '❄️',
+  'air_conditioner': '❄️',
   'private bathroom': '🚿',
   'refrigerator': '❄️',
   'television': '📺',
@@ -92,12 +92,15 @@ const facilityIcons = {
   'balcony': '🌅',
   'cctv': '📹',
   'desk': '📚',
-  'parking': '🅿️'
+  'parking': '🅿️',
+  /*'laundry': '🅿️',
+  'waterHeater':'🅿️',
+  'fan':'🅿️',*/
 };
 
 const facilityTranslations = {
   'wifi': 'WiFi',
-  'air conditioner': 'เครื่องปรับอากาศ',
+  'air_conditioner': 'เครื่องปรับอากาศ',
   'private bathroom': 'ห้องน้ำส่วนตัว',
   'refrigerator': 'ตู้เย็น',
   'television': 'โทรทัศน์',

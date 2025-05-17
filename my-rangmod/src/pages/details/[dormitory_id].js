@@ -81,19 +81,43 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
   const [galleryVisible, setGalleryVisible] = useState(false);
 
   // Facility icons mapping
-  const facilityIcons = {
-    'wifi': '📶',
-    'air conditioner': '❄️',
-    'private bathroom': '🚿',
-    'refrigerator': '❄️',
-    'television': '📺',
-    'closet': '👕',
-    'microwave': '🍽️',
-    'balcony': '🌅',
-    'cctv': '📹',
-    'desk': '📚',
-    'parking': '🅿️'
-  };
+const facilityIcons = {
+  'wifi': '📶',
+  'air conditioner': '❄️',
+  'private bathroom': '🚿',
+  'refrigerator': '❄️',
+  'television': '📺',
+  'closet': '👕',
+  'microwave': '🍽️',
+  'balcony': '🌅',
+  'cctv': '📹',
+  'desk': '📚',
+  'parking': '🅿️'
+};
+
+const facilityTranslations = {
+  'wifi': 'WiFi',
+  'air conditioner': 'เครื่องปรับอากาศ',
+  'private bathroom': 'ห้องน้ำส่วนตัว',
+  'refrigerator': 'ตู้เย็น',
+  'television': 'โทรทัศน์',
+  'closet': 'ตู้เสื้อผ้า',
+  'microwave': 'ไมโครเวฟ',
+  'balcony': 'ระเบียง',
+  'cctv': 'กล้องวงจรปิด',
+  'desk': 'โต๊ะทำงาน',
+  'parking': 'ที่จอดรถ'
+};
+
+const dormitoryTypeTranslations = {
+  'apartment': 'อพาร์ตเมนต์',
+  'mansion': 'แมนชั่น',
+  'dormitory': 'หอพัก',
+  'condominium': 'คอนโดมิเนียม',
+  'house': 'บ้าน',
+  'townhouse': 'ทาวน์เฮ้าส์'
+};
+
 
   const handlePhotoClick = (index) => {
     setActivePhoto(index);
@@ -150,7 +174,7 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
                   onClick={() => handlePhotoClick(4)}
                 />
                 <div className={styles.morePhotos}>
-                  <span>+{dormitory.images.length - 4} More Photos</span>
+                  <span>+{dormitory.images.length - 4} ภาพเพิ่มเติม</span>
                 </div>
               </div>
             )}
@@ -175,70 +199,74 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
           <span>
             {dormitory.price_range ? (
               dormitory.price_range.min && dormitory.price_range.max
-                ? `${dormitory.price_range.min.toLocaleString()} - ${dormitory.price_range.max.toLocaleString()} THB / MONTH`
+                ? `${dormitory.price_range.min.toLocaleString()} - ${dormitory.price_range.max.toLocaleString()} บาท/เดือน`
                 : dormitory.price_range.min
-                  ? `From ${dormitory.price_range.min.toLocaleString()} THB / MONTH`
+                  ? `ขั้นต่ำ ${dormitory.price_range.min.toLocaleString()} บาท/เดือน`
                   : dormitory.price_range.max
-                    ? `Up to ${dormitory.price_range.max.toLocaleString()} THB / MONTH`
-                    : 'Price not available'
-            ) : 'Price not available'}
+                    ? `สูงสุด ${dormitory.price_range.max.toLocaleString()} บาท/เดือน`
+                    : 'ราคายังไม่พร้อมใช้งาน'
+            ) : 'ราคายังไม่พร้อมใช้งาน'}
           </span>
         </div>
 
         {/* Description */}
         <div className={styles.section}>
-          <h2>Description</h2>
-          <pre>{dormitory.description || 'No description available'}</pre>
+          <h2>คำอธิบายหอพัก</h2>
+          <pre>{dormitory.description || 'คำอธิบายไม่พร้อมใช้งาน'}</pre>
         </div>
 
         {/* Facilities */}
         <div className={styles.section}>
-          <h2>Facilities</h2>
+          <h2>สิ่งอำนวยความสะดวก</h2>
           <div className={styles.facilitiesList}>
-            {facility?.facilities.map((facilityName, index) => (
-              <div key={`facility-${index}`} className={styles.facilityItem}>
-                <span className={styles.facilityIcon}>
-                  {facilityIcons[facilityName.toLowerCase()] || '✨'}
-                </span>
-                <span>{facilityName}</span>
-              </div>
-            ))}
+            {facility?.facilities.map((facilityName, index) => {
+              const key = facilityName.toLowerCase();
+              return (
+                <div key={`facility-${index}`} className={styles.facilityItem}>
+                  <span className={styles.facilityIcon}>
+                    {facilityIcons[key] || '✨'}
+                  </span>
+                  <span>{facilityTranslations[key] || facilityName}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
+
 
         {/* Details and Map */}
         <div className={styles.detailsMapSection}>
           <div className={styles.mapContainer}>
-{(() => {
-  const location = dormitory.location || '';
-  const [lat, lng] = location.split(',').map(coord => coord.trim());
-
-  // ตรวจสอบว่ามีพิกัดถูกต้อง
-  if (!lat || !lng) {
-    return <p>Location not available</p>;
-  }
-
-  const googleMapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-  const staticMapUrl = `https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${lat},${lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${lat},${lng}`;
-
-  return (
-    <a href={googleMapUrl} target="_blank" rel="noopener noreferrer">
-      <img
-        src={staticMapUrl}
-        alt="Map Location"
-        className={styles.map}
-      />
-    </a>
-  );
-})()}
+        {(() => {
+          const location = dormitory.location || '';
+          const [lat, lng] = location.split(',').map(coord => coord.trim());
+        
+          // ตรวจสอบว่ามีพิกัดถูกต้อง
+          if (!lat || !lng) {
+            return <p>ตำแหน่งยังไม่สามารถใช้งานได้</p>;
+          }
+        
+          const googleMapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+          const staticMapUrl = `https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${lat},${lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${lat},${lng}`;
+        
+          return (
+            <a href={googleMapUrl} target="_blank" rel="noopener noreferrer">
+              <img
+                src={staticMapUrl}
+                alt="Map Location"
+                className={styles.map}
+              />
+            </a>
+          );
+        })()}
 
             <div className={styles.mapDetails}>
               <div className={styles.mapDetail}>
                 <span className={styles.detailIcon}>📍</span>
                 <span>
                   {dormitory.distance_from_university
-                    ? `${dormitory.distance_from_university.toFixed(2)} kilometers away`
-                    : 'Distance not available'}
+                    ? `ห่างจากมหาวิทยาลัย ${dormitory.distance_from_university.toFixed(2)} กิโลเมตร`
+                    : 'ระยะห่างระหว่างมหาวิทยาลัยยังไม่สามารถใช้งานได้'}
                 </span>
               </div>
                <div className={styles.mapDetail}>
@@ -249,27 +277,27 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
           </div>
           
           <div className={styles.propertyDetails}>
-            <h3>{dormitory.type_dormitory}</h3>
+            <h3>{dormitoryTypeTranslations[dormitory.type_dormitory.toLowerCase()] || dormitory.type_dormitory}</h3>
             <div className={styles.utilityList}>
               <div className={styles.utilityItem}>
                 <span className={styles.utilityIcon}>⚡</span>
-                <span className={styles.utilityName}>Electric price</span>
-                <span className={styles.utilityValue}>{dormitory.electric_price} THB / UNIT</span>
+                <span className={styles.utilityName}>ค่าไฟฟ้า</span>
+                <span className={styles.utilityValue}>{dormitory.electric_price} บาท/หน่วย</span>
               </div>
               <div className={styles.utilityItem}>
                 <span className={styles.utilityIcon}>💧</span>
-                <span className={styles.utilityName}>Water price</span>
-                <span className={styles.utilityValue}>{dormitory.water_price} THB / UNIT</span>
+                <span className={styles.utilityName}>ค่าน้ำ</span>
+                <span className={styles.utilityValue}>{dormitory.water_price} บาท/หน่วย</span>
               </div>
               <div className={styles.utilityItem}>
                 <span className={styles.utilityIcon}>📑</span>
-                <span className={styles.utilityName}>Other</span>
-                <span className={styles.utilityValue}>{dormitory.other} THB / YEAR</span>
+                <span className={styles.utilityName}>อื่นๆ</span>
+                <span className={styles.utilityValue}>{dormitory.other} บาท/ปี</span>
               </div>
               <div className={styles.utilityItem}>
                 <span className={styles.utilityIcon}>📑</span>
-                <span className={styles.utilityName}>Contract Duration</span>
-                <span className={styles.utilityValue}>{dormitory.contract_duration} MONTH</span>
+                <span className={styles.utilityName}>ระยะเวลาขั้นต่ำของสัญญา</span>
+                <span className={styles.utilityValue}>{dormitory.contract_duration} เดือน</span>
               </div>
             </div>
           </div>
@@ -277,7 +305,7 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
 
         {/* Room Types */}
         <div className={styles.section}>
-          <h2>Available Rooms</h2>
+          <h2>ประเภทห้องพัก</h2>
           <div className={styles.roomTypes}>
             {rooms.map((room) => (
               <div key={room._id} className={styles.roomCard}>
@@ -292,11 +320,11 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
                   <h3>{room.room_type}</h3>
                   <div className={styles.roomDetail}>
                     <span className={styles.roomIcon}>💰</span>
-                    <span>{room.price.toLocaleString()} THB / MONTH</span>
+                    <span>{room.price.toLocaleString()} บาท/เดือน</span>
                   </div>
                   <div className={styles.roomDetail}>
                     <span className={styles.roomIcon}>📏</span>
-                    <span>{room.room_size} square meters</span>
+                    <span>{room.room_size} ตารางเมตร</span>
                   </div>
                   <div className={styles.roomDetail}>
                     <span className={styles.roomIcon}>🛏️</span>
@@ -310,8 +338,8 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
 
         {/* Agreement */}
         <div className={styles.section}>
-          <h2>Agreement</h2>
-          <pre>{dormitory.agreement || 'No agreement available'}</pre>
+          <h2>ข้อตกลง</h2>
+          <pre>{dormitory.agreement || 'ไม่มีข้อตกลง'}</pre>
         </div>
       </div>
 

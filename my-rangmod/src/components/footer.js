@@ -28,9 +28,9 @@ const Footer = () => {
         </div>
         
         <div className={styles.footerLinks}>
-          <Link className={styles.footerLink}>เกี่ยวกับเรา</Link>
-          <Link className={styles.footerLink}>นโยบายความเป็นส่วนตัว</Link>
-          <Link className={styles.footerLink}>เงื่อนไขการให้บริการ</Link>
+          <Link href="/homepage" className={styles.footerLink}>เกี่ยวกับเรา</Link>
+          <Link href="/homepage" className={styles.footerLink}>นโยบายความเป็นส่วนตัว</Link>
+          <Link href="/homepage" className={styles.footerLink}>เงื่อนไขการให้บริการ</Link>
         </div>
         
         <div className={styles.copyright}>

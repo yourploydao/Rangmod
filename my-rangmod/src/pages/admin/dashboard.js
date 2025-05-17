@@ -260,18 +260,8 @@ const OwnerDashboard = ({ initialDormitories }) => {
             </div>
             
             <div className={styles.actionButtons}>
-              <div className={styles.sortByContainer}>
-                <span>จัดเรียงตาม</span>
-                <div className={styles.sortIcon}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 6h18"></path>
-                    <path d="M6 12h12"></path>
-                    <path d="M9 18h6"></path>
-                  </svg>
-                </div>
-              </div>
               <button className={styles.addDormButton} onClick={handleAddDorm}>
-                Add Dorm
+                เพิ่มหอพัก
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19"></line>
                   <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -289,8 +279,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
                   <tr>
                     <th className={styles.idColumn}>ไอดี</th>
                     <th className={styles.nameColumn}>ชื่อที่พัก</th>
-                    <th className={styles.ownerColumn}>เจ้าของ</th>
-                    <th className={styles.stateColumn}>สถานะ</th>
+                    <th className={styles.ownerColumn}>ประเภทที่พัก</th>
                     <th className={styles.updateColumn}>อัปเดตล่าสุด</th>
                     <th className={styles.actionColumn}>การจัดการ</th>
                   </tr>
@@ -307,11 +296,10 @@ const OwnerDashboard = ({ initialDormitories }) => {
                       <td>
                         <div className={styles.dormName}>
                           {dorm.name_dormitory}
-                          <div className={styles.dormCode}>{dorm.type_dormitory}</div>
+                          <div className={styles.dormCode}>{dorm.alley} {dorm.address}</div>
                         </div>
                       </td>
                       <td>{dorm.type_dormitory}</td>
-                      <td>{dorm.category_dormitory}</td>
                       <td>{new Date(dorm.last_updated).toLocaleDateString()}</td>
                       <td className={styles.actions}>
                         <div className={styles.actionButtons}>

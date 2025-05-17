@@ -243,10 +243,9 @@ const AdminUsers = () => {
                 <thead>
                   <tr>
                     <th className={styles.idColumn}>ไอดี</th>
-                    <th className={styles.nameColumn}>ชื่อที่พัก</th>
-                    <th className={styles.ownerColumn}>เจ้าของ</th>
-                    <th className={styles.stateColumn}>สถานะ</th>
-                    <th className={styles.updateColumn}>อัปเดตล่าสุด</th>
+                    <th className={styles.nameColumn}>ชื่อผู้ใช้</th>
+                    <th className={styles.ownerColumn}>อีเมล</th>
+                    <th className={styles.stateColumn}>บทบาท</th>
                     <th className={styles.actionColumn}>การจัดการ</th>
                   </tr>
                 </thead>

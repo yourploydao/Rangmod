@@ -26,6 +26,7 @@ export default async function handler(req, res) {
       agreement,
       contract_duration,
       distance_from_university,
+      location,
       facilities,
       photos,
       rooms
@@ -49,6 +50,7 @@ export default async function handler(req, res) {
         agreement,
         contract_duration,
         distance_from_university,
+        location,
         images: photos.map(photo => photo.url),
         last_updated: new Date()
       },

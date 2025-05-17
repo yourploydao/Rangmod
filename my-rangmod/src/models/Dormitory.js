@@ -20,6 +20,7 @@ const dormitorySchema = new mongoose.Schema({
   contract_duration: Number,
   num_of_rooms: Number,
   distance_from_university: Number,
+  location: String,  // <-- เพิ่มตรงนี้
   last_updated: Date,
   images: [String]
 }, {

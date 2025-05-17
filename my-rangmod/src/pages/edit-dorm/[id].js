@@ -7,6 +7,12 @@ import { connectDB } from '@/lib/mongodb';
 import Dormitory from '@/models/Dormitory';
 import Facility from '@/models/Facility';
 import Room from '@/models/Room';
+import 'leaflet/dist/leaflet.css';
+import dynamic from 'next/dynamic';
+
+const MapSelector = dynamic(() => import('../../components/MapSelector'), {
+  ssr: false, // ปิดการโหลดในฝั่ง Server
+});
 
 export async function getServerSideProps({ params }) {
   try {
@@ -55,7 +61,9 @@ export async function getServerSideProps({ params }) {
         dormitory: {
           ...dormitory,
           _id: dormitory._id.toString(),
-          last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null
+          last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null,
+          distance_from_university: dormitory.distance_from_university || null, // เพิ่มฟิลด์นี้
+          location: dormitory.location || null, // เพิ่มฟิลด์นี้
         },
         facility: facility ? {
           ...facility,
@@ -92,6 +100,7 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
   const roomFileInputRefs = useRef({});
+  const [distanceKm, setDistanceKm] = useState(null);
   
   const [formData, setFormData] = useState({
     dormitoryName: dormitory.name_dormitory || '',
@@ -322,75 +331,156 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
     ));
   };
 
-  const handleMapSelect = () => {
-    setMapLocation({
-      address: "Sample Location, Kahibah",
-      lat: 15.123,
-      lng: 102.456
+const handleMapSelect = (lat, lng) => {
+  const referenceLat = 13.65147;
+  const referenceLng = 100.49620;
+
+  const distance = calculateDistance(lat, lng, referenceLat, referenceLng);
+
+  setMapLocation({ lat, lng, address: `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
+  setDistanceKm(distance.toFixed(2));  // เก็บระยะทาง
+  setShowMapModal(false);
+};
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => (value * Math.PI) / 180;
+  const R = 6371; // Radius of Earth in km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (photos.length < 5) {
+    alert('Please upload at least 5 photos of the dormitory');
+    return;
+  }
+
+  const roomsWithoutPhotos = rooms.filter(room => room.photos.length === 0);
+  if (roomsWithoutPhotos.length > 0) {
+    alert(`Please upload at least one photo for each room. ${roomsWithoutPhotos.map(r => r.name).join(', ')} missing photos.`);
+    return;
+  }
+
+  if (!mapLocation) {
+    alert('Please select a location on the map');
+    return;
+  }
+
+  if (rooms.length < 2) {
+    alert('Please add at least 2 rooms');
+    return;
+  }
+
+  if (![3, 6, 12].includes(Number(formData.contract_duration))) {
+    alert('Please select a valid contract duration (3, 6, or 12 months)');
+    return;
+  }
+
+  if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
+    alert('Please select a valid gate location (Front Gate or Back Gate)');
+    return;
+  }
+
+  try {
+    const combinedLocation = mapLocation?.lat && mapLocation?.lng 
+     ? `${mapLocation.lat},${mapLocation.lng}`
+     : formData.location;
+
+    formData.location = combinedLocation;
+    const distance = distanceKm != null ? distanceKm.toString() : '';
+
+    const response = await fetch(`/api/dormitory/edit/${dormitory._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...formData,
+        location: combinedLocation,
+        distance_from_university: distance,
+        rooms,
+        photos,
+        contract_duration: Number(formData.contract_duration),
+        gate_location: formData.gate_location
+      }),
     });
-    setShowMapModal(false);
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (photos.length < 5) {
-      alert('Please upload at least 5 photos of the dormitory');
-      return;
+    if (!response.ok) {
+      throw new Error('Failed to update dormitory');
     }
+    console.log('🚀 Submitting with formData:', formData);
+    console.log('🗺️ mapLocation:', mapLocation);
+
+
+    alert('Dormitory updated successfully');
+    router.push('/admin/dashboard');
+  } catch (error) {
+    alert(error.message);
+    console.error('Error updating dormitory:', error);
+  }
+};
+
+useEffect(() => {
+  if (dormitory.location && typeof dormitory.location === 'string') {
+    const [latStr, lngStr] = dormitory.location.split(',');
+    const lat = parseFloat(latStr.trim());
+    const lng = parseFloat(lngStr.trim());
+    if (!isNaN(lat) && !isNaN(lng)) {
+      setMapLocation([lat, lng]);
+    }
+  }
+}, [dormitory.location]);
+
+useEffect(() => {
+  if (!mapLocation && dormitory?.location) {
+    const [latStr, lngStr] = dormitory.location.split(',').map(part => part.trim());
+    const lat = parseFloat(latStr);
+    const lng = parseFloat(lngStr);
     
-    const roomsWithoutPhotos = rooms.filter(room => room.photos.length === 0);
-    if (roomsWithoutPhotos.length > 0) {
-      alert(`Please upload at least one photo for each room. ${roomsWithoutPhotos.map(r => r.name).join(', ')} missing photos.`);
-      return;
-    }
-    
-    if (!mapLocation) {
-      alert('Please select a location on the map');
-      return;
-    }
-
-    if (rooms.length < 2) {
-      alert('Please add at least 2 rooms');
-      return;
-    }
-
-    if (![3, 6, 12].includes(Number(formData.contract_duration))) {
-      alert('Please select a valid contract duration (3, 6, or 12 months)');
-      return;
-    }
-
-    if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
-      alert('Please select a valid gate location (Front Gate or Back Gate)');
-      return;
-    }
-    
-    try {
-      const response = await fetch(`/api/dormitory/edit/${dormitory._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          rooms,
-          photos,
-          mapLocation,
-          contract_duration: Number(formData.contract_duration),
-          gate_location: formData.gate_location
-        }),
+    if (!isNaN(lat) && !isNaN(lng)) {
+      setMapLocation({
+        lat,
+        lng,
+        address: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,  // แปลงเลขทศนิยม 5 ตำแหน่ง
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update dormitory');
-      }
-
-      alert('Dormitory updated successfully');
-      router.push('/admin/dashboard');
-    } catch (error) {
-      alert(error.message);
-      console.error('Error updating dormitory:', error);
     }
-  };
+  }
+}, [dormitory, mapLocation]);
+
+  useEffect(() => {
+  if (mapLocation) {
+    const referenceLat = 13.651057; // ตัวอย่างพิกัดอ้างอิง
+    const referenceLng = 100.496321;
+
+    const toRad = (value) => (value * Math.PI) / 180;
+
+    const R = 6371; // Earth's radius in km
+    const dLat = toRad(mapLocation.lat - referenceLat);
+    const dLng = toRad(mapLocation.lng - referenceLng);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(referenceLat)) *
+        Math.cos(toRad(mapLocation.lat)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+
+    setDistanceKm(distance.toFixed(2));
+  }
+}, [mapLocation]);
+
 
   return (
     <div className={styles.container}>
@@ -778,21 +868,6 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
                 />
               </div>
 
-              {/* Distance from University */}
-              <div className={styles.formGroup}>
-                <label htmlFor="distance_from_university" className={styles.formLabel}>Distance from University (km)</label>
-                <input
-                  type="number"
-                  id="distance_from_university"
-                  name="distance_from_university"
-                  className={styles.formInput}
-                  value={formData.distance_from_university}
-                  onChange={handleInputChange}
-                  placeholder="Enter distance"
-                  step="0.1"
-                />
-              </div>
-
               {/* Gate Location */}
               <div className={styles.formGroup}>
                 <label htmlFor="gate_location" className={styles.formLabel}>Gate Location</label>
@@ -825,80 +900,79 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
               </div>
 
               {/* Location Map */}
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Location</label>
-                <div className={styles.mapContainer}>
-                  {mapLocation ? (
-                    <>
-                      <div className={styles.mapPreview}>
-                        <img 
-                          src="/api/placeholder/700/150" 
-                          alt="Map location" 
-                          className={styles.mapImage}
-                        />
-                        <div className={styles.mapOverlay}>
-                          <MapPin size={32} className={styles.mapPinIcon} />
-                        </div>
-                      </div>
-                      <div className={styles.mapAddress}>
-                        <MapPin size={16} className={styles.mapPinSmall} />
-                        <span>{mapLocation.address}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <div 
-                      className={styles.mapSelectArea}
-                      onClick={() => setShowMapModal(true)}
-                    >
-                      <MapPin size={24} className={styles.mapIcon} />
-                      <span className={styles.mapText}>Select Location on Map</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+      <div className={styles.formGroup}>
+        <label className={styles.formLabel}>Location</label>
+        <div className={styles.mapContainer}>
+        {mapLocation ? (
+          <>
+            <div className={styles.mapPreview}>
+        <img
+          src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
+          alt="Map location"
+          className={styles.mapImage}
+          onClick={() => setShowMapModal(true)}  // เพิ่มตรงนี้!
+          style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
+        />
+          </div>
+          {distanceKm && (
+            <div className={styles.mapAddress}>
+              <MapPin size={24} className={styles.mapPinSmall} />
+            <span>{mapLocation.address}</span>
+              <span style={{ marginLeft: '24px', color: '#555', marginBottom: '5px' }}>
+                ระยะห่างจากจุดอ้างอิง: {distanceKm} กม.
+              </span>
+            </div>
+          )}
+        </>
+      ) : (
+        <div 
+          className={styles.mapSelectArea}
+          onClick={() => setShowMapModal(true)}
+        >
+          <MapPin size={24} className={styles.mapIcon} />
+          <span className={styles.mapText}>Select Location on Map</span>
+        </div>
+      )}
 
-              {/* Map Modal */}
-              {showMapModal && (
-                <div className={styles.modalOverlay}>
-                  <div className={styles.mapModal}>
-                    <div className={styles.modalHeader}>
-                      <h3>Select Location</h3>
-                      <button 
-                        className={styles.closeModalBtn}
-                        onClick={() => setShowMapModal(false)}
-                      >
-                        <X size={20} />
-                      </button>
-                    </div>
-                    <div className={styles.modalBody}>
-                      <div className={styles.modalMapContainer}>
-                        <img 
-                          src="/api/placeholder/600/300" 
-                          alt="Google Maps" 
-                          className={styles.modalMapImage} 
-                        />
-                        <div className={styles.mapMarker}>
-                          <MapPin size={32} className={styles.mapPinIcon} />
-                        </div>
-                      </div>
-                      <div className={styles.modalActions}>
-                        <button 
-                          className={styles.cancelBtn}
-                          onClick={() => setShowMapModal(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button 
-                          className={styles.saveLocationBtn}
-                          onClick={handleMapSelect}
-                        >
-                          Save Location
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+        </div>
+      </div>
+
+      {/* Map Modal */}
+      {showMapModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.mapModal}>
+            <div className={styles.modalHeader}>
+              <h3>Select Location</h3>
+              <button 
+                className={styles.closeModalBtn}
+                onClick={() => setShowMapModal(false)}  // ปิด modal
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.modalMapContainer}>
+                {/* ใช้ MapSelector */}
+                <MapSelector onSelect={handleMapSelect} />
+              </div>
+              <div className={styles.modalActions}>
+                <button 
+                  className={styles.cancelBtn}
+                  onClick={() => setShowMapModal(false)}  // ปิด modal
+                >
+                  Cancel
+                </button>
+                <button 
+                  className={styles.saveLocationBtn}
+                  onClick={() => setShowMapModal(false)}  // ปิด modal โดยไม่ทำอะไร
+                >
+                  Save Location
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
               {/* Room Sections */}
               <div className={styles.sectionDivider}>

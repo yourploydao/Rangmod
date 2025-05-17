@@ -27,6 +27,7 @@ export default async function handler(req, res) {
       phone_number,
       agreement,
       distance_from_university,
+      location,
       contract_duration,
       gate_location
     } = req.body;
@@ -79,6 +80,7 @@ export default async function handler(req, res) {
       agreement: agreement || '',
       num_of_rooms: rooms.length,
       distance_from_university: Number(distance_from_university) || 0,
+      location,
       contract_duration: Number(contract_duration),
       gate_location,
       last_updated: new Date().toISOString(),

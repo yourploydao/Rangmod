@@ -44,7 +44,9 @@ export async function getServerSideProps(context) {
     const serializedDormitory = {
       ...dormitory,
       _id: dormitory._id.toString(),
-      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null
+      last_updated: dormitory.last_updated ? new Date(dormitory.last_updated).toISOString() : null,
+      distance_from_university: dormitory.distance_from_university || null,
+      location: dormitory.location || null,
     };
 
     const serializedRooms = rooms.map(room => ({
@@ -63,7 +65,7 @@ export async function getServerSideProps(context) {
       props: { 
         dormitory: serializedDormitory,
         rooms: serializedRooms,
-        facility: serializedFacility
+        facility: serializedFacility,
       },
     };
   } catch (error) {
@@ -113,6 +115,8 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
     
     setActivePhoto(newIndex);
   };
+
+  
 
   return (
     <div className={styles.container}>
@@ -205,13 +209,39 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
         {/* Details and Map */}
         <div className={styles.detailsMapSection}>
           <div className={styles.mapContainer}>
-            <img src="https://1033609670.rsc.cdn77.org/maps/ross-js-aloha-grill-las-vegas-map.jpg" alt="Map Location" className={styles.map} />
+{(() => {
+  const location = dormitory.location || '';
+  const [lat, lng] = location.split(',').map(coord => coord.trim());
+
+  // ตรวจสอบว่ามีพิกัดถูกต้อง
+  if (!lat || !lng) {
+    return <p>Location not available</p>;
+  }
+
+  const googleMapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+  const staticMapUrl = `https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${lat},${lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${lat},${lng}`;
+
+  return (
+    <a href={googleMapUrl} target="_blank" rel="noopener noreferrer">
+      <img
+        src={staticMapUrl}
+        alt="Map Location"
+        className={styles.map}
+      />
+    </a>
+  );
+})()}
+
             <div className={styles.mapDetails}>
               <div className={styles.mapDetail}>
                 <span className={styles.detailIcon}>📍</span>
-                <span>{dormitory.distance_from_university} kilometers away</span>
+                <span>
+                  {dormitory.distance_from_university
+                    ? `${dormitory.distance_from_university.toFixed(2)} kilometers away`
+                    : 'Distance not available'}
+                </span>
               </div>
-              <div className={styles.mapDetail}>
+               <div className={styles.mapDetail}>
                 <span className={styles.detailIcon}>📱</span>
                 <span>{dormitory.phone_number}</span>
               </div>

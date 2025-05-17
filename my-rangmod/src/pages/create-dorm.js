@@ -49,8 +49,8 @@ const CreateDormitoryPage = () => {
     category_dormitory: 'Mixed',
     alley: '',
     address: '',
-    electric_price: '',
-    water_price: '',
+    electric_price: 0,
+    water_price: 0,
     other: 0,
     phone_number: '',
     agreement: '',
@@ -856,6 +856,35 @@ const CreateDormitoryPage = () => {
                   rows={4}
                   placeholder="กรุณาใส่ข้อกำหนดและเงื่อนไข"
                 />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="contract_duration" className={styles.formLabel}>ระยะเวลาขั้นต่ำของสัญญา (months)</label>
+                <select
+                  id="contract_duration"
+                  name="contract_duration"
+                  className={styles.formInput}
+                  value={formData.contract_duration}
+                  onChange={handleInputChange}
+                >
+                  <option value="3">3 เดือน</option>
+                  <option value="6">6 เดือน</option>
+                  <option value="12">12 เดือน</option>
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="gate_location" className={styles.formLabel}>ตำแหน่งประตูทางเข้า</label>
+                <select
+                  id="gate_location"
+                  name="gate_location"
+                  className={styles.formInput}
+                  value={formData.gate_location}
+                  onChange={handleInputChange}
+                >
+                  <option value="Front Gate">หน้ามหาวิทยาลัย</option>
+                  <option value="Back Gate">หลังมหาวิทยาลัย</option>
+                </select>
               </div>
 
               {/* Location Map */}

@@ -1,15 +1,15 @@
-:global(*) {
+/* :global(*) {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
-}
+} */
 
 /* Remove text-decoration from all links */
-:global(a) {
+/* :global(a) {
   text-decoration: none;
   color: inherit;
-}
+} */
 
 .container {
   display: flex;

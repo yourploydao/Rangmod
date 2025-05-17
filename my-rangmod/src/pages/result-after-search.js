@@ -73,7 +73,7 @@ const DormitorySearch = ({ initialDormitories }) => {
     contractDuration: {
       '3 เดือน': false,
       '6 เดือน': false,
-      '12 ปี': false
+      '12 เดือน': false
     },
     gateLocation: {
       'หน้ามหาวิทยาลัย': false,
@@ -82,7 +82,6 @@ const DormitorySearch = ({ initialDormitories }) => {
     facilities: {
       'ไวไฟ': false,
       'เครื่องปรับอากาศ': false,
-      'ห้องน้ำส่วนตัว': false,
       'ตู้เย็น': false,
       'โทรทัศน์': false,
       'ตู้เสื้อผ้า': false,
@@ -91,7 +90,11 @@ const DormitorySearch = ({ initialDormitories }) => {
       'กล้องวงจรปิด': false,
       'โต๊ะทำงาน': false,
       'ที่จอดรถ': false,
-      'ห้องครัว': false
+      'ห้องครัว': false,
+      'เครื่องทำน้ำอุ่น': false,
+      'ร้านสะดวกซื้อ': false,
+      'ร้านซักรีด': false,
+      'พัดลม': false
     }
   });
 
@@ -210,16 +213,19 @@ const DormitorySearch = ({ initialDormitories }) => {
       const facilityMapping = {
         'ไวไฟ': 'wifi',
         'เครื่องปรับอากาศ': 'air_conditioner',
-        'ห้องน้ำส่วนตัว': 'private_bathroom',
         'ตู้เย็น': 'refrigerator',
         'โทรทัศน์': 'television',
-        'ตู้เสื้อผ้า': 'wardrobe',
+        'ตู้เสื้อผ้า': 'closet',
         'ไมโครเวฟ': 'microwave',
         'ระเบียง': 'balcony',
         'กล้องวงจรปิด': 'cctv',
         'โต๊ะทำงาน': 'desk',
         'ที่จอดรถ': 'parking',
-        'ห้องครัว': 'kitchen'
+        'ห้องครัว': 'kitchen',
+        'เครื่องทำน้ำอุ่น': 'water_heater',
+        'ร้านสะดวกซื้อ': 'convenience_store',
+        'ร้านซักรีด': 'laundry',
+        'พัดลม': 'fan'
       };
 
       results = results.filter(dorm => {
@@ -456,9 +462,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                   <label htmlFor={`facility-${facility}`} className={styles.checkboxLabel}>
                     {checked && <span className={styles.checkIcon} style={{ color: 'white' }}>✓</span>}
                   </label>
-                  <span>{facility === 'airConditioner' ? 'Air Conditioner' : 
-                         facility === 'privateBathroom' ? 'Private Bathroom' :
-                         facility.charAt(0).toUpperCase() + facility.slice(1)}</span>
+                  <span>{facility}</span>
                 </div>
               ))}
             </div>

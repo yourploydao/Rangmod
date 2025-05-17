@@ -120,7 +120,7 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
     gate_location: dormitory.gate_location || 'Front Gate',
     facilities: {
       wifi: facility?.facilities?.includes('wifi') || false,
-      airConditioner: facility?.facilities?.includes('air_conditioner') || false,
+      air_conditioner: facility?.facilities?.includes('air_conditioner') || false,
       refrigerator: facility?.facilities?.includes('refrigerator') || false,
       television: facility?.facilities?.includes('television') || false,
       closet: facility?.facilities?.includes('closet') || false,
@@ -130,8 +130,8 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
       desk: facility?.facilities?.includes('desk') || false,
       parking: facility?.facilities?.includes('parking') || false,
       kitchen: facility?.facilities?.includes('kitchen') || false,
-      waterHeater: facility?.facilities?.includes('water_heater') || false,
-      convenienceStore: facility?.facilities?.includes('convenience_store') || false,
+      water_heater: facility?.facilities?.includes('water_heater') || false,
+      convenience_store: facility?.facilities?.includes('convenience_store') || false,
       laundry: facility?.facilities?.includes('laundry') || false,
       fan: facility?.facilities?.includes('fan') || false
     }
@@ -497,7 +497,7 @@ useEffect(() => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src="/assets/admin1.jpeg" alt="Profile" className={styles.profileImage} />
+                  <img src="/assets/admin1.jpeg" alt="รูปโปรไฟล์" className={styles.profileImage} />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -513,7 +513,7 @@ useEffect(() => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -609,18 +609,18 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="wifi" className={styles.checkboxLabel}>WiFi</label>
+                    <label htmlFor="wifi" className={styles.checkboxLabel}>Wifi</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="airConditioner"
-                      name="airConditioner"
-                      checked={formData.facilities.airConditioner}
+                      id="air_conditioner"
+                      name="air_conditioner"
+                      checked={formData.facilities.air_conditioner}
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="airConditioner" className={styles.checkboxLabel}>Air Conditioner</label>
+                    <label htmlFor="air_conditioner" className={styles.checkboxLabel}>เครื่องปรับอากาศ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -631,7 +631,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="refrigerator" className={styles.checkboxLabel}>Refrigerator</label>
+                    <label htmlFor="refrigerator" className={styles.checkboxLabel}>ตู้เย็น</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -642,7 +642,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="television" className={styles.checkboxLabel}>Television</label>
+                    <label htmlFor="television" className={styles.checkboxLabel}>โทรทัศน์</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -653,7 +653,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="closet" className={styles.checkboxLabel}>Closet</label>
+                    <label htmlFor="closet" className={styles.checkboxLabel}>ตู้เสื้อผ้า</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -664,7 +664,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="microwave" className={styles.checkboxLabel}>Microwave</label>
+                    <label htmlFor="microwave" className={styles.checkboxLabel}>ไมโครเวฟ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -675,7 +675,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="balcony" className={styles.checkboxLabel}>Balcony</label>
+                    <label htmlFor="balcony" className={styles.checkboxLabel}>ระเบียง</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -686,7 +686,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="cctv" className={styles.checkboxLabel}>CCTV</label>
+                    <label htmlFor="cctv" className={styles.checkboxLabel}>กล้องวงจรปิด</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -697,7 +697,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="desk" className={styles.checkboxLabel}>Desk</label>
+                    <label htmlFor="desk" className={styles.checkboxLabel}>โต๊ะทำงาน</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -708,7 +708,7 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="parking" className={styles.checkboxLabel}>Parking</label>
+                    <label htmlFor="parking" className={styles.checkboxLabel}>ที่จอดรถ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -719,29 +719,29 @@ useEffect(() => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="kitchen" className={styles.checkboxLabel}>Kitchen</label>
+                    <label htmlFor="kitchen" className={styles.checkboxLabel}>ห้องครัว</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="waterHeater"
-                      name="waterHeater"
-                      checked={formData.facilities.waterHeater}
+                      id="water_heater"
+                      name="water_heater"
+                      checked={formData.facilities.water_heater}
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="waterHeater" className={styles.checkboxLabel}>เครื่องทำน้ำอุ่น</label>
+                    <label htmlFor="water_heater" className={styles.checkboxLabel}>เครื่องทำน้ำอุ่น</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="convenienceStore"
-                      name="convenienceStore"
-                      checked={formData.facilities.convenienceStore}
+                      id="convenience_store"
+                      name="convenience_store"
+                      checked={formData.facilities.convenience_store}
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="convenienceStore" className={styles.checkboxLabel}>ร้านสะดวกซื้อ</label>
+                    <label htmlFor="convenience_store" className={styles.checkboxLabel}>ร้านสะดวกซื้อ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -770,7 +770,7 @@ useEffect(() => {
 
               {/* Dormitory Type */}
               <div className={styles.formGroup}>
-                <label htmlFor="type_dormitory" className={styles.formLabel}>Dormitory Type</label>
+                <label htmlFor="type_dormitory" className={styles.formLabel}>ประเภทที่พักอาศัย</label>
                 <select
                   id="type_dormitory"
                   name="type_dormitory"
@@ -778,18 +778,18 @@ useEffect(() => {
                   value={formData.type_dormitory}
                   onChange={handleInputChange}
                 >
-                  <option value="Apartment">Apartment</option>
-                  <option value="Mansion">Mansion</option>
-                  <option value="Dormitory">Dormitory</option>
-                  <option value="Condominium">Condominium</option>
-                  <option value="House">House</option>
-                  <option value="Townhouse">Townhouse</option>
+                  <option value="Apartment">อพาร์ทเมนท์</option>
+                  <option value="Mansion">แมนชั่น</option>
+                  <option value="Dormitory">หอพัก</option>
+                  <option value="Condominium">คอนโดมิเนียม</option>
+                  <option value="House">บ้าน</option>
+                  <option value="Townhouse">ทาวน์เฮาส์</option>
                 </select>
               </div>
 
               {/* Category */}
               <div className={styles.formGroup}>
-                <label htmlFor="category_dormitory" className={styles.formLabel}>Category</label>
+                <label htmlFor="category_dormitory" className={styles.formLabel}>หมวดหมู่ที่พักอาศัย</label>
                 <select
                   id="category_dormitory"
                   name="category_dormitory"
@@ -797,15 +797,15 @@ useEffect(() => {
                   value={formData.category_dormitory}
                   onChange={handleInputChange}
                 >
-                  <option value="Mixed">Mixed</option>
-                  <option value="Male">Male Only</option>
-                  <option value="Female">Female Only</option>
+                  <option value="Mixed">ที่พักอาศัยรวม</option>
+                  <option value="Male">ที่พักอาศัยชาย</option>
+                  <option value="Female">ที่พักอาศัยหญิง</option>
                 </select>
               </div>
 
               {/* Alley */}
               <div className={styles.formGroup}>
-                <label htmlFor="alley" className={styles.formLabel}>Alley</label>
+                <label htmlFor="alley" className={styles.formLabel}>ซอย</label>
                 <input
                   type="text"
                   id="alley"
@@ -813,27 +813,27 @@ useEffect(() => {
                   className={styles.formInput}
                   value={formData.alley}
                   onChange={handleInputChange}
-                  placeholder="Enter alley"
+                  placeholder="กรุณากรอกซอย"
                 />
               </div>
 
               {/* Address */}
               <div className={styles.formGroup}>
-                <label htmlFor="address" className={styles.formLabel}>Address</label>
+                <label htmlFor="address" className={styles.formLabel}>ที่อยู่</label>
                 <textarea
                   id="address"
                   name="address"
                   className={styles.formTextarea}
                   value={formData.address}
                   onChange={handleInputChange}
-                  placeholder="Enter full address"
+                  placeholder="กรุณาใส่ที่อยู่ให้ครบถ้วน"
                   rows={3}
                 />
               </div>
 
               {/* Electric Price */}
               <div className={styles.formGroup}>
-                <label htmlFor="electric_price" className={styles.formLabel}>Electric Price (per unit)</label>
+                <label htmlFor="electric_price" className={styles.formLabel}>ค่าไฟ (per unit)</label>
                 <input
                   type="number"
                   id="electric_price"
@@ -841,13 +841,13 @@ useEffect(() => {
                   className={styles.formInput}
                   value={formData.electric_price}
                   onChange={handleInputChange}
-                  placeholder="Enter electric price"
+                  placeholder="ค่าไฟ (บาท/หน่วย)"
                 />
               </div>
 
               {/* Water Price */}
               <div className={styles.formGroup}>
-                <label htmlFor="water_price" className={styles.formLabel}>Water Price (per unit)</label>
+                <label htmlFor="water_price" className={styles.formLabel}>ค่าน้ำ (per unit)</label>
                 <input
                   type="number"
                   id="water_price"
@@ -855,13 +855,13 @@ useEffect(() => {
                   className={styles.formInput}
                   value={formData.water_price}
                   onChange={handleInputChange}
-                  placeholder="Enter water price"
+                  placeholder="ค่าน้ำ (บาท/หน่วย)"
                 />
               </div>
 
               {/* Other Fees */}
               <div className={styles.formGroup}>
-                <label htmlFor="other" className={styles.formLabel}>Other Fees (per year)</label>
+                <label htmlFor="other" className={styles.formLabel}>ค่าบริการอื่น ๆ (per year)</label>
                 <input
                   type="number"
                   id="other"
@@ -869,13 +869,13 @@ useEffect(() => {
                   className={styles.formInput}
                   value={formData.other}
                   onChange={handleInputChange}
-                  placeholder="Enter other fees"
+                  placeholder="ค่าบริการอื่น ๆ (บาท/ปี)"
                 />
               </div>
 
               {/* Phone Number */}
               <div className={styles.formGroup}>
-                <label htmlFor="phone_number" className={styles.formLabel}>Phone Number</label>
+                <label htmlFor="phone_number" className={styles.formLabel}>เบอร์โทรศัพท์</label>
                 <input
                   type="tel"
                   id="phone_number"
@@ -883,13 +883,13 @@ useEffect(() => {
                   className={styles.formInput}
                   value={formData.phone_number}
                   onChange={handleInputChange}
-                  placeholder="Enter phone number"
+                  placeholder="กรุณาใส่เบอร์โทรศัพท์"
                 />
               </div>
 
               {/* Agreement */}
               <div className={styles.formGroup}>
-                <label htmlFor="agreement" className={styles.formLabel}>Agreement Terms</label>
+                <label htmlFor="agreement" className={styles.formLabel}>ข้อกำหนดและเงื่อนไข</label>
                 <textarea
                   id="agreement"
                   name="agreement"
@@ -897,13 +897,13 @@ useEffect(() => {
                   value={formData.agreement}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder="Enter agreement terms"
+                  placeholder="กรุณาใส่ข้อกำหนดและเงื่อนไข"
                 />
               </div>
 
               {/* Gate Location */}
               <div className={styles.formGroup}>
-                <label htmlFor="gate_location" className={styles.formLabel}>Gate Location</label>
+                <label htmlFor="gate_location" className={styles.formLabel}>ตำแหน่งประตูทางเข้า</label>
                 <select
                   id="gate_location"
                   name="gate_location"
@@ -911,14 +911,14 @@ useEffect(() => {
                   value={formData.gate_location}
                   onChange={handleInputChange}
                 >
-                  <option value="Front Gate">Front Gate</option>
-                  <option value="Back Gate">Back Gate</option>
+                  <option value="Front Gate">หน้ามหาวิทยาลัย</option>
+                  <option value="Back Gate">หลังมหาวิทยาลัย</option>
                 </select>
               </div>
 
               {/* Contract Duration */}
               <div className={styles.formGroup}>
-                <label htmlFor="contract_duration" className={styles.formLabel}>Contract Duration (months)</label>
+                <label htmlFor="contract_duration" className={styles.formLabel}>ระยะเวลาขั้นต่ำของสัญญา (months)</label>
                 <select
                   id="contract_duration"
                   name="contract_duration"
@@ -926,9 +926,9 @@ useEffect(() => {
                   value={formData.contract_duration}
                   onChange={handleInputChange}
                 >
-                  <option value="3">3 Months</option>
-                  <option value="6">6 Months</option>
-                  <option value="12">12 Months</option>
+                  <option value="3">3 เดือน</option>
+                  <option value="6">6 เดือน</option>
+                  <option value="12">1 ปี</option>
                 </select>
               </div>
 
@@ -1009,7 +1009,7 @@ useEffect(() => {
 
               {/* Room Sections */}
               <div className={styles.sectionDivider}>
-                <h3 className={styles.sectionTitle}>Room Details</h3>
+                <h3 className={styles.sectionTitle}>ข้อมูลห้องพัก</h3>
               </div>
 
               {rooms.map((room) => (
@@ -1023,13 +1023,13 @@ useEffect(() => {
                       disabled={rooms.length === 1}
                     >
                       <Trash2 size={16} />
-                      Remove Room
+                      นำห้องออก
                     </button>
                   </div>
                   
                   {/* Room Photos */}
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Your Room Photos</label>
+                    <label className={styles.formLabel}>รูปห้องของคุณ</label>
                     <div className={styles.photoGallery}>
                       {room.photos.map(photo => (
                         <div key={photo.id} className={styles.photoPreview}>
@@ -1050,7 +1050,7 @@ useEffect(() => {
                           onClick={() => roomFileInputRefs.current[`room-${room.id}`].click()}
                         >
                           <Upload size={24} className={styles.uploadIcon} />
-                          <span className={styles.uploadText}>Change Image</span>
+                          <span className={styles.uploadText}>เปลี่ยนรูปภาพ</span>
                           <input
                             type="file"
                             ref={el => roomFileInputRefs.current[`room-${room.id}`] = el}
@@ -1066,11 +1066,11 @@ useEffect(() => {
                   <div className={styles.formRow}>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Room Type</label>
+                        <label className={styles.formLabel}>ประเภทห้องพัก</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
-                          placeholder="Single room" 
+                          placeholder="ห้องเดี่ยว" 
                           value={room.type}
                           onChange={(e) => handleRoomInputChange(room.id, 'type', e.target.value)}
                         />
@@ -1078,7 +1078,7 @@ useEffect(() => {
                     </div>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Room Price (per month)</label>
+                        <label className={styles.formLabel}>ราคาห้องพัก (ต่อเดือน)</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
@@ -1093,7 +1093,7 @@ useEffect(() => {
                   <div className={styles.formRow}>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Room Size (meter)</label>
+                        <label className={styles.formLabel}>ขนาดห้องพัก (ตารางเมตร)</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
@@ -1105,7 +1105,7 @@ useEffect(() => {
                     </div>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Number of Beds</label>
+                        <label className={styles.formLabel}>จำนวนเตียง</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
@@ -1125,7 +1125,7 @@ useEffect(() => {
                   className={styles.addRoomButton}
                   onClick={handleAddRoom}
                 >
-                  + Add room
+                  + สร้างห้องพักเพิ่ม
                 </button>
               </div>
 
@@ -1135,7 +1135,7 @@ useEffect(() => {
                   className={styles.createButton}
                   onClick={handleSubmit}
                 >
-                  Update Dormitory
+                  อัปเดตที่พัก
                 </button>
               </div>
             </div>

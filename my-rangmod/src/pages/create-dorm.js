@@ -46,8 +46,7 @@ const CreateDormitoryPage = () => {
     gate_location: 'Front Gate',
     facilities: {
       wifi: false,
-      airConditioner: false,
-      privateBathroom: false,
+      air_conditioner: false,
       refrigerator: false,
       television: false,
       closet: false,
@@ -57,8 +56,8 @@ const CreateDormitoryPage = () => {
       desk: false,
       parking: false,
       kitchen: false,
-      waterHeater: false,
-      convenienceStore: false,
+      water_heater: false,
+      convenience_store: false,
       laundry: false,
       fan: false
     }
@@ -388,7 +387,7 @@ const handleMapSelect = (lat, lng) => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src="/assets/admin1.jpeg" alt="Profile" className={styles.profileImage} />
+                  <img src="/assets/admin1.jpeg" alt="รูปโปรไฟล์" className={styles.profileImage} />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -404,7 +403,7 @@ const handleMapSelect = (lat, lng) => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>ออกจากรบบ</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -503,18 +502,18 @@ const handleMapSelect = (lat, lng) => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="wifi" className={styles.checkboxLabel}>ไวไฟ</label>
+                    <label htmlFor="wifi" className={styles.checkboxLabel}>Wifi</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="airConditioner"
-                      name="airConditioner"
-                      checked={formData.facilities.airConditioner}
+                      id="air_conditioner"
+                      name="air_conditioner"
+                      checked={formData.facilities.air_conditioner}
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="airConditioner" className={styles.checkboxLabel}>เครื่องปรับอากาศ</label>
+                    <label htmlFor="air_conditioner" className={styles.checkboxLabel}>เครื่องปรับอากาศ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -618,24 +617,24 @@ const handleMapSelect = (lat, lng) => {
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="waterHeater"
-                      name="waterHeater"
-                      checked={formData.facilities.waterHeater}
+                      id="water_heater"
+                      name="water_heater"
+                      checked={formData.facilities.water_heater}
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="waterHeater" className={styles.checkboxLabel}>เครื่องทำน้ำอุ่น</label>
+                    <label htmlFor="water_heater" className={styles.checkboxLabel}>เครื่องทำน้ำอุ่น</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="convenienceStore"
-                      name="convenienceStore"
-                      checked={formData.facilities.convenienceStore}
+                      id="convenience_store"
+                      name="convenience_store"
+                      checked={formData.facilities.convenience_store}
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="convenienceStore" className={styles.checkboxLabel}>ร้านสะดวกซื้อ</label>
+                    <label htmlFor="convenience_store" className={styles.checkboxLabel}>ร้านสะดวกซื้อ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input

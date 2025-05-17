@@ -4,7 +4,7 @@ import Link from 'next/link';
 import styles from "../styles/chatbot.module.css";
 import Header from "../components/navigation";
 import Footer from "../components/footer";
-import { getChatResponse } from "../lib/Chat";
+import { getChatResponse } from "../lib/ai/chat.ts";
 
 export default function ChatbotPage() {
   const [messages, setMessages] = useState([]);

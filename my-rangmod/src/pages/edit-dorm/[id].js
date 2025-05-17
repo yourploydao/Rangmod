@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, Trash2, MapPin } from 'lucide-react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import styles from "../../styles/create-dorm.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 import { connectDB } from '@/lib/mongodb';
@@ -101,6 +102,16 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
   const fileInputRef = useRef(null);
   const roomFileInputRefs = useRef({});
   const [distanceKm, setDistanceKm] = useState(null);
+  const [userData, setUserData] = useState({
+    name: '',
+    username: '',
+    phone: '',
+    email: '',
+    role: 'User',
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   const [formData, setFormData] = useState({
     dormitoryName: dormitory.name_dormitory || '',
@@ -137,19 +148,68 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
     }
   });
   
-  const userData = {
-    username: "Admin"
-  };
-  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+          router.push('/signin');
+          return;
+        }
+
+        const response = await axios.get('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            phone: user.phone || 'Not set',
+            email: user.email,
+            role: user.role || 'User',
+            profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+          });
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
+          router.push('/signin');
+          return;
+        }
+        console.error('Error fetching user data:', err);
+        setError('Failed to load user data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
+
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
-  
-  const handleLogout = () => {
-    console.log("Logging out...");
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      // Clear any local storage or state
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองอีกครั้ง');
+    }
     setShowDropdown(false);
   };
-  
+
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -481,6 +541,21 @@ useEffect(() => {
   }
 }, [mapLocation]);
 
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -497,7 +572,15 @@ useEffect(() => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src="/assets/admin1.jpeg" alt="รูปโปรไฟล์" className={styles.profileImage} />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="รูปโปรไฟล์" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>

@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, Trash2, MapPin } from 'lucide-react';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 import styles from "../styles/create-dorm.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 import 'leaflet/dist/leaflet.css';
@@ -10,6 +12,7 @@ const MapSelector = dynamic(() => import('../components/MapSelector'), {
 });
 
 const CreateDormitoryPage = () => {
+  const router = useRouter();
   const [rooms, setRooms] = useState([{ 
     id: 1, 
     name: 'Room 1',
@@ -27,6 +30,16 @@ const CreateDormitoryPage = () => {
   const fileInputRef = useRef(null);
   const roomFileInputRefs = useRef({});
   const [distanceKm, setDistanceKm] = useState(null);
+  const [userData, setUserData] = useState({
+    name: '',
+    username: '',
+    phone: '',
+    email: '',
+    role: 'User',
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
     dormitoryName: '',
@@ -63,20 +76,67 @@ const CreateDormitoryPage = () => {
     }
   });
   
-  const userData = {
-    username: "Admin"
-  };
-  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+          router.push('/signin');
+          return;
+        }
+
+        const response = await axios.get('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            phone: user.phone || 'Not set',
+            email: user.email,
+            role: user.role || 'User',
+            profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+          });
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
+          router.push('/signin');
+          return;
+        }
+        console.error('Error fetching user data:', err);
+        setError('Failed to load user data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
+
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
-  
-  const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("กำลังออกจากระบบ...");
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      // Clear any local storage or state
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองอีกครั้ง');
+    }
     setShowDropdown(false);
   };
-  
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -268,33 +328,31 @@ const CreateDormitoryPage = () => {
     ));
   };
 
+  const handleMapSelect = (lat, lng) => {
+    const referenceLat = 13.65147;
+    const referenceLng = 100.49620;
 
-const handleMapSelect = (lat, lng) => {
-  const referenceLat = 13.65147;
-  const referenceLng = 100.49620;
+    const distance = calculateDistance(lat, lng, referenceLat, referenceLng);
 
-  const distance = calculateDistance(lat, lng, referenceLat, referenceLng);
-
-  setMapLocation({ lat, lng, address: `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
-  setDistanceKm(distance.toFixed(2));  // เก็บระยะทาง
-  setShowMapModal(false);
-};
+    setMapLocation({ lat, lng, address: `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
+    setDistanceKm(distance.toFixed(2));  // เก็บระยะทาง
+    setShowMapModal(false);
+  };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const toRad = (value) => (value * Math.PI) / 180;
-  const R = 6371; // Radius of Earth in km
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
-
+    const toRad = (value) => (value * Math.PI) / 180;
+    const R = 6371; // Radius of Earth in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -333,7 +391,6 @@ const handleMapSelect = (lat, lng) => {
     }
     
     try {
-
       const combinedLocation = mapLocation?.lat && mapLocation?.lng 
        ? `${mapLocation.lat},${mapLocation.lng}`
        : formData.location;
@@ -371,10 +428,25 @@ const handleMapSelect = (lat, lng) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.layout}>
-        {/* Use the imported Sidebar component */}
         <SidebarAdmin />
 
         <div className={styles.mainContent}>
@@ -387,7 +459,15 @@ const handleMapSelect = (lat, lng) => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src="/assets/admin1.jpeg" alt="รูปโปรไฟล์" className={styles.profileImage} />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="รูปโปรไฟล์" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -412,14 +492,12 @@ const handleMapSelect = (lat, lng) => {
             </div>
           </div>
 
-          {/* Main Form Content */}
           <div className={styles.formSection}>
             <h1 className={styles.contentTitle}>หน้าควบคุมแอดมิน</h1>
             
             <div className={styles.formContainer}>
               <h2 className={styles.sectionTitle}>ส่วนรายละเอียดหอพัก</h2>
               
-              {/* Dormitory Name */}
               <div className={styles.formGroup}>
                 <label htmlFor="dormitoryName" className={styles.formLabel}>ชื่อหอพัก</label>
                 <input
@@ -433,11 +511,9 @@ const handleMapSelect = (lat, lng) => {
                 />
               </div>
 
-              {/* Dormitory Photos */}
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>รูปภาพหอพักของคุณ (จำเป็นต้องมีรูปภาพ 5–10 รูป)</label>
                 <div className={styles.photoGallery}>
-                  {/* Display uploaded photos */}
                   {photos.map(photo => (
                     <div key={photo.id} className={styles.photoPreview}>
                       <img src={photo.url} alt={photo.name} />
@@ -451,7 +527,6 @@ const handleMapSelect = (lat, lng) => {
                     </div>
                   ))}
                   
-                  {/* Upload button (only show if less than 10 photos) */}
                   {photos.length < 10 && (
                     <div 
                       className={styles.photoUploadArea}
@@ -475,7 +550,6 @@ const handleMapSelect = (lat, lng) => {
                 </div>
               </div>
 
-              {/* Description */}
               <div className={styles.formGroup}>
                 <label htmlFor="description" className={styles.formLabel}>คำอธิบายหอพัก</label>
                 <textarea
@@ -489,7 +563,6 @@ const handleMapSelect = (lat, lng) => {
                 />
               </div>
 
-              {/* Facilities */}
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>สิ่งอำนวยความสะดวก</label>
                 <div className={styles.facilitiesGrid}>
@@ -661,7 +734,6 @@ const handleMapSelect = (lat, lng) => {
                 </div>
               </div>
 
-              {/* Add these new form fields before the Location Map section */}
               <div className={styles.formGroup}>
                 <label htmlFor="type_dormitory" className={styles.formLabel}>ประเภทที่พักอาศัย</label>
                 <select
@@ -785,130 +857,43 @@ const handleMapSelect = (lat, lng) => {
                   placeholder="กรุณาใส่ข้อกำหนดและเงื่อนไข"
                 />
               </div>
-              {/*
 
               <div className={styles.formGroup}>
-                <label htmlFor="distance_from_university" className={styles.formLabel}>ระยะห่างจากมหาวิทยาลัย (km)</label>
-                <input
-                  type="number"
-                  id="distance_from_university"
-                  name="distance_from_university"
-                  className={styles.formInput}
-                  value={formData.distance_from_university}
-                  onChange={handleInputChange}
-                  placeholder="กรุณาใส่ระยะห่างจากมหาวิทยาลัย"
-                  step="0.1"
-                />
+                <label className={styles.formLabel}>Location</label>
+                <div className={styles.mapContainer}>
+                  {mapLocation ? (
+                    <>
+                      <div className={styles.mapPreview}>
+                        <img
+                          src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
+                          alt="Map location"
+                          className={styles.mapImage}
+                          onClick={() => setShowMapModal(true)}
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </div>
+                      {distanceKm && (
+                        <div className={styles.mapAddress}>
+                          <MapPin size={24} className={styles.mapPinSmall} />
+                          <span>{mapLocation.address}</span>
+                          <span style={{ marginLeft: '24px', color: '#555', marginBottom: '5px' }}>
+                            ระยะห่างจากจุดอ้างอิง: {distanceKm} กม.
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div 
+                      className={styles.mapSelectArea}
+                      onClick={() => setShowMapModal(true)}
+                    >
+                      <MapPin size={24} className={styles.mapIcon} />
+                      <span className={styles.mapText}>Select Location on Map</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
-
-              {/* Add Gate Location selection before the Contract Duration section */}
-              <div className={styles.formGroup}>
-                <label htmlFor="gate_location" className={styles.formLabel}>ตำแหน่งประตูทางเข้า</label>
-                <select
-                  id="gate_location"
-                  name="gate_location"
-                  className={styles.formInput}
-                  value={formData.gate_location}
-                  onChange={handleInputChange}
-                >
-                  <option value="Front Gate">หน้ามหาวิทยาลัย</option>
-                  <option value="Back Gate">หลังมหาวิทยาลัย</option>
-                </select>
-              </div>
-
-              {/* Contract Duration selection */}
-              <div className={styles.formGroup}>
-                <label htmlFor="contract_duration" className={styles.formLabel}>ระยะเวลาขั้นต่ำของสัญญา (months)</label>
-                <select
-                  id="contract_duration"
-                  name="contract_duration"
-                  className={styles.formInput}
-                  value={formData.contract_duration}
-                  onChange={handleInputChange}
-                >
-                  <option value="3">3 เดือน</option>
-                  <option value="6">6 เดือน</option>
-                  <option value="12">1 ปี</option>
-                </select>
-              </div>
-
-              {/* Location Map */}
-               <div className={styles.formGroup}>
-                 <label className={styles.formLabel}>Location</label>
-                 <div className={styles.mapContainer}>
-                 {mapLocation ? (
-                   <>
-                     <div className={styles.mapPreview}>
-                 <img
-                   src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
-                   alt="Map location"
-                   className={styles.mapImage}
-                   onClick={() => setShowMapModal(true)}  // เพิ่มตรงนี้!
-                   style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
-                 />
-                   </div>
-                   {distanceKm && (
-                     <div className={styles.mapAddress}>
-                       <MapPin size={24} className={styles.mapPinSmall} />
-                     <span>{mapLocation.address}</span>
-                       <span style={{ marginLeft: '24px', color: '#555', marginBottom: '5px' }}>
-                         ระยะห่างจากจุดอ้างอิง: {distanceKm} กม.
-                       </span>
-                     </div>
-                   )}
-                 </>
-               ) : (
-                 <div 
-                   className={styles.mapSelectArea}
-                   onClick={() => setShowMapModal(true)}
-                 >
-                   <MapPin size={24} className={styles.mapIcon} />
-                   <span className={styles.mapText}>Select Location on Map</span>
-                 </div>
-               )}
-
-                 </div>
-               </div>
-             
-               {/* Map Modal */}
-               {showMapModal && (
-                 <div className={styles.modalOverlay}>
-                   <div className={styles.mapModal}>
-                     <div className={styles.modalHeader}>
-                       <h3>Select Location</h3>
-                       <button 
-                         className={styles.closeModalBtn}
-                         onClick={() => setShowMapModal(false)}  // ปิด modal
-                       >
-                         <X size={20} />
-                       </button>
-                     </div>
-                     <div className={styles.modalBody}>
-                       <div className={styles.modalMapContainer}>
-                         {/* ใช้ MapSelector */}
-                         <MapSelector onSelect={handleMapSelect} />
-                       </div>
-                       <div className={styles.modalActions}>
-                         <button 
-                           className={styles.cancelBtn}
-                           onClick={() => setShowMapModal(false)}  // ปิด modal
-                         >
-                           Cancel
-                         </button>
-                         <button 
-                           className={styles.saveLocationBtn}
-                           onClick={() => setShowMapModal(false)}  // ปิด modal โดยไม่ทำอะไร
-                         >
-                           Save Location
-                         </button>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               )}
-
-              {/* Room Sections */}
               <div className={styles.sectionDivider}>
                 <h3 className={styles.sectionTitle}>ข้อมูลห้องพัก</h3>
               </div>
@@ -928,11 +913,9 @@ const handleMapSelect = (lat, lng) => {
                     </button>
                   </div>
                   
-                  {/* Room Photos */}
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>รูปห้องของคุณ</label>
                     <div className={styles.photoGallery}>
-                      {/* Display uploaded room photos */}
                       {room.photos.map(photo => (
                         <div key={photo.id} className={styles.photoPreview}>
                           <img src={photo.url} alt={photo.name} />
@@ -946,7 +929,6 @@ const handleMapSelect = (lat, lng) => {
                         </div>
                       ))}
                       
-                      {/* Upload button for room photos */}
                       {room.photos.length < 5 && (
                         <div 
                           className={styles.photoUploadArea}

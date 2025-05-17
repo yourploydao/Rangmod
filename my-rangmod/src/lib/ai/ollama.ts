@@ -4,7 +4,7 @@ export async function askOllama(prompt: string): Promise<string> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'qwen1.5:4b-instruct', // ชื่อที่คุณจะ convert ใส่ทีหลัง
+      model: 'qwen1.5-0.5b-lora', // ชื่อจริงของ fine-tuned model ที่ convert ลง Ollama
       prompt,
       stream: false
     })

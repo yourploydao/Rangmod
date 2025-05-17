@@ -1,18 +1,21 @@
-// src/lib/ai/chat.ts
-import { askOllama } from './ollama'
-import { searchSimilar } from './vectorSearch'
+export const getChatResponse = async (question: string): Promise<string> => {
+  // 1. ดึง context จาก API
+  const contextRes = await fetch("/api/ai/context", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: question }),
+  })
 
-export async function generateAnswer(userQuestion: string): Promise<string> {
-  const contexts = await searchSimilar(userQuestion)
-  const contextText = contexts.map(c => `- ${c}`).join('\n')
+  const contextData = await contextRes.json()
+  const context = contextData.context || ""
 
-  const prompt = `
-คุณคือแชทบอทแนะนำหอพักในกรุงเทพ
-คำถาม: ${userQuestion}
-ข้อมูลหอพัก:
-${contextText}
-โปรดตอบคำถามโดยอิงจากข้อมูลด้านบน ใช้ภาษาที่สุภาพ
-  `.trim()
+  // 2. ส่ง context + question ไปยัง FastAPI
+  const res = await fetch("http://localhost:8000/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, context }),
+  })
 
-  return await askOllama(prompt)
+  const data = await res.json()
+  return data.answer
 }

@@ -1,11 +1,10 @@
-// src/lib/ai/buildVectors.ts
-// ทำเป็น buildVectors.mts (เนื่องจากใช้ esในts ไม่ได้เลยแยกไฟล์ออกมา)
+// buildVectors.mts (เนื่องจากใช้ esในts ไม่ได้เลยแยกไฟล์ออกมา)
 import fs from 'fs'
 import path from 'path'
 import { getCombinedDormData } from './mongo'
 import { getLocalEmbedding } from './embedding'
 
-export async function buildEmbeddingJson() {
+async function buildEmbeddingJson() {
   const data = await getCombinedDormData()
   console.log('🔍 ดึงหอพักสำเร็จ:', data.length, 'รายการ')
 
@@ -25,4 +24,4 @@ export async function buildEmbeddingJson() {
   console.log('✅ บันทึก dorm_vectors.json เรียบร้อยแล้ว')
 }
 
-buildEmbeddingJson();
+buildEmbeddingJson()

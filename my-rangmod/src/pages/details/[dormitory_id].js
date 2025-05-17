@@ -302,10 +302,6 @@ const DormitoryDetail = ({ dormitory, rooms, facility }) => {
                     <span className={styles.roomIcon}>🛏️</span>
                     <span>{room.room_type}</span>
                   </div>
-                  <div className={styles.roomDetail}>
-                    <span className={styles.roomIcon}>📊</span>
-                    <span>{room.availability_status ? 'Available' : 'Not Available'}</span>
-                  </div>
                 </div>
               </div>
             ))}

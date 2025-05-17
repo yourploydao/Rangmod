@@ -374,7 +374,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                   <label htmlFor={`duration-${duration}`} className={styles.checkboxLabel}>
                     {checked && <span className={styles.checkIcon} style={{ color: 'white' }}>✓</span>}
                   </label>
-                  <span>{duration} Months</span>
+                  <span>{duration}</span>
                 </div>
               ))}
             </div>

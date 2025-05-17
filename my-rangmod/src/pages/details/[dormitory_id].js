@@ -111,11 +111,11 @@ const facilityTranslations = {
 
 const dormitoryTypeTranslations = {
   'apartment': 'อพาร์ตเมนต์',
-  'mansion': 'แมนชั่น',
+  'mansion': 'แมนชัน',
   'dormitory': 'หอพัก',
   'condominium': 'คอนโดมิเนียม',
   'house': 'บ้าน',
-  'townhouse': 'ทาวน์เฮ้าส์'
+  'townhouse': 'ทาวน์เฮาส์'
 };
 
 

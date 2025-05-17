@@ -16,19 +16,19 @@ const SidebarAdmin = () => {
     {
       key: 'ศูนย์ข้อมูล',
       icon: "https://cdn-icons-png.flaticon.com/128/2948/2948025.png",
-      text: "Dashboard",
+      text: "ศูนย์ข้อมูล",
       path: "/admin/dashboard"
     },
     {
       key: 'ผู้ใช้งาน',
       icon: "https://cdn-icons-png.flaticon.com/128/511/511587.png",
-      text: "Users",
+      text: "ผู้ใช้งาน",
       path: "/admin/user"
     },
     {
       key: 'ตั้งค่า',
       icon: "https://cdn-icons-png.flaticon.com/128/503/503822.png",
-      text: "Setting",
+      text: "ตั้งค่า",
       path: "/admin/account-setting"
     }
   ];
@@ -49,12 +49,12 @@ const SidebarAdmin = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <Link href="/homepage">
+        <a href="/homepage" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
-            <span className={styles.logoText}>RANGMOD</span>
+            <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
-        </Link>
+        </a>
       </div>
       <nav className={styles.sidebarNav}>
         <ul className={styles.navList}>

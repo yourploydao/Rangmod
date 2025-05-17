@@ -63,11 +63,11 @@ const AdminPermission = () => {
           setTotalPages(Math.ceil(response.data.requests.length / 10));
         }
       } catch (err) {
-        console.error('Error fetching permission requests:', err);
+        console.error('เกิดข้อผิดพลาดในการดึงคำขออนุญาต:', err);
         setNotification({
           show: true,
-          message: 'Failed to load permission requests',
-          type: 'error'
+          message: 'ไม่สามารถโหลดคำขออนุญาตได้',
+          type: 'เกิดข้อผิดพลาด'
         });
       } finally {
         setIsLoading(false);
@@ -88,7 +88,7 @@ const AdminPermission = () => {
       router.push("/signin");
     } catch (err) {
       console.error('Logout error:', err);
-      alert('Failed to logout. Please try again.');
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
     }
   };
 
@@ -132,15 +132,15 @@ const AdminPermission = () => {
         setUserToUpdate(null);
         setNotification({
           show: true,
-          message: `Permission request ${action}ed successfully`,
+          message: `คำขออนุญาต${action} สำเร็จแล้ว`,
           type: 'success'
         });
       }
     } catch (err) {
-      console.error('Error handling permission request:', err);
+      console.error('เกิดข้อผิดพลาดในการจัดการคำขออนุญาต:', err);
       setNotification({
         show: true,
-        message: `Failed to ${action} permission request`,
+        message: `ไม่สามารถ${action}คำขออนุญาตได้`,
         type: 'error'
       });
     }
@@ -177,8 +177,8 @@ const AdminPermission = () => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้เป็นวันที่ดี!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -208,7 +208,7 @@ const AdminPermission = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากรบบ</span>
                       </div>
                     </div>
                   )}
@@ -218,7 +218,7 @@ const AdminPermission = () => {
           </div>
           
           <div className={styles.dashboardHeader}>
-            <h2 className={styles.dashboardTitle}>Admin Owner Permissions</h2>
+            <h2 className={styles.dashboardTitle}>สิทธิ์ผู้ดูแลเจ้าของระบบ</h2>
           </div>
           
           <div className={styles.searchSortContainer}>
@@ -250,7 +250,7 @@ const AdminPermission = () => {
                 </div>
               </div>
               <button className={styles.addUserButton} onClick={handleAddOwner}>
-                Add Owner +
+              เพิ่มผู้ดูแล +
               </button>
             </div>
           </div>
@@ -262,12 +262,12 @@ const AdminPermission = () => {
               <table className={styles.userTable}>
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Request Date</th>
-                    <th>Action</th>
+                    <th>ไอดี</th>
+                    <th>ชื่อ</th>
+                    <th>อีเมล</th>
+                    <th>โทรศัพท์</th>
+                    <th>วันที่ส่งคำขอ</th>
+                    <th>การจัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -295,7 +295,7 @@ const AdminPermission = () => {
                                 setUserToUpdate(user);
                                 setShowRoleModal(true);
                               }}
-                              title="Review Request"
+                              title="คำขอทบทวน"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -305,7 +305,7 @@ const AdminPermission = () => {
                             <button 
                               className={styles.deleteButton}
                               onClick={() => handleDeleteUserPrompt(user._id)}
-                              title="Delete Request"
+                              title="คำร้องขอลบ"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="3 6 5 6 21 6"></polyline>

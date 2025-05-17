@@ -62,7 +62,7 @@ const AdminUsers = () => {
         setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error('Error fetching users:', error);
-        showNotification('Error fetching users', 'error');
+        showNotification('ไม่สามารถดึงข้อมูลผู้ใช้ได้', 'error');
       } finally {
         setIsLoading(false);
       }
@@ -88,7 +88,7 @@ const AdminUsers = () => {
       router.push("/signin");
     } catch (err) {
       console.error('Logout error:', err);
-      showNotification('Failed to logout', 'error');
+      showNotification('ออกจากระบบไม่สำเร็จ', 'เกิดข้อผิดพลาด');
     }
   };
 
@@ -112,10 +112,10 @@ const AdminUsers = () => {
       setAdminUsers(adminUsers.filter(user => user._id !== userToDelete));
       setShowDeleteModal(false);
       setUserToDelete(null);
-      showNotification('User deleted successfully');
+      showNotification('ลบผู้ใช้เรียบร้อยแล้ว');
     } catch (error) {
       console.error('Error deleting user:', error);
-      showNotification('Error deleting user', 'error');
+      showNotification('เกิดข้อผิดพลาดในการลบผู้ใช้', 'เกิดข้อผิดพลาด');
     }
   };
 
@@ -127,10 +127,10 @@ const AdminUsers = () => {
       ));
       setShowRoleModal(false);
       setUserToUpdate(null);
-      showNotification('User role updated successfully');
+      showNotification('เปลี่ยนบทบาทผู้ใช้เรียบร้อยแล้ว');
     } catch (error) {
       console.error('Error updating user role:', error);
-      showNotification('Error updating user role', 'error');
+      showNotification('เกิดข้อผิดพลาดในการปรับปรุงบทบาทผู้ใช้', 'เกิดข้อผิดพลาด');
     }
   };
 
@@ -169,8 +169,8 @@ const AdminUsers = () => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -200,7 +200,7 @@ const AdminUsers = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -210,7 +210,7 @@ const AdminUsers = () => {
           </div>
           
           <div className={styles.dashboardHeader}>
-            <h2 className={styles.dashboardTitle}>Admin Users</h2>
+            <h2 className={styles.dashboardTitle}>ผู้ดูแลระบบ</h2>
           </div>
           
           <div className={styles.searchSortContainer}>
@@ -236,27 +236,28 @@ const AdminUsers = () => {
           </div>
           
           <div className={styles.userListContainer}>
-            <h3 className={styles.listTitle}>List Users</h3>
+            <h3 className={styles.listTitle}>รายการผู้ใช้</h3>
             
             <div className={styles.tableContainer}>
               <table className={styles.userTable}>
                 <thead>
                   <tr>
-                    <th className={styles.idColumn}>No.</th>
-                    <th className={styles.usernameColumn}>Username</th>
-                    <th className={styles.emailColumn}>Email</th>
-                    <th className={styles.roleColumn}>Role</th>
-                    <th className={styles.actionColumn}>Action</th>
+                    <th className={styles.idColumn}>ไอดี</th>
+                    <th className={styles.nameColumn}>ชื่อที่พัก</th>
+                    <th className={styles.ownerColumn}>เจ้าของ</th>
+                    <th className={styles.stateColumn}>สถานะ</th>
+                    <th className={styles.updateColumn}>อัปเดตล่าสุด</th>
+                    <th className={styles.actionColumn}>การจัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
                   {isLoading ? (
                     <tr>
-                      <td colSpan="5" className={styles.loadingCell}>Loading...</td>
+                      <td colSpan="5" className={styles.loadingCell}>กรุณารอสักครู่...</td>
                     </tr>
                   ) : adminUsers.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className={styles.noDataCell}>No users found</td>
+                      <td colSpan="5" className={styles.noDataCell}>ไม่พบผู้ใช้</td>
                     </tr>
                   ) : (
                     adminUsers.map((user, index) => (
@@ -336,7 +337,7 @@ const AdminUsers = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h3>Confirm Deletion</h3>
+              <h3>ยืนยันการลบ</h3>
               <button className={styles.closeButton} onClick={cancelDelete}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -345,11 +346,11 @@ const AdminUsers = () => {
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p>Are you sure you want to delete this user? <br></br>This action cannot be undone.</p>
+              <p>คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?<br></br>ไม่สามารถกู้คืนการกระทำนี้ได้</p>
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.cancelButton} onClick={cancelDelete}>Cancel</button>
-              <button className={styles.confirmButton} onClick={confirmDelete}>Delete</button>
+              <button className={styles.cancelButton} onClick={cancelDelete}>ยกเลิก</button>
+              <button className={styles.confirmButton} onClick={confirmDelete}>ลบข้อมูล</button>
             </div>
           </div>
         </div>
@@ -360,7 +361,7 @@ const AdminUsers = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h3>Update User Role</h3>
+              <h3>ปรับปรุงบทบาทผู้ใช้</h3>
               <button className={styles.closeButton} onClick={cancelRoleUpdate}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -369,7 +370,7 @@ const AdminUsers = () => {
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p>Update role for user: {userToUpdate.username}</p>
+              <p>อัปเดตบทบาทสำหรับผู้ใช้: {userToUpdate.username}</p>
               <div className={styles.roleOptions}>
                 <button 
                   className={`${styles.roleOption} ${userToUpdate.role === 'user' ? styles.active : ''}`}

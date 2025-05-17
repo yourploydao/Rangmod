@@ -19,10 +19,10 @@ const SidebarUser = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <a href="/homepage">
+        <a href="/homepage" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
-            <span className={styles.logoText}>RANGMOD</span>
+            <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
         </a>
       </div>

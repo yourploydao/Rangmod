@@ -40,28 +40,32 @@
   padding: 1.5rem;
 }
 
-.sidebarHeader a {
-  text-decoration: none;
-}
-
 .logoContainer {
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
   cursor: pointer;
+  text-decoration: none !important;
 }
 
 .logo {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   margin-right: 0.5rem;
 }
 
 .logoText {
   font-weight: bold;
-  font-size: 1.25rem;
-  color: #0284c7;
-  text-decoration: none;
+  font-size: 1.5rem;
+  color: #0099ff;
+  text-decoration: none !important; /* Force removal of underline with !important */
+}
+
+/* Remove the hover effect completely */
+.logoContainer:hover .logoText,
+a:hover .logoText,
+.logoText:hover {
+  text-decoration: none !important; /* Force no underline even on hover */
 }
 
 /* Sidebar Navigation Styles */

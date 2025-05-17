@@ -62,7 +62,7 @@ const OwnerDashboard = () => {
     // Show notification
     setNotification({
       show: true,
-      message: "Dormitory deleted successfully"
+      message: "ลบหอพักเรียบร้อยแล้ว"
     });
     
     // Hide notification after 3 seconds
@@ -111,8 +111,8 @@ const OwnerDashboard = () => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -134,7 +134,7 @@ const OwnerDashboard = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -144,22 +144,22 @@ const OwnerDashboard = () => {
           </div>
           
           <div className={styles.dashboardHeader}>
-            <h2 className={styles.dashboardTitle}>Owner Dashboard</h2>
+            <h2 className={styles.dashboardTitle}>หน้าจัดการสำหรับเจ้าของที่พัก</h2>
           </div>
           
           <div className={styles.dormListContainer}>
-            <h3 className={styles.listTitle}>List Dormitory</h3>
+            <h3 className={styles.listTitle}>แสดงรายการที่พักทั้งหมด</h3>
             
             <div className={styles.tableContainer}>
               <table className={styles.dormTable}>
                 <thead>
                   <tr>
-                    <th className={styles.idColumn}>ID</th>
-                    <th className={styles.nameColumn}>Name</th>
-                    <th className={styles.ownerColumn}>Owner</th>
-                    <th className={styles.stateColumn}>State</th>
-                    <th className={styles.updateColumn}>Last update</th>
-                    <th className={styles.actionColumn}>Action</th>
+                    <th className={styles.idColumn}>ไอดี</th>
+                    <th className={styles.nameColumn}>ชื่อที่พัก</th>
+                    <th className={styles.ownerColumn}>เจ้าของ</th>
+                    <th className={styles.stateColumn}>สถานะ</th>
+                    <th className={styles.updateColumn}>อัปเดตล่าสุด</th>
+                    <th className={styles.actionColumn}>การจัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -184,7 +184,7 @@ const OwnerDashboard = () => {
                           <button 
                             className={styles.editButton} 
                             onClick={() => handleEditDorm(dorm.id)}
-                            title="Edit"
+                            title="แก้ไข"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -194,7 +194,7 @@ const OwnerDashboard = () => {
                           <button 
                             className={styles.deleteButton}
                             onClick={() => handleDeleteClick(dorm.id)}
-                            title="Delete"
+                            title="ลบ"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <polyline points="3 6 5 6 21 6"></polyline>
@@ -243,7 +243,7 @@ const OwnerDashboard = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h3>Confirm Deletion</h3>
+              <h3>ยืนยันการลบข้อมูล</h3>
               <button className={styles.closeButton} onClick={cancelDelete}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -252,11 +252,12 @@ const OwnerDashboard = () => {
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p>Are you sure you want to delete this dormitory? <br></br>This action cannot be undone.</p>
+              <p>คุณแน่ใจหรือไม่ว่าต้องการลบหอพักนี้? <br></br>การลบนี้ไม่สามารถยกเลิกหรือกู้คืนได้
+              </p>
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.cancelButton} onClick={cancelDelete}>Cancel</button>
               <button className={styles.confirmButton} onClick={confirmDelete}>Delete</button>
+              <button className={styles.cancelButton} onClick={cancelDelete}>Cancel</button>
             </div>
           </div>
         </div>

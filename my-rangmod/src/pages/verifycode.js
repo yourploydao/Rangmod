@@ -102,7 +102,7 @@ const VerifyCodeForgotpassword = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
-          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
+          <image src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
@@ -132,12 +132,12 @@ const VerifyCodeForgotpassword = () => {
               className={styles.createButton}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "VERIFYING..." : "CONFIRM"}
+              {isSubmitting ? "กำลังยืนยัน..." : "ยืนยัน"}
             </button>
           </form>
           
           <div className={styles.signInSection}>
-            <p>Didn't receive code? <a href="#" onClick={handleResendOTP} className={styles.signInLink}>{isResending ? "SENDING..." : "RESEND"}</a></p>
+            <p>Don&apos;t recive your code! <a href="#" onClick={handleResendOTP} className={styles.signInLink}>{isResending ? "กำลังส่ง..." : "ส่งแล้ว"}</a></p>
           </div>
         </div>
         

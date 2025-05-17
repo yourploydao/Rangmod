@@ -118,7 +118,7 @@ const AdminAccountSetting = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img 
+                  <image 
                     src={userData.profile_picture} 
                     alt="Profile" 
                     className={styles.profileImage}
@@ -155,7 +155,7 @@ const AdminAccountSetting = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileHeaderLeft}>
                 <div className={styles.profileAvatar}>
-                  <img 
+                  <image 
                     src={userData.profile_picture} 
                     alt="Profile Avatar"
                     onError={(e) => {

@@ -16,11 +16,11 @@ export default function AuthRouter() {
   useEffect(() => {
     setMounted(true);
 
-    // redirect ถ้าไม่มี auth
+    // redirect ถ้าไม่มี auth หลัง router ready
     if (router.isReady && typeof auth !== 'string') {
       router.replace('/home');
     }
-  }, [router.isReady, auth]);
+  }, [router, auth]); // ✅ แก้ตรงนี้: เพิ่ม router
 
   if (!mounted || !router.isReady || typeof auth !== 'string') return null;
 
@@ -41,3 +41,4 @@ export default function AuthRouter() {
       return <h1>404 - Not Found</h1>;
   }
 }
+

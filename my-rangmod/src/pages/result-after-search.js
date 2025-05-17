@@ -316,7 +316,7 @@ const DormitorySearch = ({ initialDormitories }) => {
             <div className={styles.searchField}>
               <div className={styles.inputWithIcon}>
                 <span className={styles.searchIcon}>
-                  <img src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
+                  <image src="https://cdn-icons-png.flaticon.com/128/1458/1458268.png" alt="Search" className={styles.iconImage} />
                 </span>
                 <input 
                   type="text" 
@@ -501,7 +501,7 @@ const DormitorySearch = ({ initialDormitories }) => {
               <Link href={`/details/${dorm._id}`} key={dorm._id} className={styles.dormCardLink}>
                 <div className={styles.dormCardHorizontal}>
                   <div className={styles.dormImageContainerHorizontal}>
-                    <img 
+                    <image 
                       src={dorm.images[0] || '/images/placeholder.jpg'} 
                       alt={dorm.name_dormitory} 
                       className={styles.dormImageHorizontal} 

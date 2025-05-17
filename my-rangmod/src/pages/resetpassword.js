@@ -56,7 +56,7 @@ const RangModResetPassword = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
-          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
+          <image src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
@@ -78,7 +78,7 @@ const RangModResetPassword = () => {
                     className={styles.togglePassword}
                     onClick={() => setShowNewPassword(!showNewPassword)}
                 >
-                    <img 
+                    <image
                     src={
                         showNewPassword
                         ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon
@@ -106,7 +106,7 @@ const RangModResetPassword = () => {
                   className={styles.togglePassword}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  <img 
+                  <image 
                     src={
                         showConfirmPassword
                         ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon

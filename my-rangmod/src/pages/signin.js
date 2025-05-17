@@ -69,7 +69,7 @@ const RangModSignIn = () => {
     <div className={styles.container}>
       <div className={styles.formSide}>
         <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
-          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
+          <image src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
@@ -101,7 +101,7 @@ const RangModSignIn = () => {
                   className={styles.togglePassword}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  <img 
+                  <image 
                     src={
                       showPassword
                       ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon

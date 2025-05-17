@@ -64,7 +64,7 @@ const OwnerAccountSetting = () => {
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <image src={userData.profileImage} alt="Profile" className={styles.profileImage} />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -93,7 +93,7 @@ const OwnerAccountSetting = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileHeaderLeft}>
                 <div className={styles.profileAvatar}>
-                  <img src={userData.profileImage} alt="Profile Avatar" />
+                  <image src={userData.profileImage} alt="Profile Avatar" />
                 </div>
                 <div className={styles.profileInfo}>
                   <h2 className={styles.profileName}>{userData.fullName}</h2>

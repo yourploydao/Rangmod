@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "../styles/forgotpassword.module.css";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const RangModForgotPassword = () => {
   // State variable for email input
@@ -90,7 +91,7 @@ const RangModForgotPassword = () => {
           </form>
           
           <div className={styles.signInSection}>
-            <p>Remember your password? <a href="/signin" className={styles.signInLink}>SIGN IN</a></p>
+            <p>Remember your password? <Link  href="/signin" className={styles.signInLink}>SIGN IN</Link ></p>
           </div>
         </div>
         

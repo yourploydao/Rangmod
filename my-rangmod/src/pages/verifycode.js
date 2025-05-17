@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "../styles/verifycode.module.css";
 import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 const VerifyCodeForgotpassword = () => {
   // State variable for OTP input
@@ -137,7 +138,7 @@ const VerifyCodeForgotpassword = () => {
           </form>
           
           <div className={styles.signInSection}>
-            <p>Didn't receive code? <a href="#" onClick={handleResendOTP} className={styles.signInLink}>{isResending ? "SENDING..." : "RESEND"}</a></p>
+            <p>Didn't receive code? <Link href="#" onClick={handleResendOTP} className={styles.signInLink}>{isResending ? "SENDING..." : "RESEND"}</Link></p>
           </div>
         </div>
         

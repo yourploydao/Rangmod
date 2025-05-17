@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from "../styles/sidebar-setting.module.css";
+import Link from 'next/link';
 
 const SidebarOwner = () => {
   const [activePath, setActivePath] = useState('');
@@ -18,17 +19,17 @@ const SidebarOwner = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <a href="/homepage-after-login" style={{ textDecoration: 'none' }}>
+        <Link href="/homepage-after-login" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
-        </a>
+        </Link>
       </div>
       <nav className={styles.sidebarNav}>
         <ul className={styles.navList}>
           <li className={`${styles.navItem} ${isActive('/owner-account-setting') ? styles.active : ''}`}>
-            <a href="/owner-account-setting" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
+            <Link href="/owner-account-setting" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
               <div className={styles.iconContainer}>
                 <img 
                   src="https://cdn-icons-png.flaticon.com/128/503/503822.png" 
@@ -37,10 +38,10 @@ const SidebarOwner = () => {
                 />
               </div>
               <span className={styles.navText}>ตั้งค่า</span>
-            </a>
+            </Link>
           </li>
           <li className={`${styles.navItem} ${isActive('/owner-dashboard') ? styles.active : ''}`}>
-            <a href="/owner-dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
+            <Link href="/owner-dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
               <div className={styles.iconContainer}>
                 <img 
                   src="https://cdn-icons-png.flaticon.com/128/9308/9308015.png" 
@@ -49,7 +50,7 @@ const SidebarOwner = () => {
                 />
               </div>
               <span className={styles.navText}>แก้ไข</span>
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>

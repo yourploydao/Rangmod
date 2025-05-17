@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styles from "../styles/signin.module.css";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Link from 'next/link';
+
 
 const RangModSignIn = () => {
   // State variables for form inputs
@@ -128,7 +130,7 @@ const RangModSignIn = () => {
                 จดจำข้อมูลฉันไว้
                 </label>
               </div>
-              <a href="/forgotpassword" className={styles.forgotPasswordLink}>ลืมรหัสผ่าน?</a>
+              <Link href="/forgotpassword" className={styles.forgotPasswordLink}>ลืมรหัสผ่าน?</Link>
             </div>
             
             <button type="submit" className={styles.createButton}>
@@ -137,7 +139,7 @@ const RangModSignIn = () => {
           </form>
           
           <div className={styles.resendSection}>
-            <p>ยังไม่มีบัญชีใช่ไหม? <a href="/signup" className={styles.resendLink}>ลงทะเบียน</a></p>
+            <p>ยังไม่มีบัญชีใช่ไหม? <Link href="/signup" className={styles.resendLink}>ลงทะเบียน</Link></p>
           </div>
         </div>
         

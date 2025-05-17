@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "../styles/navigation.module.css";
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import Link from 'next/link';
 
 const Navigation = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -117,24 +118,24 @@ const Navigation = () => {
         <div className={styles.rightSection}>
           {/* Desktop Navigation */}
           <nav className={styles.navigation}>
-            <a 
+            <Link 
               href="/homepage" 
               className={`${styles.navLink} ${isActive('/homepage') ? styles.activeLink : ''}`}
             >
               หน้าหลัก
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="/result-after-search" 
               className={`${styles.navLink} ${isActive('/result-after-search') ? styles.activeLink : ''}`}
             >
               ค้นหา
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="/chatbot" 
               className={`${styles.navLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
               แชทบอท
-            </a>
+            </Link>
           </nav>
           
           {!isLoading && (
@@ -200,24 +201,24 @@ const Navigation = () => {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className={styles.mobileNavigation} ref={mobileMenuRef}>
-            <a 
+            <Link 
               href="/homepage-after-login" 
               className={`${styles.mobileNavLink} ${isActive('/homepage-after-login') ? styles.activeLink : ''}`}
             >
               Home
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="/search" 
               className={`${styles.mobileNavLink} ${isActive('/search') ? styles.activeLink : ''}`}
             >
               Search
-            </a>
-            <a 
+            </Link>
+            <Link 
               href="/chatbot" 
               className={`${styles.mobileNavLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
               Chatbot
-            </a>
+            </Link>
           </div>
         )}
       </div>

@@ -7,6 +7,7 @@ import Dormitory from '@/models/Dormitory';
 import Room from '@/models/Room';
 import Facility from '@/models/Facility';
 import mongoose from 'mongoose';
+import Link from 'next/link';
 
 export async function getServerSideProps(context) {
   const { dormitory_id } = context.params;
@@ -258,13 +259,13 @@ const dormitoryTypeTranslations = {
           const staticMapUrl = `https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${lat},${lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${lat},${lng}`;
         
           return (
-            <a href={googleMapUrl} target="_blank" rel="noopener noreferrer">
+            <Link href={googleMapUrl} target="_blank" rel="noopener noreferrer">
               <img
                 src={staticMapUrl}
                 alt="Map Location"
                 className={styles.map}
               />
-            </a>
+            </Link>
           );
         })()}
 

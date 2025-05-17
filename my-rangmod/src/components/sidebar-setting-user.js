@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from "../styles/sidebar-setting.module.css";
+import Link from 'next/link';
 
 const SidebarUser = () => {
   const [activePath, setActivePath] = useState('');
@@ -19,17 +20,17 @@ const SidebarUser = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <a href="/homepage" style={{ textDecoration: 'none' }}>
+        <Link href="/homepage" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
-        </a>
+        </Link>
       </div>
       <nav className={styles.sidebarNav}>
         <ul className={styles.navList}>
           <li className={`${styles.navItem} ${isActive('/user-account-setting') ? styles.active : ''}`}>
-            <a href="/user-account-setting" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
+            <Link href="/user-account-setting" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
               <div className={styles.iconContainer}>
                 <img 
                   src="https://cdn-icons-png.flaticon.com/128/503/503822.png" 
@@ -38,7 +39,7 @@ const SidebarUser = () => {
                 />
               </div>
               <span className={styles.navText}>ตั้งค่า</span>
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>

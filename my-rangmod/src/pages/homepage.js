@@ -6,6 +6,7 @@ import Footer from "../components/footer";
 import { connectDB } from '@/lib/mongodb';
 import Dormitory from '@/models/Dormitory';
 import Header from "../components/navigation";
+import Link from 'next/link';
 
 export async function getServerSideProps() {
   try {

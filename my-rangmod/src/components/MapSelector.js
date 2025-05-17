@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import Link from 'next/link';
 
 const icon = new L.Icon({
   iconUrl: '/map-pin-icon.png',
@@ -77,7 +78,7 @@ const MapSelector = ({ onSelect }) => {
       style={{ height: '100%', width: '100%' }}
     >
       <TileLayer
-        attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+        attribution='&copy; <Link href="https://openstreetmap.org">OpenStreetMap</Link>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <SetViewToCurrentLocation /> {/* 🆕 ใส่ component นี้ */}

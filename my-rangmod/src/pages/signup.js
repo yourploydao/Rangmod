@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "../styles/signup.module.css";
 import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 
 const RangModLogin = () => {
@@ -152,7 +153,7 @@ const handleSubmit = async (e) => {
                 className={styles.checkbox} 
               />
               <label htmlFor="terms" className={styles.checkboxLabel}>
-              ข้าพเจ้ายอมรับ <a href="#" className={styles.termsLink}>เงื่อนไขการให้บริการ</a> และ <a href="#" className={styles.termsLink}>นโยบายความเป็นส่วนตัว</a>
+              ข้าพเจ้ายอมรับ <Link href="#" className={styles.termsLink}>เงื่อนไขการให้บริการ</Link> และ <Link href="#" className={styles.termsLink}>นโยบายความเป็นส่วนตัว</Link>
               </label>
             </div>
             
@@ -162,7 +163,7 @@ const handleSubmit = async (e) => {
           </form>
           
           <div className={styles.signInSection}>
-            <p>มีบัญชีอยู่แล้ว? <a href="/signin" className={styles.signInLink}>เข้าสู่ระบบ</a></p>
+            <p>มีบัญชีอยู่แล้ว? <Link href="/signin" className={styles.signInLink}>เข้าสู่ระบบ</Link></p>
           </div>
         </div>
         

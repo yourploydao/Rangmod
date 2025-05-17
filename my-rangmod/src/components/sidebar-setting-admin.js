@@ -49,12 +49,12 @@ const SidebarAdmin = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <a href="/homepage" style={{ textDecoration: 'none' }}>
+        <Link href="/homepage" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
             <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
-        </a>
+        </Link>
       </div>
       <nav className={styles.sidebarNav}>
         <ul className={styles.navList}>

@@ -1,40 +1,79 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
-import styles from "../styles/addmin-account-setting.module.css";
+import axios from 'axios';
+import styles from "../../styles/admin-account-setting.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
 
-const AddminAccountSetting = () => {
+const AdminAccountSetting = () => {
   const router = useRouter();
   const dropdownRef = useRef(null);
   
-  // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Addmin Targarian',
-    username: 'Admin',
-    phoneNumber: '0880001234',
-    email: 'Admin@gmail.com',
+    name: '',
+    username: '',
+    phone: '',
+    email: '',
     role: 'Admin',
-    profileImage: '/assets/admin1.jpeg'
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
   });
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/api/auth/me');
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            phone: user.phone || 'Not set',
+            email: user.email,
+            role: user.role || 'Admin',
+            profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setError('Failed to load user data');
+        if (err.response?.status === 401) {
+          router.push('/signin');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
   
   const handleEditButtonClick = () => {
-    // Redirect to edit-owner-setting page when Edit button is clicked
-    router.push("/addmin-edit-setting");
+    console.log('กดปุ่มแก้ไขแล้ว');
+    try {
+      router.push("/admin/edit-setting");
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการไปยังหน้าการแก้ไข:', error);
+    }
   };
   
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
   
-  const handleLogout = () => {
-    // In a real app, this would clear auth state and redirect
-    alert("Logging out...");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      localStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('ออกจากระบบไม่สำเร็จ:', err);
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    }
   };
   
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -48,23 +87,46 @@ const AddminAccountSetting = () => {
     };
   }, [dropdownRef]);
 
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        {/* Use the imported Sidebar component */}
         <SidebarAdmin />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -80,7 +142,7 @@ const AddminAccountSetting = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -93,10 +155,17 @@ const AddminAccountSetting = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileHeaderLeft}>
                 <div className={styles.profileAvatar}>
-                  <img src={userData.profileImage} alt="Profile Avatar" />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile Avatar"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                 </div>
                 <div className={styles.profileInfo}>
-                  <h2 className={styles.profileName}>{userData.fullName}</h2>
+                  <h2 className={styles.profileName}>{userData.name}</h2>
                   <p className={styles.profileEmail}>{userData.email}</p>
                 </div>
               </div>
@@ -105,7 +174,7 @@ const AddminAccountSetting = () => {
                   className={styles.editButton} 
                   onClick={handleEditButtonClick}
                 >
-                  Edit
+                  แก้ไข
                 </button>
               </div>
             </div>
@@ -113,24 +182,24 @@ const AddminAccountSetting = () => {
             <div className={styles.profileForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Full Name</label>
-                  <div className={styles.readOnlyInput}>{userData.fullName}</div>
+                  <label>ชื่อ-นามสกุล</label>
+                  <div className={styles.readOnlyInput}>{userData.name}</div>
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Username</label>
+                  <label>ชื่อผู้ใช้</label>
                   <div className={styles.readOnlyInput}>{userData.username}</div>
                 </div>
               </div>
               
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Phone Number</label>
-                  <div className={styles.readOnlyInput}>{userData.phoneNumber}</div>
+                  <label>เบอร์โทรศัพท์</label>
+                  <div className={styles.readOnlyInput}>{userData.phone}</div>
                 </div>
               </div>
               
               <div className={styles.formSection}>
-                <div className={styles.email}>My email Address</div>
+                <div className={styles.email}>อีเมลของฉัน</div>
                 <div className={styles.emailList}>
                   <div className={styles.emailItem}>
                     <div className={styles.emailIcon}>
@@ -150,4 +219,4 @@ const AddminAccountSetting = () => {
   );
 };
 
-export default AddminAccountSetting;
+export default AdminAccountSetting;

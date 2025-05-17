@@ -1,734 +1,868 @@
-:local(*) {
-    font-family: 'Poppins', sans-serif;
+:global(*) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f9ff;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+}
+
+/* Main Content Styles */
+.mainContent {
+  flex: 1;
+  padding: 1.5rem 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.greeting h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #0f172a;
+}
+
+.greeting p {
+  margin: 0.25rem 0 0;
+  color: #64748b;
+}
+
+/* User Profile Section */
+.headerRightSection {
+  display: flex;
+  align-items: center;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+}
+
+.userProfile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.userProfile:hover {
+  background-color: #f1f5f9;
+}
+
+.profileImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 0.75rem;
+  border: 2px solid #e2e8f0;
+}
+
+.profileName {
+  font-weight: 600;
+  color: #0f172a;
+  margin-right: 0.5rem;
+}
+
+.dropdownArrow {
+  width: 12px;
+  height: 12px;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+
+.userProfile:hover .dropdownArrow {
+  opacity: 1;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 56px;
+  right: 0;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+  z-index: 100;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .container {
-    display: flex;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #0f172a;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdownItem:hover {
+  background-color: #f8fafc;
+  color: #3b82f6;
+}
+
+.dropdownIcon {
+  margin-right: 0.75rem;
+  color: #64748b;
+}
+
+.dropdownItem:hover .dropdownIcon {
+  color: #3b82f6;
+}
+
+/* Profile Card Styles */
+.profileCard {
+  background-color: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.profileCard:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.profileHeaderLeft {
+  display: flex;
+  align-items: center;
+}
+
+.profileAvatar {
+  margin-right: 1rem;
+  position: relative;
+}
+
+.profileAvatar img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e2e8f0;
+  transition: border-color 0.3s ease;
+}
+
+.profileAvatar:hover img {
+  border-color: #3b82f6;
+}
+
+/* Profile image upload styles */
+.profileImageUpload {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid white;
+  transition: background-color 0.3s ease;
+}
+
+.profileImageUpload:hover {
+  background-color: #2563eb;
+}
+
+.profileImageUpload svg {
+  width: 14px;
+  height: 14px;
+}
+
+.imageInput {
+  display: none;
+}
+
+/* Profile info styles */
+.profileCard .profileName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  color: #0f172a;
+}
+
+.profileEmail {
+  margin: 0;
+  color: #64748b;
+}
+
+/* Buttons */
+.editButton, .saveButton, .resetPasswordButton, .addButton {
+  background-color: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editButton:hover, .saveButton:hover, .resetPasswordButton:hover, .addButton:hover {
+  background-color: #1e40af;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(29, 78, 216, 0.1), 0 2px 4px -1px rgba(29, 78, 216, 0.06);
+}
+
+.cancelButton, .cancelEmailButton {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.5rem;
+}
+
+.cancelButton:hover, .cancelEmailButton:hover {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+/* Request Permission Button Styles */
+.requestPermissionContainer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-start;
+}  
+
+.requestPermissionButton {
+  background-color: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.requestPermissionButton:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Form Styles */
+.profileForm {
+  margin-top: 1.5rem;
+}
+
+.formRow {
+  display: flex;
+  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.readOnlyInput {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #64748b;
+  cursor: default;
+}
+
+.editableInput {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #0f172a;
+  transition: all 0.2s ease;
+}
+
+.editableInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Section titles and alignment */
+.formSection, .passwordSection {
+  margin-top: 2rem;
+}
+
+/* Updated heading styles to ensure consistent appearance */
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.email {
+  margin-bottom: 1rem;
+}
+/* Email List Styles */
+.emailList {
+  margin-bottom: 1rem;
+}
+
+.emailItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #f8fafc;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.emailItem:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.emailIcon {
+  margin-right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emailText {
+  flex: 1;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.emailActions {
+  margin-left: 0.5rem;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Add Email Button */
+.addEmailButton {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  color: #3b82f6;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: color 0.2s;
+}
+
+.addEmailButton svg {
+  margin-right: 0.5rem;
+}
+
+.addEmailButton:hover {
+  color: #1d4ed8;
+}
+
+/* New Email Form */
+.newEmailForm {
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.newEmailActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Password Section Styles - Enhanced */
+.passwordSection {
+  margin-top: 2rem;
+}
+
+.passwordBox {
+  background-color: #f8fafc;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.passwordBox:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.passwordInputWrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.passwordInputWrapper label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.passwordInputWrapper input {
+  width: 85%;
+  padding-right: 2.5rem;
+}
+
+.passwordToggleIcon {
+  position: absolute;
+  right: 12px;
+  top: 39px;
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.passwordToggleIcon:hover {
+  opacity: 1;
+}
+
+.resetPasswordButton {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #2563eb;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.resetPasswordButton:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* Instruction Popup - UPDATED to light orange */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.3s ease;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.instructionPopup {
+  background-color: #fff8ee;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 90%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  animation: scaleIn 0.3s ease;
+  border-left: 4px solid #f97316;
+  overflow: hidden;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.instructionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fdba74;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.instructionIcon svg {
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+}
+
+.instructionContent {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.instructionContent h3 {
+  color: #ea580c;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.instructionContent p {
+  color: #9a3412;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.instructionActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  background-color: #ffedd5;
+  border-top: 1px solid #fed7aa;
+}
+
+.gotItButton {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gotItButton:hover {
+  background-color: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(249, 115, 22, 0.2);
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: #9a3412;
+  border: 1px solid #fdba74;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.75rem;
+}
+
+.cancelButton:hover {
+  background-color: #fff1e6;
+  border-color: #fb923c;
+  color: #ea580c;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .formRow {
     flex-direction: column;
-    min-height: 100vh;
-    background-color: #f0f9ff;
-  }
-  
-  .content {
-    display: flex;
-    flex: 1;
-  }
-  
-  /* Main Content Styles */
-  .mainContent {
-    flex: 1;
-    padding: 1.5rem 2rem;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
-    flex-wrap: wrap;
     gap: 1rem;
   }
   
-  .greeting h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    color: #0f172a;
-  }
-  
-  .greeting p {
-    margin: 0.25rem 0 0;
-    color: #64748b;
-  }
-  
-  /* User Profile Section */
-  .headerRightSection {
-    display: flex;
-    align-items: center;
-  }
-  
-  .userInfo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .userProfile {
-    position: relative;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    transition: background-color 0.2s ease;
-  }
-  
-  .userProfile:hover {
-    background-color: #f1f5f9;
-  }
-  
-  .profileImage {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 0.75rem;
-    border: 2px solid #e2e8f0;
-  }
-  
-  .profileName {
-    font-weight: 600;
-    color: #0f172a;
-    margin-right: 0.5rem;
-  }
-  
-  .dropdownArrow {
-    width: 12px;
-    height: 12px;
-    opacity: 0.6;
-    transition: transform 0.2s ease;
-  }
-  
-  .userProfile:hover .dropdownArrow {
-    opacity: 1;
-  }
-  
-  .dropdownMenu {
-    position: absolute;
-    top: 56px;
-    right: 0;
-    background-color: #fff;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    min-width: 180px;
-    z-index: 100;
-    overflow: hidden;
-    animation: fadeIn 0.2s ease;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .dropdownItem {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    color: #0f172a;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .dropdownItem:hover {
-    background-color: #f8fafc;
-    color: #3b82f6;
-  }
-  
-  .dropdownIcon {
-    margin-right: 0.75rem;
-    color: #64748b;
-  }
-  
-  .dropdownItem:hover .dropdownIcon {
-    color: #3b82f6;
-  }
-  
-  /* Profile Card Styles */
-  .profileCard {
-    background-color: #fff;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    padding: 1.5rem;
-    transition: box-shadow 0.3s ease;
-  }
-  
-  .profileCard:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  }
-  
   .profileHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-  
-  .profileHeaderLeft {
-    display: flex;
-    align-items: center;
-  }
-  
-  .profileAvatar {
-    margin-right: 1rem;
-    position: relative;
-  }
-  
-  .profileAvatar img {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #e2e8f0;
-    transition: border-color 0.3s ease;
-  }
-  
-  .profileAvatar:hover img {
-    border-color: #3b82f6;
-  }
-  
-  /* Profile image upload styles */
-  .profileImageUpload {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background-color: #3b82f6;
-    color: white;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 2px solid white;
-    transition: background-color 0.3s ease;
-  }
-  
-  .profileImageUpload:hover {
-    background-color: #2563eb;
-  }
-  
-  .profileImageUpload svg {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .imageInput {
-    display: none;
-  }
-  
-  /* Profile info styles */
-  .profileCard .profileName {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 0.25rem;
-    color: #0f172a;
-  }
-  
-  .profileEmail {
-    margin: 0;
-    color: #64748b;
-  }
-  
-  /* Buttons */
-  .editButton, .saveButton, .resetPasswordButton, .addButton {
-    background-color: #1d4ed8;
-    color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1.5rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .editButton:hover, .saveButton:hover, .resetPasswordButton:hover, .addButton:hover {
-    background-color: #1e40af;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgba(29, 78, 216, 0.1), 0 2px 4px -1px rgba(29, 78, 216, 0.06);
-  }
-  
-  .cancelButton, .cancelEmailButton {
-    background-color: #f1f5f9;
-    color: #64748b;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1.5rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-left: 0.5rem;
-  }
-  
-  .cancelButton:hover, .cancelEmailButton:hover {
-    background-color: #e2e8f0;
-    color: #334155;
-  }
-  
-  /* Request Permission Button Styles */
-  .requestPermissionContainer {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-start;
-  }  
-  
-  .requestPermissionButton {
-    background-color: #ef4444;
-    color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: capitalize;
-  }
-  
-  .requestPermissionButton:hover {
-    background-color: #dc2626;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-  }
-  
-  /* Form Styles */
-  .profileForm {
-    margin-top: 1.5rem;
-  }
-  
-  .formRow {
-    display: flex;
-    margin-bottom: 1.5rem;
-    gap: 1.5rem;
-  }
-  
-  .formGroup {
-    flex: 1;
-    display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
   
-  .formGroup label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #64748b;
-    margin-bottom: 0.5rem;
+  .profileHeaderRight {
+    align-self: flex-end;
   }
   
-  .readOnlyInput {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    color: #64748b;
-    cursor: default;
+  .sectionHeaderRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
   
-  .editableInput {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    color: #0f172a;
-    transition: all 0.2s ease;
+  .instructionPopup {
+    width: 95%;
   }
-  
-  .editableInput:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Notification Styles */
+.notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  min-width: 300px;
+  max-width: 450px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  z-index: 9999;
+  transform: translateY(0);
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Add top right notification position */
+.notification.topRight {
+  top: 24px;
+  bottom: auto;
+  right: 24px;
+  animation: slideInFromTop 0.3s ease-out forwards;
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
   }
-  
-  /* Section titles and alignment */
-  .formSection, .passwordSection {
-    margin-top: 2rem;
-  }
-  
-  /* Updated heading styles to ensure consistent appearance */
-  .sectionTitle {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #0f172a;
-    margin: 0 0 1rem;
-    padding-bottom: 0.5rem;
-  }
-  
-  .email {
-    margin-bottom: 1rem;
-  }
-  /* Email List Styles */
-  .emailList {
-    margin-bottom: 1rem;
-  }
-  
-  .emailItem {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    background-color: #f8fafc;
-    margin-bottom: 0.5rem;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s ease;
-  }
-  
-  .emailItem:hover {
-    background-color: #f1f5f9;
-    border-color: #cbd5e1;
-  }
-  
-  .emailIcon {
-    margin-right: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .emailText {
-    flex: 1;
-    color: #334155;
-    font-size: 0.9rem;
-  }
-  
-  .emailActions {
-    margin-left: 0.5rem;
-  }
-  
-  .deleteButton {
-    background: none;
-    border: none;
-    color: #ef4444;
-    cursor: pointer;
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-  }
-  
-  .deleteButton:hover {
-    background-color: rgba(239, 68, 68, 0.1);
-  }
-  
-  /* Add Email Button */
-  .addEmailButton {
-    display: flex;
-    align-items: center;
-    background-color: transparent;
-    border: none;
-    color: #3b82f6;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 0.5rem 0;
-    transition: color 0.2s;
-  }
-  
-  .addEmailButton svg {
-    margin-right: 0.5rem;
-  }
-  
-  .addEmailButton:hover {
-    color: #1d4ed8;
-  }
-  
-  /* New Email Form */
-  .newEmailForm {
-    padding: 1rem;
-    background-color: #f8fafc;
-    border-radius: 0.5rem;
-    margin-top: 1rem;
-    border: 1px solid #e2e8f0;
-  }
-  
-  .newEmailActions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
-  }
-  
-  /* Password Section Styles - Enhanced */
-  .passwordSection {
-    margin-top: 2rem;
-  }
-  
-  .passwordBox {
-    background-color: #f8fafc;
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-  }
-  
-  .passwordBox:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .passwordInputWrapper {
-    position: relative;
-    margin-bottom: 1rem;
-  }
-  
-  .passwordInputWrapper label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #64748b;
-    margin-bottom: 0.5rem;
-  }
-  
-  .passwordInputWrapper input {
-    width: 85%;
-    padding-right: 2.5rem;
-  }
-  
-  .passwordToggleIcon {
-    position: absolute;
-    right: 12px;
-    top: 39px;
-    width: 18px;
-    height: 18px;
-    opacity: 0.6;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  
-  .passwordToggleIcon:hover {
+  to {
+    transform: translateY(0);
     opacity: 1;
   }
-  
-  .resetPasswordButton {
-    width: 100%;
-    margin-top: 1rem;
-    padding: 0.75rem;
-    background-color: #2563eb;
-    border-radius: 0.5rem;
-    display: flex;
-    justify-content: center;
-    font-weight: 500;
-    transition: all 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
   }
-  
-  .resetPasswordButton:hover {
-    background-color: #1d4ed8;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .formRow {
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    .profileHeader {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    
-    .profileHeaderRight {
-      align-self: flex-end;
-    }
-    
-    .sectionHeaderRow {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-  }
-  
-  /* Notification Styles */
-  .notification {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    min-width: 300px;
-    max-width: 450px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
-    z-index: 9999;
+  to {
     transform: translateY(0);
-    animation: slideIn 0.3s ease-out forwards;
+    opacity: 1;
   }
-  
-  /* Add top right notification position */
-  .notification.topRight {
-    top: 24px;
-    bottom: auto;
-    right: 24px;
-    animation: slideInFromTop 0.3s ease-out forwards;
-  }
-  
-  @keyframes slideInFromTop {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes slideIn {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
-  .notification.success {
-    border-left: 4px solid #10b981;
-  }
-  
-  .notification.error {
-    border-left: 4px solid #ef4444;
-  }
-  
-  .notification.warning {
-    border-left: 4px solid #f59e0b;
-  }
-  
-  .notificationContent {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    position: relative;
-  }
-  
-  .notificationIcon {
-    margin-right: 16px;
-    flex-shrink: 0;
-  }
-  
-  .notification.success .notificationIcon svg {
-    color: #10b981;
-    stroke: #10b981;
-  }
-  
-  .notification.error .notificationIcon svg {
-    color: #ef4444;
-    stroke: #ef4444;
-  }
-  
-  .notification.warning .notificationIcon svg {
-    color: #f59e0b;
-    stroke: #f59e0b;
-  }
-  
-  .notificationMessage {
-    flex-grow: 1;
-    color: #1f2937;
-    font-size: 0.925rem;
-    font-weight: 500;
-  }
-  
-  .notificationClose {
-    background: none;
-    border: none;
-    color: #9ca3af;
-    cursor: pointer;
-    padding: 4px;
-    transition: color 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    margin-left: 8px;
-  }
-  
-  .notificationClose:hover {
-    color: #4b5563;
-    background-color: #f3f4f6;
-  }
-  
-  .notificationProgress {
-    height: 3px;
-    background-color: #e5e7eb;
-    position: relative;
-  }
-  
-  .notification.success .notificationProgress::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+}
+
+.notification.success {
+  border-left: 4px solid #10b981;
+}
+
+.notification.error {
+  border-left: 4px solid #ef4444;
+}
+
+.notification.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.notificationContent {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  position: relative;
+}
+
+.notificationIcon {
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.notification.success .notificationIcon svg {
+  color: #10b981;
+  stroke: #10b981;
+}
+
+.notification.error .notificationIcon svg {
+  color: #ef4444;
+  stroke: #ef4444;
+}
+
+.notification.warning .notificationIcon svg {
+  color: #f59e0b;
+  stroke: #f59e0b;
+}
+
+.notificationMessage {
+  flex-grow: 1;
+  color: #1f2937;
+  font-size: 0.925rem;
+  font-weight: 500;
+}
+
+.notificationClose {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+
+.notificationClose:hover {
+  color: #4b5563;
+  background-color: #f3f4f6;
+}
+
+.notificationProgress {
+  height: 3px;
+  background-color: #e5e7eb;
+  position: relative;
+}
+
+.notification.success .notificationProgress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #10b981;
+  animation: progress 3s linear forwards;
+}
+
+.notification.error .notificationProgress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #ef4444;
+  animation: progress 3s linear forwards;
+}
+
+.notification.warning .notificationProgress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #f59e0b;
+  animation: progress 3s linear forwards;
+}
+
+@keyframes progress {
+  from {
     width: 100%;
-    background-color: #10b981;
-    animation: progress 3s linear forwards;
   }
-  
-  .notification.error .notificationProgress::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #ef4444;
-    animation: progress 3s linear forwards;
+  to {
+    width: 0%;
   }
-  
-  .notification.warning .notificationProgress::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #f59e0b;
-    animation: progress 3s linear forwards;
-  }
-  
-  @keyframes progress {
-    from {
-      width: 100%;
-    }
-    to {
-      width: 0%;
-    }
-  }
-  
-  /* Add disabled button styles */
-  .disabledButton {
-    background-color: #94a3b8 !important;
-    cursor: not-allowed !important;
-    transform: none !important;
-    box-shadow: none !important;
-    opacity: 0.7;
-  }
-  
-  .disabledButton:hover {
-    background-color: #94a3b8 !important;
-    transform: none !important;
-    box-shadow: none !important;
-  }
-  
-  /* Add error input styles */
-  .inputError {
-    border-color: #ef4444 !important;
-    background-color: #fef2f2;
-  }
-  
-  .inputError:focus {
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
-  }
-  
-  /* Password error message */
-  .passwordError {
-    color: #ef4444;
-    font-size: 0.8rem;
-    margin-top: -0.5rem;
-    margin-bottom: 1rem;
-  }
+}
+
+/* Add disabled button styles */
+.disabledButton {
+  background-color: #94a3b8 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  opacity: 0.7;
+}
+
+.disabledButton:hover {
+  background-color: #94a3b8 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Add error input styles */
+.inputError {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Password error message */
+.passwordError {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}

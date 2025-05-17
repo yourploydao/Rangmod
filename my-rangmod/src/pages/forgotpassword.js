@@ -1,16 +1,18 @@
 import React, { useState } from "react";
+import axios from "axios";
 import styles from "../styles/forgotpassword.module.css";
+import { useRouter } from 'next/navigation';
 
 const RangModForgotPassword = () => {
   // State variable for email input
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
 
     if (!email) {
       setMessage({ text: "Please enter your email address", isError: true });
@@ -18,27 +20,21 @@ const RangModForgotPassword = () => {
       return;
     }
 
-    const payload = {
-      email: email
-    };
+    const payload = { email };
 
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/forgot-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("/api/auth/forgot-password", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200 ) {
         setMessage({ 
           text: data.message || "Password reset instructions sent to your email!", 
           isError: false 
         });
+        // Save email to localStorage
+        localStorage.setItem('resetEmail', email)
+
+        router.push("/verifycode");
       } else {
         setMessage({ 
           text: data.error || data.message || "Failed to process your request", 
@@ -59,8 +55,8 @@ const RangModForgotPassword = () => {
   return (
     <div className={styles.container}>
       <div className={styles.formSide}>
-        <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+        <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         

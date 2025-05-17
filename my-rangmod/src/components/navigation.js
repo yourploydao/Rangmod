@@ -2,33 +2,79 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "../styles/navigation.module.css";
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const Navigation = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({
+    username: '',
+    profileImage: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+  });
   const dropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get('/api/auth/me');
+        if (response.status === 200) {
+          setIsLoggedIn(true);
+          setUserData({
+            username: response.data.username,
+            profileImage: response.data.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png',
+            role: response.data.role
+          });
+        }
+      } catch (error) {
+        setIsLoggedIn(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
 
   const handleLogoClick = () => {
-    // Navigate to home page
-    window.location.href = '/homepage-before-login';
+    router.push('/homepage');
   };
 
   const handleMyAccountClick = () => {
-    // Navigate to profile page
-    window.location.href = '/profile';
+    if (userData.role === 'admin') {
+      router.push('/admin/dashboard');
+    } else if (userData.role === 'owner') {
+      router.push('/owner-dashboard');
+    } else {
+      router.push('/user-account-setting');
+    }
     setShowDropdown(false);
   };
 
-  const handleLogout = () => {
-    // Logout logic would go here
-    window.location.href = '/login';
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      localStorage.removeItem('token');
+      setIsLoggedIn(false);
+      setUserData({
+        username: '',
+        profileImage: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+      });
+      router.push('/signin');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     setShowDropdown(false);
+  };
+
+  const handleSignIn = () => {
+    router.push('/signin');
   };
 
   const toggleMobileMenu = () => {
@@ -72,40 +118,74 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <nav className={styles.navigation}>
             <a 
-              href="/homepage-before-login" 
-              className={`${styles.navLink} ${isActive('/homepage-before-login') ? styles.activeLink : ''}`}
+              href="/homepage" 
+              className={`${styles.navLink} ${isActive('/homepage') ? styles.activeLink : ''}`}
             >
-              Home
+              หน้าหลัก
             </a>
             <a 
               href="/result-after-search" 
               className={`${styles.navLink} ${isActive('/result-after-search') ? styles.activeLink : ''}`}
             >
-              Search
+              ค้นหา
             </a>
             <a 
-              href="/about" 
-              className={`${styles.navLink} ${isActive('/about') ? styles.activeLink : ''}`}
+              href="/chatbot" 
+              className={`${styles.navLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
-              About
-            </a>
-            <a 
-              href="/contact" 
-              className={`${styles.navLink} ${isActive('/contact') ? styles.activeLink : ''}`}
-            >
-              Contact
+              แชทบอท
             </a>
           </nav>
           
-          <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-            <img src="/assets/user1.jpeg" alt="tinny" className={styles.profileImage} />
-            <span className={styles.profileName}>tinny</span>
-            <img 
-              src="https://cdn-icons-png.flaticon.com/128/152/152415.png" 
-              alt="dropdown" 
-              className={styles.dropdownArrow} 
-            />
-          </div>
+          {!isLoading && (
+            <>
+              {isLoggedIn ? (
+                <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
+                  <img 
+                    src={userData.profileImage} 
+                    alt={userData.username} 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
+                  <span className={styles.profileName}>{userData.username}</span>
+                  <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                  
+                  {showDropdown && (
+                    <div className={styles.dropdownMenu}>
+                      <div className={styles.dropdownItem} onClick={handleMyAccountClick}>
+                        <div className={styles.dropdownIcon}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                        </div>
+                        <span>บัญชีของฉัน</span>
+                      </div>
+                      <div className={styles.dropdownItem} onClick={handleLogout}>
+                        <div className={styles.dropdownIcon}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                          </svg>
+                        </div>
+                        <span>ออกจากรบบ</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+              <button className={styles.signInButton} onClick={handleSignIn}>
+                เข้าสู่ระบบ
+              </button>
+              )}
+            </>
+          )}
         </div>
         
         {/* Hamburger Menu Button */}
@@ -133,59 +213,11 @@ const Navigation = () => {
               Search
             </a>
             <a 
-              href="/about" 
-              className={`${styles.mobileNavLink} ${isActive('/about') ? styles.activeLink : ''}`}
+              href="/chatbot" 
+              className={`${styles.mobileNavLink} ${isActive('/chatbot') ? styles.activeLink : ''}`}
             >
-              About
+              Chatbot
             </a>
-            <a 
-              href="/contact" 
-              className={`${styles.mobileNavLink} ${isActive('/contact') ? styles.activeLink : ''}`}
-            >
-              Contact
-            </a>
-          </div>
-        )}
-        
-        {/* Profile Dropdown */}
-        {showDropdown && (
-          <div className={styles.profileDropdown}>
-            <div className={styles.profileHeader}>
-              <img src="/assets/user1.jpeg" alt="User Profile" className={styles.dropdownProfileImage} />
-              <div className={styles.profileInfo}>
-                <h3 className={styles.profileFullName}>tinny</h3>
-              </div>
-            </div>
-            
-            <div className={styles.dropdownDivider}></div>
-            
-            <div className={styles.dropdownItem} onClick={handleMyAccountClick}>
-              <div className={styles.dropdownIcon}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </div>
-              <span>My account</span>
-              <div className={styles.arrowIcon}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m9 18 6-6-6-6"/>
-                </svg>
-              </div>
-            </div>
-            
-            <div className={styles.dropdownDivider}></div>
-            
-            <div className={styles.dropdownItem} onClick={handleLogout}>
-              <div className={styles.dropdownIcon}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-              </div>
-              <span>Logout</span>
-            </div>
           </div>
         )}
       </div>

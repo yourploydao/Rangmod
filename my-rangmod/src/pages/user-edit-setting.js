@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/router";
+import axios from 'axios';
 import styles from "../styles/user-account-setting.module.css";
 import SidebarUser from '@/components/sidebar-setting-user';
 
@@ -8,43 +9,57 @@ const UserAccountSettingEdit = () => {
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
   
-  // Mock user data - in a real app this would come from a database or context
   const [userData, setUserData] = useState({
-    fullName: 'Tinny Targarian',
-    username: 'Tinny',
-    phoneNumber: '0880001234',
-    email: 'Tinny@gmail.com',
-    profileImage: '/assets/user1.jpeg'
+    name: '',
+    username: '',
+    phone: '',
+    email: '',
+    role: 'User',
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
   });
 
-  const [emails, setEmails] = useState(['Tinny@gmail.com']);
-  const [showAddEmail, setShowAddEmail] = useState(false);
-  const [newEmail, setNewEmail] = useState('');
-
-  const [passwordData, setPasswordData] = useState({
-    newPassword: '',
-    confirmPassword: ''
-  });
-  
-  // Add state for dropdown menu and password visibility
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
-  // Add states for notification popup
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState('success'); // 'success', 'error', 'warning'
-  
-  // Add state to track if passwords match
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [notificationType, setNotificationType] = useState('success');
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/api/auth/me');
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            phone: user.phone || 'Not set',
+            email: user.email,
+            role: user.role || 'User',
+            profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setError('Failed to load user data');
+        if (err.response?.status === 401) {
+          router.push('/signin');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
 
   const handleShowNotification = (message, type = 'success') => {
     setNotificationMessage(message);
     setNotificationType(type);
     setShowNotification(true);
     
-    // Auto hide notification after 3 seconds
     setTimeout(() => {
       setShowNotification(false);
     }, 3000);
@@ -58,138 +73,122 @@ const UserAccountSettingEdit = () => {
     });
   };
 
-  const handleEditClick = () => {
-    // Check if there are any password fields filled but not matching
-    if ((passwordData.newPassword || passwordData.confirmPassword) && 
-        passwordData.newPassword !== passwordData.confirmPassword) {
-      handleShowNotification("Passwords don't match. Please correct before saving.", "error");
-      return;
-    }
-    
-    // In a real app, this would save changes to the API
-    handleShowNotification("Changes saved successfully");
-    
-    // Set a short delay before redirecting to ensure user sees the notification
-    setTimeout(() => {
-      router.push("/user-account-setting");
-    }, 1500);
-  };
-  
-  const handleAddEmailClick = () => {
-    setShowAddEmail(true);
-  };
-  
-  const handleCancelAddEmail = () => {
-    setShowAddEmail(false);
-    setNewEmail('');
-  };
-  
-  const handleAddEmail = () => {
-    if (newEmail && !emails.includes(newEmail)) {
-      setEmails([...emails, newEmail]);
-      setNewEmail('');
-      setShowAddEmail(false);
-      handleShowNotification("Email added successfully");
-    } else if (emails.includes(newEmail)) {
-      handleShowNotification("This email already exists", "error");
-    } else {
-      handleShowNotification("Please enter a valid email", "error");
-    }
-  };
-  
-  const handleRemoveEmail = (emailToRemove) => {
-    if (emails.length > 1) {
-      setEmails(emails.filter(email => email !== emailToRemove));
-      handleShowNotification("Email removed successfully");
-    } else {
-      handleShowNotification("You must have at least one email address", "warning");
-    }
-  };
-  
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    const updatedPasswordData = {
-      ...passwordData,
-      [name]: value
-    };
-    
-    setPasswordData(updatedPasswordData);
-    
-    // Check if passwords match whenever either password field changes
-    if (updatedPasswordData.newPassword || updatedPasswordData.confirmPassword) {
-      setPasswordsMatch(
-        updatedPasswordData.newPassword === updatedPasswordData.confirmPassword
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      
+      // Validate required fields
+      if (!userData.name || !userData.username) {
+        handleShowNotification('ต้องกรอกชื่อและชื่อผู้ใช้', 'error');
+        return;
+      }
+
+      // Call API to update profile
+      const response = await axios.put('/api/auth/me', {
+        name: userData.name,
+        username: userData.username,
+        phone: userData.phone,
+      });
+
+      if (response.status === 200) {
+        handleShowNotification("บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว");
+        setTimeout(() => {
+          router.push("/user-account-setting");
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      handleShowNotification(
+        error.response?.data?.message || "บันทึกการเปลี่ยนแปลงไม่สำเร็จ",
+        "error"
       );
-    } else {
-      // If both fields are empty, consider them matching
-      setPasswordsMatch(true);
+    } finally {
+      setIsSaving(false);
     }
   };
   
-  const handleResetPassword = () => {
-    // In a real app, this would validate and submit to an API
-    if (!passwordData.newPassword) {
-      handleShowNotification("Password cannot be empty", "error");
-      return;
-    } 
-    
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      handleShowNotification("Passwords don't match", "error");
-      return;
-    }
-    
-    handleShowNotification("Password updated successfully");
-    setPasswordData({
-      newPassword: '',
-      confirmPassword: ''
-    });
-  };
-  
-  // Add logout handler
-  const handleLogout = () => {
-    // In a real app, this would clear auth state and redirect
-    handleShowNotification("Logging out...");
-    setTimeout(() => {
-      router.push("/login");
-    }, 1000);
-  };
-  
-  // Toggle dropdown visibility
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
   
-  // Handle profile image change
-  const handleImageChange = (e) => {
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      localStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      handleShowNotification("ออกจากระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "เกิดข้อผิดพลาด");
+    }
+  };
+  
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      // In a real app, you would upload this file to a server
-      // Here, we're just creating a local URL for preview
-      const imageUrl = URL.createObjectURL(file);
-      setUserData({
-        ...userData,
-        profileImage: imageUrl
-      });
-      handleShowNotification("Profile image updated");
+      try {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          handleShowNotification('กรุณาเลือกไฟล์รูปภาพ', 'เกิดข้อผิดพลาด');
+          return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          handleShowNotification('ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB', 'เกิดข้อผิดพลาด');
+          return;
+        }
+
+        // Convert file to base64
+        const reader = new FileReader();
+        const base64 = await new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+
+        // Upload to Cloudinary using existing /api/upload endpoint
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ image: base64 }),
+        });
+
+        if (!response.ok) {
+          throw new Error('อัปโหลดรูปภาพไม่สำเร็จ');
+        }
+
+        const result = await response.json();
+        
+        // Update user's profile picture
+        const updateResponse = await axios.put('/api/auth/me', {
+          name: userData.name,
+          username: userData.username,
+          phone: userData.phone,
+          profile_picture: result.url
+        });
+
+        if (updateResponse.status === 200) {
+          setUserData({
+            ...userData,
+            profile_picture: result.url
+          });
+          handleShowNotification("รูปโปรไฟล์ได้รับการอัปเดตเรียบร้อยแล้ว");
+        }
+      } catch (err) {
+        console.error('Error uploading image:', err);
+        handleShowNotification(
+          err.response?.data?.message || "อัปเดตรูปโปรไฟล์ไม่สำเร็จ",
+          "error"
+        );
+      }
     }
   };
   
   const handleImageUploadClick = () => {
-    // Trigger the hidden file input
     fileInputRef.current.click();
   };
   
-  // Toggle password visibility
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-  
-  // Toggle confirm password visibility
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
-  
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -203,37 +202,46 @@ const UserAccountSettingEdit = () => {
     };
   }, [dropdownRef]);
 
-  // Close notification when ESC key is pressed
-  useEffect(() => {
-    function handleEscKey(event) {
-      if (event.keyCode === 27) {
-        setShowNotification(false);
-      }
-    }
-    
-    document.addEventListener("keydown", handleEscKey);
-    return () => {
-      document.removeEventListener("keydown", handleEscKey);
-    };
-  }, []);
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        {/* Use the imported Sidebar component */}
-        <SidebarUser />
+        <SidebarUser activePage="ตั้งค่า" />
         
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src={userData.profileImage} alt="Profile" className={styles.profileImage} />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -249,7 +257,7 @@ const UserAccountSettingEdit = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -262,7 +270,14 @@ const UserAccountSettingEdit = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileHeaderLeft}>
                 <div className={styles.profileAvatar}>
-                  <img src={userData.profileImage} alt="Profile Avatar" />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="Profile Avatar"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <div className={styles.profileImageUpload} onClick={handleImageUploadClick}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -279,17 +294,17 @@ const UserAccountSettingEdit = () => {
                   />
                 </div>
                 <div className={styles.profileInfo}>
-                  <h2 className={styles.profileName}>{userData.fullName}</h2>
+                  <h2 className={styles.profileName}>{userData.name}</h2>
                   <p className={styles.profileEmail}>{userData.email}</p>
                 </div>
               </div>
               <div className={styles.profileHeaderRight}>
                 <button 
-                  className={`${styles.editButton} ${!passwordsMatch ? styles.disabledButton : ''}`} 
-                  onClick={handleEditClick}
-                  disabled={!passwordsMatch}
+                  className={`${styles.editButton} ${isSaving ? styles.disabledButton : ''}`}
+                  onClick={handleSave}
+                  disabled={isSaving}
                 >
-                  Save
+                  {isSaving ? 'กำลังบันทึก...' : 'บันทึก'}
                 </button>
               </div>
             </div>
@@ -297,173 +312,53 @@ const UserAccountSettingEdit = () => {
             <div className={styles.profileForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Full Name</label>
+                  <label>ชื่อ-นามสกุล</label>
                   <input
                     type="text"
-                    name="fullName"
-                    value={userData.fullName}
+                    name="name"
+                    value={userData.name}
                     onChange={handleUserDataChange}
                     className={styles.editableInput}
+                    disabled={isSaving}
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Username</label>
+                  <label>ชื่อผู้ใช้</label>
                   <input
                     type="text"
                     name="username"
                     value={userData.username}
                     onChange={handleUserDataChange}
                     className={styles.editableInput}
+                    disabled={isSaving}
                   />
                 </div>
               </div>
               
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Phone Number</label>
+                  <label>เบอร์โทรศัพท์</label>
                   <input
                     type="text"
-                    name="phoneNumber"
-                    value={userData.phoneNumber}
+                    name="phone"
+                    value={userData.phone}
                     onChange={handleUserDataChange}
                     className={styles.editableInput}
+                    disabled={isSaving}
                   />
                 </div>
               </div>
               
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <div className={styles.formSection}>
-                    <h3 className={styles.sectionTitle}>My email Address</h3>
-                    <div className={styles.emailList}>
-                      {emails.map((email, index) => (
-                        <div className={styles.emailItem} key={index}>
-                          <div className={styles.emailIcon}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#3b82f6">
-                              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                            </svg>
-                          </div>
-                          <div className={styles.emailText}>{email}</div>
-                          {emails.length > 1 && (
-                            <div className={styles.emailActions}>
-                              <button className={styles.deleteButton} onClick={() => handleRemoveEmail(email)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" strokeWidth="2">
-                                  <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+              <div className={styles.formSection}>
+                <div className={styles.email}>อีเมลของฉัน</div>
+                <div className={styles.emailList}>
+                  <div className={styles.emailItem}>
+                    <div className={styles.emailIcon}>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#3b82f6">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                      </svg>
                     </div>
-                    
-                    {showAddEmail ? (
-                      <div className={styles.newEmailForm}>
-                        <div className={styles.formGroup}>
-                          <label>New Email Address</label>
-                          <input
-                            type="email"
-                            value={newEmail}
-                            onChange={(e) => setNewEmail(e.target.value)}
-                            className={styles.editableInput}
-                            placeholder="Enter new email address"
-                          />
-                        </div>
-                        <div className={styles.newEmailActions}>
-                          <button className={styles.cancelEmailButton} onClick={handleCancelAddEmail}>
-                            Cancel
-                          </button>
-                          <button className={styles.addButton} onClick={handleAddEmail}>
-                            Add Email
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button className={styles.addEmailButton} onClick={handleAddEmailClick}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#3b82f6">
-                          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                        </svg>
-                        Add Email Address
-                      </button>
-                    )}
-                  </div>
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <div className={styles.passwordSection}>
-                    <h3 className={styles.sectionTitle}>Reset Password</h3>
-                    <div className={styles.passwordBox}>
-                      <div className={styles.passwordInputWrapper}>
-                        <label>New Password</label>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          name="newPassword"
-                          value={passwordData.newPassword}
-                          onChange={handlePasswordChange}
-                          className={`${styles.editableInput} ${!passwordsMatch && passwordData.newPassword ? styles.inputError : ''}`}
-                          placeholder="Enter new password"
-                        />
-                        <div 
-                          className={styles.passwordToggleIcon}
-                          onClick={togglePasswordVisibility}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            {showPassword ? (
-                              <>
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                              </>
-                            ) : (
-                              <>
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                              </>
-                            )}
-                          </svg>
-                        </div>
-                      </div>
-                      <div className={styles.passwordInputWrapper}>
-                        <label>Confirm Password</label>
-                        <input
-                          type={showConfirmPassword ? "text" : "password"}
-                          name="confirmPassword"
-                          value={passwordData.confirmPassword}
-                          onChange={handlePasswordChange}
-                          className={`${styles.editableInput} ${!passwordsMatch && passwordData.confirmPassword ? styles.inputError : ''}`}
-                          placeholder="Confirm your password"
-                        />
-                        <div 
-                          className={styles.passwordToggleIcon}
-                          onClick={toggleConfirmPasswordVisibility}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            {showConfirmPassword ? (
-                              <>
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                              </>
-                            ) : (
-                              <>
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                              </>
-                            )}
-                          </svg>
-                        </div>
-                      </div>
-                      {!passwordsMatch && passwordData.confirmPassword && (
-                        <div className={styles.passwordError}>
-                          Passwords don't match
-                        </div>
-                      )}
-                      <button 
-                        className={`${styles.resetPasswordButton} ${!passwordsMatch ? styles.disabledButton : ''}`} 
-                        onClick={handleResetPassword}
-                        disabled={!passwordsMatch}
-                      >
-                        Reset Password
-                      </button>
-                    </div>
+                    <div className={styles.emailText}>{userData.email}</div>
                   </div>
                 </div>
               </div>
@@ -472,7 +367,6 @@ const UserAccountSettingEdit = () => {
         </div>
       </div>
       
-      {/* Enhanced Notification Popup - Moved to top right */}
       {showNotification && (
         <div className={`${styles.notification} ${styles[notificationType]} ${styles.topRight}`}>
           <div className={styles.notificationContent}>
@@ -488,13 +382,6 @@ const UserAccountSettingEdit = () => {
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="15" y1="9" x2="9" y2="15"></line>
                   <line x1="9" y1="9" x2="15" y2="15"></line>
-                </svg>
-              )}
-              {notificationType === 'warning' && (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                  <line x1="12" y1="9" x2="12" y2="13"></line>
-                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
                 </svg>
               )}
             </div>

@@ -18,10 +18,10 @@ const SidebarOwner = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <a href="/homepage-after-login">
+        <a href="/homepage-after-login" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
-            <span className={styles.logoText}>RANGMOD</span>
+            <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
         </a>
       </div>
@@ -36,7 +36,7 @@ const SidebarOwner = () => {
                   className={styles.navIcon} 
                 />
               </div>
-              <span className={styles.navText}>Setting</span>
+              <span className={styles.navText}>ตั้งค่า</span>
             </a>
           </li>
           <li className={`${styles.navItem} ${isActive('/owner-dashboard') ? styles.active : ''}`}>
@@ -48,7 +48,7 @@ const SidebarOwner = () => {
                   className={styles.navIcon} 
                 />
               </div>
-              <span className={styles.navText}>Edit</span>
+              <span className={styles.navText}>แก้ไข</span>
             </a>
           </li>
         </ul>

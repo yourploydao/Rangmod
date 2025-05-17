@@ -1,9 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, Trash2, MapPin } from 'lucide-react';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 import styles from "../styles/create-dorm.module.css";
 import SidebarAdmin from '@/components/sidebar-setting-admin';
+import 'leaflet/dist/leaflet.css';
+import dynamic from 'next/dynamic';
+
+const MapSelector = dynamic(() => import('../components/MapSelector'), {
+  ssr: false, // ปิดการโหลดในฝั่ง Server
+});
 
 const CreateDormitoryPage = () => {
+  const router = useRouter();
   const [rooms, setRooms] = useState([{ 
     id: 1, 
     name: 'Room 1',
@@ -20,27 +29,37 @@ const CreateDormitoryPage = () => {
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
   const roomFileInputRefs = useRef({});
-  
+  const [distanceKm, setDistanceKm] = useState(null);
+  const [userData, setUserData] = useState({
+    name: '',
+    username: '',
+    phone: '',
+    email: '',
+    role: 'User',
+    profile_picture: 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [formData, setFormData] = useState({
     dormitoryName: '',
     description: '',
     location: '',
-    type_dormitory: '',
-    category_dormitory: '',
+    type_dormitory: 'Apartment',
+    category_dormitory: 'Mixed',
     alley: '',
     address: '',
-    electric_price: '',
-    water_price: '',
-    other: '',
+    electric_price: 0,
+    water_price: 0,
+    other: 0,
     phone_number: '',
     agreement: '',
     distance_from_university: '',
     contract_duration: 3,
-    gate_location: '',
+    gate_location: 'Front Gate',
     facilities: {
       wifi: false,
-      airConditioner: false,
-      privateBathroom: false,
+      air_conditioner: false,
       refrigerator: false,
       television: false,
       closet: false,
@@ -49,24 +68,75 @@ const CreateDormitoryPage = () => {
       cctv: false,
       desk: false,
       parking: false,
-      kitchen: false
+      kitchen: false,
+      water_heater: false,
+      convenience_store: false,
+      laundry: false,
+      fan: false
     }
   });
   
-  const userData = {
-    username: "Admin"
-  };
-  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (!token) {
+          router.push('/signin');
+          return;
+        }
+
+        const response = await axios.get('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          const user = response.data;
+          setUserData({
+            name: user.name || user.username,
+            username: user.username,
+            phone: user.phone || 'Not set',
+            email: user.email,
+            role: user.role || 'User',
+            profile_picture: user.profile_picture || 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png'
+          });
+        }
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
+          router.push('/signin');
+          return;
+        }
+        console.error('Error fetching user data:', err);
+        setError('Failed to load user data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
+
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
-  
-  const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("Logging out...");
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+      // Clear any local storage or state
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      router.push("/signin");
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองอีกครั้ง');
+    }
     setShowDropdown(false);
   };
-  
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -148,7 +218,7 @@ const CreateDormitoryPage = () => {
           });
 
           if (!response.ok) {
-            throw new Error('Failed to upload image');
+            throw new Error('การอัปโหลดรูปภาพล้มเหลว');
           }
 
           const result = await response.json();
@@ -167,7 +237,7 @@ const CreateDormitoryPage = () => {
         setPhotos(updatedPhotos);
       } catch (error) {
         console.error('Error uploading photos:', error);
-        alert('Error uploading photos. Please try again.');
+        alert('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ กรุณาลองใหม่อีกครั้ง');
       }
     }
   };
@@ -194,7 +264,7 @@ const CreateDormitoryPage = () => {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to upload image');
+          throw new Error('อัปโหลดรูปภาพไม่สำเร็จ');
         }
 
         const result = await response.json();
@@ -211,8 +281,8 @@ const CreateDormitoryPage = () => {
             : room
         ));
       } catch (error) {
-        console.error('Error uploading room photo:', error);
-        alert('Error uploading photo. Please try again.');
+        console.error('อัปโหลดรูปภาพห้องไม่สำเร็จ:', error);
+        alert('อัปโหลดรูปภาพไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
       }
     }
   };
@@ -229,7 +299,7 @@ const CreateDormitoryPage = () => {
           body: JSON.stringify({ public_id: photoToRemove.public_id }),
         });
       } catch (error) {
-        console.error('Error deleting photo from Cloudinary:', error);
+        console.error('ไม่สามารถลบรูปภาพจาก Cloudinary ได้:', error);
       }
     }
     setPhotos(photos.filter(photo => photo.id !== id));
@@ -248,7 +318,7 @@ const CreateDormitoryPage = () => {
           body: JSON.stringify({ public_id: photoToRemove.public_id }),
         });
       } catch (error) {
-        console.error('Error deleting photo from Cloudinary:', error);
+        console.error('ไม่สามารถลบรูปภาพจาก Cloudinary ได้', error);
       }
     }
     setRooms(rooms.map(room => 
@@ -258,53 +328,76 @@ const CreateDormitoryPage = () => {
     ));
   };
 
-  const handleMapSelect = () => {
-    // This is a mock function - in reality, you'd integrate with Google Maps API
-    setMapLocation({
-      address: "Sample Location, Kahibah",
-      lat: 15.123,
-      lng: 102.456
-    });
+  const handleMapSelect = (lat, lng) => {
+    const referenceLat = 13.65147;
+    const referenceLng = 100.49620;
+
+    const distance = calculateDistance(lat, lng, referenceLat, referenceLng);
+
+    setMapLocation({ lat, lng, address: `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
+    setDistanceKm(distance.toFixed(2));  // เก็บระยะทาง
     setShowMapModal(false);
+  };
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const toRad = (value) => (value * Math.PI) / 180;
+    const R = 6371; // Radius of Earth in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (photos.length < 5) {
-      alert('Please upload at least 5 photos of the dormitory');
+      alert('กรุณาอัปโหลดรูปภาพของหอพักอย่างน้อย 5 รูป');
       return;
     }
     
     // Validate all rooms have at least one photo
     const roomsWithoutPhotos = rooms.filter(room => room.photos.length === 0);
     if (roomsWithoutPhotos.length > 0) {
-      alert(`Please upload at least one photo for each room. ${roomsWithoutPhotos.map(r => r.name).join(', ')} missing photos.`);
+      alert(`กรุณาอัปโหลดรูปภาพอย่างน้อยหนึ่งรูปสำหรับแต่ละห้อง โดยห้องที่ยังไม่มีรูปภาพได้แก่: ${roomsWithoutPhotos.map(r => r.name).join(', ')}`);
       return;
     }
     
     if (!mapLocation) {
-      alert('Please select a location on the map');
+      alert('กรุณาเลือกตำแหน่งบนแผนที่');
       return;
     }
 
-    if (rooms.length < 2) {
-      alert('Please add at least 2 rooms');
+    if (rooms.length < 1) {
+      alert('กรุณาเพิ่มห้องอย่างน้อย 1 ห้อง');
       return;
     }
 
     // Validate contract duration
     if (![3, 6, 12].includes(Number(formData.contract_duration))) {
-      alert('Please select a valid contract duration (3, 6, or 12 months)');
+      alert('กรุณาเลือกระยะเวลาสัญญาที่ถูกต้อง (3, 6 หรือ 12 เดือน)');
       return;
     }
 
     // Validate gate location
     if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
-      alert('Please select a valid gate location (Front Gate or Back Gate)');
+      alert('กรุณาเลือกตำแหน่งประตูทางเข้าที่ถูกต้อง (ประตูหน้าหรือประตูหลังมหาวิทยาลัย)');
       return;
     }
     
     try {
+      const combinedLocation = mapLocation?.lat && mapLocation?.lng 
+       ? `${mapLocation.lat},${mapLocation.lng}`
+       : formData.location;
+      
+      formData.location = combinedLocation;
+      const distance = distanceKm != null ? distanceKm.toString() : '';
+
       const response = await fetch('/api/dormitory/create', {
         method: 'POST',
         headers: {
@@ -314,7 +407,8 @@ const CreateDormitoryPage = () => {
           ...formData,
           rooms,
           photos,
-          mapLocation,
+          location: combinedLocation,
+          distance_from_university: distance,
           contract_duration: Number(formData.contract_duration),
           gate_location: formData.gate_location
         }),
@@ -323,34 +417,57 @@ const CreateDormitoryPage = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to create dormitory');
+        throw new Error(data.message || 'การสร้างหอพักล้มเหลว');
       }
 
       // Redirect to the dormitory details page
       window.location.href = `/details/${data.dormitoryId}`;
     } catch (error) {
       alert(error.message);
-      console.error('Error creating dormitory:', error);
+      console.error('ไม่สามารถสร้างหอพักได้:', error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.layout}>
-        {/* Use the imported Sidebar component */}
         <SidebarAdmin />
 
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
               <div className={styles.userInfo}>
                 <div className={styles.userProfile} ref={dropdownRef} onClick={handleProfileClick}>
-                  <img src="/assets/admin1.jpeg" alt="Profile" className={styles.profileImage} />
+                  <img 
+                    src={userData.profile_picture} 
+                    alt="รูปโปรไฟล์" 
+                    className={styles.profileImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://res.cloudinary.com/disbsxrab/image/upload/v1747231770/blank-profile-picture-973460_1280_l8vnyk.png';
+                    }}
+                  />
                   <span className={styles.profileName}>{userData.username}</span>
                   <svg className={styles.dropdownArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -366,7 +483,7 @@ const CreateDormitoryPage = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -375,16 +492,14 @@ const CreateDormitoryPage = () => {
             </div>
           </div>
 
-          {/* Main Form Content */}
           <div className={styles.formSection}>
-            <h1 className={styles.contentTitle}>Admin Dashboard</h1>
+            <h1 className={styles.contentTitle}>หน้าควบคุมแอดมิน</h1>
             
             <div className={styles.formContainer}>
-              <h2 className={styles.sectionTitle}>Dormitory details section.</h2>
+              <h2 className={styles.sectionTitle}>ส่วนรายละเอียดหอพัก</h2>
               
-              {/* Dormitory Name */}
               <div className={styles.formGroup}>
-                <label htmlFor="dormitoryName" className={styles.formLabel}>Name Of Dormitory</label>
+                <label htmlFor="dormitoryName" className={styles.formLabel}>ชื่อหอพัก</label>
                 <input
                   type="text"
                   id="dormitoryName"
@@ -392,15 +507,13 @@ const CreateDormitoryPage = () => {
                   className={styles.formInput}
                   value={formData.dormitoryName}
                   onChange={handleInputChange}
-                  placeholder="Name of dormitory"
+                  placeholder="ชื่อหอพัก"
                 />
               </div>
 
-              {/* Dormitory Photos */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Your Dormitory Photos (5-10 photos required)</label>
+                <label className={styles.formLabel}>รูปภาพหอพักของคุณ (จำเป็นต้องมีรูปภาพ 5–10 รูป)</label>
                 <div className={styles.photoGallery}>
-                  {/* Display uploaded photos */}
                   {photos.map(photo => (
                     <div key={photo.id} className={styles.photoPreview}>
                       <img src={photo.url} alt={photo.name} />
@@ -414,14 +527,13 @@ const CreateDormitoryPage = () => {
                     </div>
                   ))}
                   
-                  {/* Upload button (only show if less than 10 photos) */}
                   {photos.length < 10 && (
                     <div 
                       className={styles.photoUploadArea}
                       onClick={() => fileInputRef.current.click()}
                     >
                       <Upload size={24} className={styles.uploadIcon} />
-                      <span className={styles.uploadText}>Upload Photos</span>
+                      <span className={styles.uploadText}>อัปโหลดรูปภาพ</span>
                       <input
                         type="file"
                         ref={fileInputRef}
@@ -434,13 +546,12 @@ const CreateDormitoryPage = () => {
                   )}
                 </div>
                 <div className={styles.photoCounter}>
-                  {photos.length}/10 photos uploaded ({photos.length < 5 ? `${5 - photos.length} more required` : 'minimum requirement met'})
+                อัปโหลดรูปภาพแล้ว {photos.length}/10 รูป ({photos.length < 5 ? `${5 - photos.length} ยังไม่ครบตามที่กำหนด` : 'ครบตามเงื่อนไขขั้นต่ำ'})
                 </div>
               </div>
 
-              {/* Description */}
               <div className={styles.formGroup}>
-                <label htmlFor="description" className={styles.formLabel}>Description</label>
+                <label htmlFor="description" className={styles.formLabel}>คำอธิบายหอพัก</label>
                 <textarea
                   id="description"
                   name="description"
@@ -448,13 +559,12 @@ const CreateDormitoryPage = () => {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder="Description of the dormitory"
+                  placeholder="คำอธิบายหอพัก"
                 />
               </div>
 
-              {/* Facilities */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Facilities</label>
+                <label className={styles.formLabel}>สิ่งอำนวยความสะดวก</label>
                 <div className={styles.facilitiesGrid}>
                   <div className={styles.facilityItem}>
                     <input
@@ -465,29 +575,18 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="wifi" className={styles.checkboxLabel}>WiFi</label>
+                    <label htmlFor="wifi" className={styles.checkboxLabel}>Wifi</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="airConditioner"
-                      name="airConditioner"
-                      checked={formData.facilities.airConditioner}
+                      id="air_conditioner"
+                      name="air_conditioner"
+                      checked={formData.facilities.air_conditioner}
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="airConditioner" className={styles.checkboxLabel}>Air Conditioner</label>
-                  </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
-                      id="privateBathroom"
-                      name="privateBathroom"
-                      checked={formData.facilities.privateBathroom}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="privateBathroom" className={styles.checkboxLabel}>Private Bathroom</label>
+                    <label htmlFor="air_conditioner" className={styles.checkboxLabel}>เครื่องปรับอากาศ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -498,7 +597,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="refrigerator" className={styles.checkboxLabel}>Refrigerator</label>
+                    <label htmlFor="refrigerator" className={styles.checkboxLabel}>ตู้เย็น</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -509,7 +608,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="television" className={styles.checkboxLabel}>Television</label>
+                    <label htmlFor="television" className={styles.checkboxLabel}>โทรทัศน์</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -520,7 +619,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="closet" className={styles.checkboxLabel}>Closet</label>
+                    <label htmlFor="closet" className={styles.checkboxLabel}>ตู้เสื้อผ้า</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -531,7 +630,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="microwave" className={styles.checkboxLabel}>Microwave</label>
+                    <label htmlFor="microwave" className={styles.checkboxLabel}>ไมโครเวฟ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -542,7 +641,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="balcony" className={styles.checkboxLabel}>Balcony</label>
+                    <label htmlFor="balcony" className={styles.checkboxLabel}>ระเบียง</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -553,7 +652,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="cctv" className={styles.checkboxLabel}>CCTV</label>
+                    <label htmlFor="cctv" className={styles.checkboxLabel}>กล้องวงจรปิด</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -564,7 +663,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="desk" className={styles.checkboxLabel}>Desk</label>
+                    <label htmlFor="desk" className={styles.checkboxLabel}>โต๊ะทำงาน</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -575,7 +674,7 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="parking" className={styles.checkboxLabel}>Parking</label>
+                    <label htmlFor="parking" className={styles.checkboxLabel}>ที่จอดรถ</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -586,14 +685,57 @@ const CreateDormitoryPage = () => {
                       onChange={handleCheckboxChange}
                       className={styles.checkbox}
                     />
-                    <label htmlFor="kitchen" className={styles.checkboxLabel}>Kitchen</label>
+                    <label htmlFor="kitchen" className={styles.checkboxLabel}>ห้องครัว</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="water_heater"
+                      name="water_heater"
+                      checked={formData.facilities.water_heater}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="water_heater" className={styles.checkboxLabel}>เครื่องทำน้ำอุ่น</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="convenience_store"
+                      name="convenience_store"
+                      checked={formData.facilities.convenience_store}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="convenience_store" className={styles.checkboxLabel}>ร้านสะดวกซื้อ</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="laundry"
+                      name="laundry"
+                      checked={formData.facilities.laundry}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="laundry" className={styles.checkboxLabel}>ร้านซักรีด</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="fan"
+                      name="fan"
+                      checked={formData.facilities.fan}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="fan" className={styles.checkboxLabel}>พัดลม</label>
                   </div>
                 </div>
               </div>
 
-              {/* Add these new form fields before the Location Map section */}
               <div className={styles.formGroup}>
-                <label htmlFor="type_dormitory" className={styles.formLabel}>Dormitory Type</label>
+                <label htmlFor="type_dormitory" className={styles.formLabel}>ประเภทที่พักอาศัย</label>
                 <select
                   id="type_dormitory"
                   name="type_dormitory"
@@ -601,17 +743,17 @@ const CreateDormitoryPage = () => {
                   value={formData.type_dormitory}
                   onChange={handleInputChange}
                 >
-                  <option value="Apartment">Apartment</option>
-                  <option value="Mansion">Mansion</option>
-                  <option value="Dormitory">Dormitory</option>
-                  <option value="Condominium">Condominium</option>
-                  <option value="House">House</option>
-                  <option value="Townhouse">Townhouse</option>
+                  <option value="Apartment">อพาร์ทเมนท์</option>
+                  <option value="Mansion">แมนชัน</option>
+                  <option value="Dormitory">หอพัก</option>
+                  <option value="Condominium">คอนโดมิเนียม</option>
+                  <option value="House">บ้าน</option>
+                  <option value="Townhouse">ทาวน์เฮาส์</option>
                 </select>
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="category_dormitory" className={styles.formLabel}>Category</label>
+                <label htmlFor="category_dormitory" className={styles.formLabel}>หมวดหมู่ที่พักอาศัย</label>
                 <select
                   id="category_dormitory"
                   name="category_dormitory"
@@ -619,14 +761,14 @@ const CreateDormitoryPage = () => {
                   value={formData.category_dormitory}
                   onChange={handleInputChange}
                 >
-                  <option value="Mixed">Mixed</option>
-                  <option value="Male">Male Only</option>
-                  <option value="Female">Female Only</option>
+                  <option value="Mixed">ที่พักอาศัยรวม</option>
+                  <option value="Male">ที่พักอาศัยชาย</option>
+                  <option value="Female">ที่พักอาศัยหญิง</option>
                 </select>
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="alley" className={styles.formLabel}>Alley</label>
+                <label htmlFor="alley" className={styles.formLabel}>ซอย</label>
                 <input
                   type="text"
                   id="alley"
@@ -634,25 +776,25 @@ const CreateDormitoryPage = () => {
                   className={styles.formInput}
                   value={formData.alley}
                   onChange={handleInputChange}
-                  placeholder="Enter alley"
+                  placeholder="กรุณากรอกซอย"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="address" className={styles.formLabel}>Address</label>
+                <label htmlFor="address" className={styles.formLabel}>ที่อยู่</label>
                 <textarea
                   id="address"
                   name="address"
                   className={styles.formTextarea}
                   value={formData.address}
                   onChange={handleInputChange}
-                  placeholder="Enter full address"
+                  placeholder="กรุณาใส่ที่อยู่ให้ครบถ้วน"
                   rows={3}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="electric_price" className={styles.formLabel}>Electric Price (per unit)</label>
+                <label htmlFor="electric_price" className={styles.formLabel}>ค่าไฟ (per unit)</label>
                 <input
                   type="number"
                   id="electric_price"
@@ -660,12 +802,12 @@ const CreateDormitoryPage = () => {
                   className={styles.formInput}
                   value={formData.electric_price}
                   onChange={handleInputChange}
-                  placeholder="Enter electric price"
+                  placeholder="ค่าไฟ (บาท/หน่วย)"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="water_price" className={styles.formLabel}>Water Price (per unit)</label>
+                <label htmlFor="water_price" className={styles.formLabel}>ค่าน้ำ (per unit)</label>
                 <input
                   type="number"
                   id="water_price"
@@ -673,12 +815,12 @@ const CreateDormitoryPage = () => {
                   className={styles.formInput}
                   value={formData.water_price}
                   onChange={handleInputChange}
-                  placeholder="Enter water price"
+                  placeholder="ค่าน้ำ (บาท/หน่วย)"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="other" className={styles.formLabel}>Other Fees (per year)</label>
+                <label htmlFor="other" className={styles.formLabel}>ค่าบริการอื่น ๆ (per year)</label>
                 <input
                   type="number"
                   id="other"
@@ -686,12 +828,12 @@ const CreateDormitoryPage = () => {
                   className={styles.formInput}
                   value={formData.other}
                   onChange={handleInputChange}
-                  placeholder="Enter other fees"
+                  placeholder="ค่าบริการอื่น ๆ (บาท/ปี)"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="phone_number" className={styles.formLabel}>Phone Number</label>
+                <label htmlFor="phone_number" className={styles.formLabel}>เบอร์โทรศัพท์</label>
                 <input
                   type="tel"
                   id="phone_number"
@@ -699,12 +841,12 @@ const CreateDormitoryPage = () => {
                   className={styles.formInput}
                   value={formData.phone_number}
                   onChange={handleInputChange}
-                  placeholder="Enter phone number"
+                  placeholder="กรุณาใส่เบอร์โทรศัพท์"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="agreement" className={styles.formLabel}>Agreement Terms</label>
+                <label htmlFor="agreement" className={styles.formLabel}>ข้อกำหนดและเงื่อนไข</label>
                 <textarea
                   id="agreement"
                   name="agreement"
@@ -712,42 +854,12 @@ const CreateDormitoryPage = () => {
                   value={formData.agreement}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder="Enter agreement terms"
+                  placeholder="กรุณาใส่ข้อกำหนดและเงื่อนไข"
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="distance_from_university" className={styles.formLabel}>Distance from University (km)</label>
-                <input
-                  type="number"
-                  id="distance_from_university"
-                  name="distance_from_university"
-                  className={styles.formInput}
-                  value={formData.distance_from_university}
-                  onChange={handleInputChange}
-                  placeholder="Enter distance"
-                  step="0.1"
-                />
-              </div>
-
-              {/* Add Gate Location selection before the Contract Duration section */}
-              <div className={styles.formGroup}>
-                <label htmlFor="gate_location" className={styles.formLabel}>Gate Location</label>
-                <select
-                  id="gate_location"
-                  name="gate_location"
-                  className={styles.formInput}
-                  value={formData.gate_location}
-                  onChange={handleInputChange}
-                >
-                  <option value="Front Gate">Front Gate</option>
-                  <option value="Back Gate">Back Gate</option>
-                </select>
-              </div>
-
-              {/* Contract Duration selection */}
-              <div className={styles.formGroup}>
-                <label htmlFor="contract_duration" className={styles.formLabel}>Contract Duration (months)</label>
+                <label htmlFor="contract_duration" className={styles.formLabel}>ระยะเวลาขั้นต่ำของสัญญา (months)</label>
                 <select
                   id="contract_duration"
                   name="contract_duration"
@@ -755,91 +867,102 @@ const CreateDormitoryPage = () => {
                   value={formData.contract_duration}
                   onChange={handleInputChange}
                 >
-                  <option value="3">3 Months</option>
-                  <option value="6">6 Months</option>
-                  <option value="12">12 Months</option>
+                  <option value="3">3 เดือน</option>
+                  <option value="6">6 เดือน</option>
+                  <option value="12">12 เดือน</option>
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="gate_location" className={styles.formLabel}>ตำแหน่งประตูทางเข้า</label>
+                <select
+                  id="gate_location"
+                  name="gate_location"
+                  className={styles.formInput}
+                  value={formData.gate_location}
+                  onChange={handleInputChange}
+                >
+                  <option value="Front Gate">หน้ามหาวิทยาลัย</option>
+                  <option value="Back Gate">หลังมหาวิทยาลัย</option>
                 </select>
               </div>
 
               {/* Location Map */}
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Location</label>
-                <div className={styles.mapContainer}>
-                  {mapLocation ? (
-                    <>
-                      <div className={styles.mapPreview}>
-                        <img 
-                          src="/api/placeholder/700/150" 
-                          alt="Map location" 
-                          className={styles.mapImage}
-                        />
-                        <div className={styles.mapOverlay}>
-                          <MapPin size={32} className={styles.mapPinIcon} />
-                        </div>
-                      </div>
-                      <div className={styles.mapAddress}>
-                        <MapPin size={16} className={styles.mapPinSmall} />
-                        <span>{mapLocation.address}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <div 
-                      className={styles.mapSelectArea}
-                      onClick={() => setShowMapModal(true)}
-                    >
-                      <MapPin size={24} className={styles.mapIcon} />
-                      <span className={styles.mapText}>Select Location on Map</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+               <div className={styles.formGroup}>
+                 <label className={styles.formLabel}>Location</label>
+                 <div className={styles.mapContainer}>
+                 {mapLocation ? (
+                   <>
+                     <div className={styles.mapPreview}>
+                 <img
+                   src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
+                   alt="Map location"
+                   className={styles.mapImage}
+                   onClick={() => setShowMapModal(true)}  // เพิ่มตรงนี้!
+                   style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
+                 />
+                   </div>
+                   {distanceKm && (
+                     <div className={styles.mapAddress}>
+                       <MapPin size={24} className={styles.mapPinSmall} />
+                     <span>{mapLocation.address}</span>
+                       <span style={{ marginLeft: '24px', color: '#555', marginBottom: '5px' }}>
+                         ระยะห่างจากจุดอ้างอิง: {distanceKm} กม.
+                       </span>
+                     </div>
+                   )}
+                 </>
+               ) : (
+                 <div 
+                   className={styles.mapSelectArea}
+                   onClick={() => setShowMapModal(true)}
+                 >
+                   <MapPin size={24} className={styles.mapIcon} />
+                   <span className={styles.mapText}>Select Location on Map</span>
+                 </div>
+               )}
 
-              {/* Map Modal */}
-              {showMapModal && (
-                <div className={styles.modalOverlay}>
-                  <div className={styles.mapModal}>
-                    <div className={styles.modalHeader}>
-                      <h3>Select Location</h3>
-                      <button 
-                        className={styles.closeModalBtn}
-                        onClick={() => setShowMapModal(false)}
-                      >
-                        <X size={20} />
-                      </button>
-                    </div>
-                    <div className={styles.modalBody}>
-                      <div className={styles.modalMapContainer}>
-                        <img 
-                          src="/api/placeholder/600/300" 
-                          alt="Google Maps" 
-                          className={styles.modalMapImage} 
-                        />
-                        <div className={styles.mapMarker}>
-                          <MapPin size={32} className={styles.mapPinIcon} />
-                        </div>
-                      </div>
-                      <div className={styles.modalActions}>
-                        <button 
-                          className={styles.cancelBtn}
-                          onClick={() => setShowMapModal(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button 
-                          className={styles.saveLocationBtn}
-                          onClick={handleMapSelect}
-                        >
-                          Save Location
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Room Sections */}
+                 </div>
+               </div>
+             
+               {/* Map Modal */}
+               {showMapModal && (
+                 <div className={styles.modalOverlay}>
+                   <div className={styles.mapModal}>
+                     <div className={styles.modalHeader}>
+                       <h3>Select Location</h3>
+                       <button 
+                         className={styles.closeModalBtn}
+                         onClick={() => setShowMapModal(false)}  // ปิด modal
+                       >
+                         <X size={20} />
+                       </button>
+                     </div>
+                     <div className={styles.modalBody}>
+                       <div className={styles.modalMapContainer}>
+                         {/* ใช้ MapSelector */}
+                         <MapSelector onSelect={handleMapSelect} />
+                       </div>
+                       <div className={styles.modalActions}>
+                         <button 
+                           className={styles.cancelBtn}
+                           onClick={() => setShowMapModal(false)}  // ปิด modal
+                         >
+                           Cancel
+                         </button>
+                         <button 
+                           className={styles.saveLocationBtn}
+                           onClick={() => setShowMapModal(false)}  // ปิด modal โดยไม่ทำอะไร
+                         >
+                           Save Location
+                         </button>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               )}
               <div className={styles.sectionDivider}>
-                <h3 className={styles.sectionTitle}>Room Details</h3>
+                <h3 className={styles.sectionTitle}>ข้อมูลห้องพัก</h3>
               </div>
 
               {rooms.map((room) => (
@@ -853,15 +976,13 @@ const CreateDormitoryPage = () => {
                       disabled={rooms.length === 1}
                     >
                       <Trash2 size={16} />
-                      Remove Room
+                      นำห้องออก
                     </button>
                   </div>
                   
-                  {/* Room Photos */}
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Your Room Photos</label>
+                    <label className={styles.formLabel}>รูปห้องของคุณ</label>
                     <div className={styles.photoGallery}>
-                      {/* Display uploaded room photos */}
                       {room.photos.map(photo => (
                         <div key={photo.id} className={styles.photoPreview}>
                           <img src={photo.url} alt={photo.name} />
@@ -875,14 +996,13 @@ const CreateDormitoryPage = () => {
                         </div>
                       ))}
                       
-                      {/* Upload button for room photos */}
                       {room.photos.length < 5 && (
                         <div 
                           className={styles.photoUploadArea}
                           onClick={() => roomFileInputRefs.current[`room-${room.id}`].click()}
                         >
                           <Upload size={24} className={styles.uploadIcon} />
-                          <span className={styles.uploadText}>Change Image</span>
+                          <span className={styles.uploadText}>เปลี่ยนรูปภาพ</span>
                           <input
                             type="file"
                             ref={el => roomFileInputRefs.current[`room-${room.id}`] = el}
@@ -898,11 +1018,11 @@ const CreateDormitoryPage = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Room Type</label>
+                        <label className={styles.formLabel}>ประเภทห้องพัก</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
-                          placeholder="Single room" 
+                          placeholder="ห้องเดี่ยว" 
                           value={room.type}
                           onChange={(e) => handleRoomInputChange(room.id, 'type', e.target.value)}
                         />
@@ -910,7 +1030,7 @@ const CreateDormitoryPage = () => {
                     </div>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Room Price (per month)</label>
+                        <label className={styles.formLabel}>ราคาห้องพัก (ต่อเดือน)</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
@@ -925,7 +1045,7 @@ const CreateDormitoryPage = () => {
                   <div className={styles.formRow}>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Room Size (meter)</label>
+                        <label className={styles.formLabel}>ขนาดห้องพัก (ตารางเมตร)</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
@@ -937,7 +1057,7 @@ const CreateDormitoryPage = () => {
                     </div>
                     <div className={styles.formColumn}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Number of Beds</label>
+                        <label className={styles.formLabel}>จำนวนเตียง</label>
                         <input 
                           type="text" 
                           className={styles.formInput} 
@@ -957,7 +1077,7 @@ const CreateDormitoryPage = () => {
                   className={styles.addRoomButton}
                   onClick={handleAddRoom}
                 >
-                  + Add room
+                  + สร้างห้องพักเพิ่ม
                 </button>
               </div>
 
@@ -967,7 +1087,7 @@ const CreateDormitoryPage = () => {
                   className={styles.createButton}
                   onClick={handleSubmit}
                 >
-                  Create
+                  สร้างที่พัก
                 </button>
               </div>
             </div>

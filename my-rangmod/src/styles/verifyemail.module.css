@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+:global(*) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
 .container {
   display: flex;
   min-height: 100vh;
@@ -28,18 +35,17 @@
   align-items: center;
   margin-bottom: 40px;
 }
-
+ 
 .logo img {
-  height: 40px;
-  width: 40px;
+  height: 70px;
+  width: 70px;
   margin-right: 10px;
-  background-color: #ffd94d;
 }
 
 .logoText {
-  font-size: 20px;
+  font-size: 30px;
   font-weight: 700;
-  color: #333;
+  color: #0099ff;
   letter-spacing: 0.5px;
 }
 
@@ -70,10 +76,14 @@
   text-transform: uppercase;
 }
 
+.passwordWrapper {
+  position: relative;
+}
+
 .fieldInput {
   width: 100%;
   height: 48px;
-  padding: 0 15px;
+  padding: 0 40px 0 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
@@ -82,6 +92,7 @@
   transition: border-color 0.2s ease;
   text-align: left;
   letter-spacing: 1px;
+  
 }
 
 .fieldInput::placeholder {
@@ -93,6 +104,17 @@
   outline: none;
   border-width: 3px;
   border-color: #3a56e4;
+}
+
+.togglePassword {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .createButton {

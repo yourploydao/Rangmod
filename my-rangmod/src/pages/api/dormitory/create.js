@@ -27,6 +27,7 @@ export default async function handler(req, res) {
       phone_number,
       agreement,
       distance_from_university,
+      location,
       contract_duration,
       gate_location
     } = req.body;
@@ -34,6 +35,11 @@ export default async function handler(req, res) {
     // Validate required fields
     if (!dormitoryName || !description || !rooms || !photos) {
       return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Validate type_dormitory
+    if (!type_dormitory || !['Apartment', 'Mansion', 'Dormitory', 'Condominium', 'House', 'Townhouse'].includes(type_dormitory)) {
+      return res.status(400).json({ message: 'Invalid dormitory type' });
     }
 
     // Validate contract duration
@@ -52,8 +58,8 @@ export default async function handler(req, res) {
     }
 
     // Validate minimum rooms requirement
-    if (rooms.length < 2) {
-      return res.status(400).json({ message: 'At least 2 rooms are required' });
+    if (rooms.length < 1) {
+      return res.status(400).json({ message: 'At least 1 room is required' });
     }
 
     // Calculate price range from rooms
@@ -66,7 +72,7 @@ export default async function handler(req, res) {
     // Create dormitory
     const dormitory = await Dormitory.create({
       name_dormitory: dormitoryName,
-      type_dormitory: type_dormitory || 'Standard',
+      type_dormitory: type_dormitory,
       category_dormitory: category_dormitory || 'Mixed',
       alley: alley || '',
       address: address,
@@ -79,6 +85,7 @@ export default async function handler(req, res) {
       agreement: agreement || '',
       num_of_rooms: rooms.length,
       distance_from_university: Number(distance_from_university) || 0,
+      location,
       contract_duration: Number(contract_duration),
       gate_location,
       last_updated: new Date().toISOString(),

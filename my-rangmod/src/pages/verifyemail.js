@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "../styles/verifyemail.module.css";
+import { useRouter } from "next/navigation";
 
 const RangModVerifyEmail = () => {
   // State variables
   const [otp, setOtp] = useState("");
+  const [showOtp, setShowOtp] = useState(false); // Added missing state variable
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
   const [countdown, setCountdown] = useState(0);
+  const router = useRouter();
 
   // Handle OTP input change
   const handleOtpChange = (e) => {
@@ -20,49 +24,43 @@ const RangModVerifyEmail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
+
+    const email = localStorage.getItem('email');
+    const payload = {
+      email: email,
+      otp: otp
+    };
 
     if (!otp || otp.length < 6) {
-      setMessage({ text: "Please enter a valid 6-digit OTP", isError: true });
+      setMessage({ text: "กรุณาใส่รหัส OTP ที่ถูกต้อง 6 หลัก", isError: true });
       setIsSubmitting(false);
       return;
     }
 
-    const payload = {
-      otp: otp
-    };
-
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/verify-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("http://localhost:3000/api/auth/verifyemail", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200) {
         setMessage({ 
-          text: data.message || "Email verified successfully!", 
+          text: data.message || "ยืนยันอีเมลสำเร็จแล้ว!", 
           isError: false 
         });
+
         // Redirect user after successful verification
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          router.push("/signin");
         }, 2000);
       } else {
         setMessage({ 
-          text: data.error || data.message || "Invalid or expired OTP", 
+          text: data.message || "รหัส OTP ไม่ถูกต้องหรือหมดอายุแล้ว", 
           isError: true 
         });
       }
     } catch (err) {
       console.error("Verification error:", err);
       setMessage({ 
-        text: "Something went wrong. Please try again later.", 
+        text: err.response?.data?.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง", 
         isError: true 
       });
     } finally {
@@ -72,40 +70,40 @@ const RangModVerifyEmail = () => {
 
   // Handle resend OTP
   const handleResendOtp = async () => {
-    if (countdown > 0) return;
-    
-    setMessage({ text: "", isError: false });
-    
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/resend-otp", {
+      const email = localStorage.getItem("email");
+      if (!email) {
+        setMessage({ text: "ไม่พบอีเมล กรุณาลงทะเบียนใหม่อีกครั้ง", isError: true });
+        return;
+      }
+
+      const res = await fetch("/api/auth/resendverification", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ email }),
       });
 
       const data = await res.json();
 
-      if (res.ok && data.status === "ok") {
-        setMessage({ 
-          text: "A new OTP has been sent to your email", 
-          isError: false 
-        });
-        // Start countdown timer
+      if (res.status === 200) {
+        setMessage({ text: data.message, isError: false });
         setCountdown(60);
+        const timer = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       } else {
-        setMessage({ 
-          text: data.error || data.message || "Failed to resend OTP", 
-          isError: true 
-        });
+        setMessage({ text: data.message || "ส่งรหัส OTP ใหม่ล้มเหลว", isError: true });
       }
-    } catch (err) {
-      console.error("Resend OTP error:", err);
-      setMessage({ 
-        text: "Something went wrong. Please try again later.", 
-        isError: true 
-      });
+    } catch (error) {
+      setMessage({ text: "ส่งรหัส OTP ใหม่ล้มเหลว", isError: true });
     }
   };
 
@@ -120,24 +118,42 @@ const RangModVerifyEmail = () => {
   return (
     <div className={styles.container}>
       <div className={styles.formSide}>
-        <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+        <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
         <div className={styles.formContainer}>
-          <h1 className={styles.title}>Verify Email Address</h1>
+          <h1 className={styles.title}>ยืนยันที่อยู่อีเมล</h1>
           
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>OTP IN YOUR EMAIL</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={handleOtpChange}
-                className={styles.fieldInput}
-                maxLength={6}
-              />
+              <label className={styles.fieldLabel}>รหัส OTP ในอีเมลของคุณ</label>
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showOtp ? "text" : "password"}
+                  value={otp}
+                  onChange={handleOtpChange}
+                  className={styles.fieldInput}
+                  maxLength={6}
+                />
+                <button 
+                  type="button" 
+                  className={styles.togglePassword}
+                  onClick={() => setShowOtp(!showOtp)}
+                >
+                  <img 
+                    src={
+                      showOtp
+                      ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png" // show password icon
+                      : "https://cdn-icons-png.flaticon.com/128/4855/4855030.png" // hide password icon
+                    }
+                    alt="Toggle OTP visibility"
+                    width="28"
+                    height="28"
+                  />
+                </button>
+              </div>
             </div>
             
             {message.text && (
@@ -151,26 +167,26 @@ const RangModVerifyEmail = () => {
               className={styles.createButton}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "VERIFYING..." : "CONFIRM"}
+              {isSubmitting ? "กำลังตรวจสอบ..." : "ยืนยันรหัส OTP"}
             </button>
           </form>
           
           <div className={styles.resendSection}>
             <p>
-              Didn't receive the code?{" "}
+            ไม่ได้รับรหัสใช่ไหม?{" "}
               <button 
                 onClick={handleResendOtp} 
                 className={`${styles.resendLink} ${countdown > 0 ? styles.resendLinkDisabled : ""}`}
                 disabled={countdown > 0}
               >
-                {countdown > 0 ? `Resend in ${countdown}s` : "RESEND OTP"}
+                {countdown > 0 ? `ส่งอีกครั้งใน ${countdown} วินาที` : "ส่งรหัส OTP อีกครั้ง"}
               </button>
             </p>
           </div>
         </div>
         
         <div className={styles.footer}>
-          <p>© 2025 All Rights Reserved.</p>
+          <p>สงวนลิขสิทธิ์ทุกประการ © 2025</p>
         </div>
       </div>
       

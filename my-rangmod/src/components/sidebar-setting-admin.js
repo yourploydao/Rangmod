@@ -14,28 +14,22 @@ const SidebarAdmin = () => {
 
   const menuItems = [
     {
-      key: 'dashboard',
+      key: 'ศูนย์ข้อมูล',
       icon: "https://cdn-icons-png.flaticon.com/128/2948/2948025.png",
-      text: "Dashboard",
-      path: "/addmin-dashboard"
+      text: "ศูนย์ข้อมูล",
+      path: "/admin/dashboard"
     },
     {
-      key: 'users',
+      key: 'ผู้ใช้งาน',
       icon: "https://cdn-icons-png.flaticon.com/128/511/511587.png",
-      text: "Users",
-      path: "/addmin-user"
+      text: "ผู้ใช้งาน",
+      path: "/admin/user"
     },
     {
-      key: 'permissions',
-      icon: "https://cdn-icons-png.flaticon.com/128/4757/4757254.png",
-      text: "Owner Permissions",
-      path: "/addmin-permission"
-    },
-    {
-      key: 'settings',
+      key: 'ตั้งค่า',
       icon: "https://cdn-icons-png.flaticon.com/128/503/503822.png",
-      text: "Setting",
-      path: "/addmin-account-setting"
+      text: "ตั้งค่า",
+      path: "/admin/account-setting"
     }
   ];
 
@@ -44,18 +38,23 @@ const SidebarAdmin = () => {
   };
 
   const isActive = (path) => {
+    // Special handling for settings pages
+    if (path === '/admin/account-setting') {
+      return activePath.includes('admin/account-setting') || activePath.includes('admin/edit-setting');
+    }
+    // For all other menu items, do exact path matching
     return activePath === path;
   };
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebarHeader}>
-        <Link href="/homepage-after-login">
+        <a href="/homepage" style={{ textDecoration: 'none' }}>
           <div className={styles.logoContainer}>
             <img src="/assets/rangmodlogo.png" alt="RangMod Logo" className={styles.logo} />
-            <span className={styles.logoText}>RANGMOD</span>
+            <span className={styles.logoText} style={{ textDecoration: 'none' }}>RANGMOD</span>
           </div>
-        </Link>
+        </a>
       </div>
       <nav className={styles.sidebarNav}>
         <ul className={styles.navList}>

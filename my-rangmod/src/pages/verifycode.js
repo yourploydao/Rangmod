@@ -1,16 +1,21 @@
 import React, { useState } from "react";
+import axios from "axios";
 import styles from "../styles/verifycode.module.css";
+import { useRouter } from "next/navigation";
 
 const VerifyCodeForgotpassword = () => {
   // State variable for OTP input
   const [otp, setOtp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", isError: false });
+  const [isResending, setIsResending] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage({ text: "", isError: false });
+
+    const email = localStorage.getItem('resetEmail');
 
     if (!otp) {
       setMessage({ text: "Please enter the verification code", isError: true });
@@ -18,30 +23,28 @@ const VerifyCodeForgotpassword = () => {
       return;
     }
 
-    const payload = {
+    const payload = { 
+      email: email,
       otp: otp
     };
 
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("/api/auth/verifyotp", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200) {
         setMessage({ 
-          text: data.message || "Email verified successfully!", 
+          text: "OTP verified successfully!", 
           isError: false 
         });
+
+        // Save email and OTP to localStorage
+        localStorage.setItem('resetEmail', email);
+        localStorage.setItem('resetOtp', otp);
+
         // Redirect to reset password page after successful verification
         setTimeout(() => {
-          window.location.href = "/reset-password";
+          router.push("/resetpassword");
         }, 1500);
       } else {
         setMessage({ 
@@ -60,11 +63,46 @@ const VerifyCodeForgotpassword = () => {
     }
   };
 
+  const handleResendOTP = async (e) => {
+    e.preventDefault();
+    setIsResending(true);
+    
+    const email = localStorage.getItem('resetEmail');
+    if (!email) {
+      setMessage({ text: "Email not found. Please try forgot password again.", isError: true });
+      setIsResending(false);
+      return;
+    }
+
+    try {
+      const res = await axios.post("/api/auth/resendotp", { email });
+      if (res.status === 200) {
+        setMessage({ 
+          text: "New verification code has been sent to your email!", 
+          isError: false 
+        });
+      } else {
+        setMessage({ 
+          text: "Failed to resend verification code. Please try again.", 
+          isError: true 
+        });
+      }
+    } catch (err) {
+      console.error("Resend OTP error:", err);
+      setMessage({ 
+        text: "Failed to resend verification code. Please try again.", 
+        isError: true 
+      });
+    } finally {
+      setIsResending(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.formSide}>
-        <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+        <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         
@@ -84,7 +122,7 @@ const VerifyCodeForgotpassword = () => {
             </div>
             
             {message.text && (
-              <div className={message.isError ? styles.errorMessage : styles.successMessage}>
+              <div className={`${message.isError ? styles.errorMessage : styles.successMessage} ${!message.isError ? styles.greenText : ''}`}>
                 {message.text}
               </div>
             )}
@@ -99,7 +137,7 @@ const VerifyCodeForgotpassword = () => {
           </form>
           
           <div className={styles.signInSection}>
-            <p>Didn't receive code? <a href="/forgot-password" className={styles.signInLink}>RESEND</a></p>
+            <p>Didn't receive code? <a href="#" onClick={handleResendOTP} className={styles.signInLink}>{isResending ? "SENDING..." : "RESEND"}</a></p>
           </div>
         </div>
         

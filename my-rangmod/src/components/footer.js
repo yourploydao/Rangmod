@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
         <div className={styles.followUs}>
-          <p>Follow us!</p>
+          <p>ติดตามเราได้ที่นี่</p>
           <div className={styles.socialIcons}>
             <a href="https://facebook.com" className={styles.socialIcon}>
               <img src="https://cdn-icons-png.flaticon.com/128/5968/5968764.png" alt="Facebook" />
@@ -27,15 +27,13 @@ const Footer = () => {
         </div>
         
         <div className={styles.footerLinks}>
-          <a href="/academic-housing" className={styles.footerLink}>Academic Housing Alliance</a>
-          <a href="/pricing" className={styles.footerLink}>Pricing</a>
-          <a href="/features" className={styles.footerLink}>Features</a>
-          <a href="/privacy" className={styles.footerLink}>Privacy Policy</a>
-          <a href="/term" className={styles.footerLink}>Term of Service</a>
+          <a className={styles.footerLink}>เกี่ยวกับเรา</a>
+          <a className={styles.footerLink}>นโยบายความเป็นส่วนตัว</a>
+          <a className={styles.footerLink}>เงื่อนไขการให้บริการ</a>
         </div>
         
         <div className={styles.copyright}>
-          <p>© 2025 All Rights Reserved</p>
+          <p>สงวนลิขสิทธิ์ทุกประการ © 2025</p>
         </div>
       </div>
     </footer>

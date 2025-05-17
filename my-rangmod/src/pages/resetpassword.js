@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import axios from "axios";
 import styles from "../styles/resetpassword.module.css";
+import { useRouter } from "next/navigation";
 
 const RangModResetPassword = () => {
   // State variables for form inputs
@@ -7,6 +9,7 @@ const RangModResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,26 +20,29 @@ const RangModResetPassword = () => {
       return;
     }
 
+    const email = localStorage.getItem('resetEmail'); // Retrieve the email stored
+    const otp = localStorage.getItem('resetOtp'); // Retrieve the OTP stored
+
+    if (!email || !otp) {
+      alert("Missing email or OTP for reset. Please start the reset process again.");
+      router.push("/forgotpassword");
+      return;
+    }
+
     const payload = {
+      email: email,
+      otp: otp,
       newPassword: newPassword,
-      confirmPassword: confirmPassword
     };
 
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("https://api.rangmod.com/reset-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post("/api/auth/resetpassword", payload);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (res.ok && data.status === "ok") {
+      if (res.status === 200 ) {
         alert(data.message || "Password reset successfully!");
-        window.location.href = "/signin";
+
+        router.push("/signin");
       } else {
         alert(data.error || data.message || "Password reset failed");
       }
@@ -49,8 +55,8 @@ const RangModResetPassword = () => {
   return (
     <div className={styles.container}>
       <div className={styles.formSide}>
-        <div className={styles.logo}>
-          <img src="/assets/mocklogo.jpeg" alt="RangMod Logo" />
+        <div className={styles.logo} onClick={() => router.push('/homepage')} style={{cursor: 'pointer'}}>
+          <img src="/assets/rangmodlogo.png" alt="RangMod Logo" />
           <span className={styles.logoText}>RANGMOD</span>
         </div>
         

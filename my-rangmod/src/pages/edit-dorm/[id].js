@@ -123,7 +123,7 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
     address: dormitory.address || '',
     electric_price: dormitory.electric_price || '',
     water_price: dormitory.water_price || '',
-    other: dormitory.other || '',
+    other: dormitory.other || 0,
     phone_number: dormitory.phone_number || '',
     agreement: dormitory.agreement || '',
     distance_from_university: dormitory.distance_from_university || '',

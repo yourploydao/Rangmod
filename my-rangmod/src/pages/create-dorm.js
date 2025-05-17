@@ -51,7 +51,7 @@ const CreateDormitoryPage = () => {
     address: '',
     electric_price: '',
     water_price: '',
-    other: '',
+    other: 0,
     phone_number: '',
     agreement: '',
     distance_from_university: '',

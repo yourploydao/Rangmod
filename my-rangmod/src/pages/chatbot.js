@@ -4,22 +4,31 @@ import Link from 'next/link';
 import styles from "../styles/chatbot.module.css";
 import Header from "../components/navigation";
 import Footer from "../components/footer";
+import { getChatResponse } from "../lib/ai/chat.ts";
 
 export default function ChatbotPage() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const chatBoxRef = useRef(null);
 
-  const chatBoxRef = useRef(null); // 👈 ref สำหรับกล่องแชท
-
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim() === "") return;
-    const newMessages = [...messages, { sender: "user", text: input }, { sender: "bot", text: "ขอบคุณที่ส่งข้อความเข้ามา!" }];
-    setMessages(newMessages);
+
+    const userMessage = { sender: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
+
+    try {
+      const botReply = await getChatResponse(input);
+      const botMessage = { sender: "bot", text: botReply };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      const errorMsg = { sender: "bot", text: "เกิดข้อผิดพลาดในการเชื่อมต่อ AI" };
+      setMessages((prev) => [...prev, errorMsg]);
+    }
   };
 
   useEffect(() => {
-    // 👇 scroll chatbox ให้เลื่อนไปด้านล่าง
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }

@@ -1,6 +1,4 @@
-/* Inherit base styles from the owner-account-setting.module.css */:local(*) {
-    font-family: 'Poppins', sans-serif;
-  }
+
   
   .container {
     display: flex;

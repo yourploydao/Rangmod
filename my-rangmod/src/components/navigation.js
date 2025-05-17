@@ -111,7 +111,12 @@ const Navigation = () => {
       <div className={styles.headerContainer}>
         <div className={styles.leftSection}>
           <div className={styles.logo} onClick={handleLogoClick}>
-            <Image src="/assets/rangmodlogo.png" alt="RANGMOD" className={styles.logoImage} />
+            <Image
+              src="/assets/rangmodlogo.png"
+              alt="Rangmod Logo"
+              width={30} // replace with your actual desired size
+              height={30}
+            />
             <span className={styles.logoText}>RANGMOD</span>
           </div>
         </div>
@@ -192,11 +197,13 @@ const Navigation = () => {
         
         {/* Hamburger Menu Button */}
         <div className={styles.hamburgerMenu} onClick={toggleMobileMenu}>
-          <Image 
-            src="https://cdn-icons-png.flaticon.com/128/13958/13958298.png" 
-            alt="Menu" 
-            className={styles.hamburgerIcon} 
-          />
+        <Image 
+          src="https://cdn-icons-png.flaticon.com/128/13958/13958298.png" 
+          alt="Menu" 
+          width={24}        // หรือขนาดที่คุณต้องการ
+          height={24}
+          className={styles.hamburgerIcon}
+        />
         </div>
         
         {/* Mobile Navigation */}

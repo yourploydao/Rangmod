@@ -391,11 +391,11 @@ const handleSubmit = async (e) => {
   }
 
   try {
- const combinedLocation = mapLocation?.lat && mapLocation?.lng 
-  ? `${mapLocation.lat},${mapLocation.lng}`
-  : formData.location;
+    const combinedLocation = mapLocation?.lat && mapLocation?.lng 
+     ? `${mapLocation.lat},${mapLocation.lng}`
+     : formData.location;
 
-formData.location = combinedLocation;
+    formData.location = combinedLocation;
     const distance = distanceKm != null ? distanceKm.toString() : '';
 
     const response = await fetch(`/api/dormitory/edit/${dormitory._id}`, {

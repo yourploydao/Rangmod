@@ -93,9 +93,10 @@ const facilityIcons = {
   'cctv': '📹',
   'desk': '📚',
   'parking': '🅿️',
-  /*'laundry': '🅿️',
-  'waterHeater':'🅿️',
-  'fan':'🅿️',*/
+  'laundry': '🩲',
+  'waterHeater':'🛁',
+  'fan':'🍃',
+  'convenience_store':'🏪',
 };
 
 const facilityTranslations = {
@@ -109,7 +110,11 @@ const facilityTranslations = {
   'balcony': 'ระเบียง',
   'cctv': 'กล้องวงจรปิด',
   'desk': 'โต๊ะทำงาน',
-  'parking': 'ที่จอดรถ'
+  'parking': 'ที่จอดรถ',
+  'laundry': 'ร้านซักรีด',
+  'waterHeater':'เครื่องทำน้ำอุ่น',
+  'fan':'พัดลม',
+  'convenience_store':'ร้านสะดวกซื้อ',
 };
 
 const dormitoryTypeTranslations = {

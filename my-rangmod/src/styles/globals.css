@@ -17,14 +17,7 @@
   }
 }
 
-/* LightningCSS จะไม่ยอมรับ Universal Selector (*) ในไฟล์ CSS Module
-   แต่ global CSS สามารถใช้ได้ */
-:global(*) {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+
 
 body {
   background: var(--background);

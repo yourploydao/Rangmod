@@ -32,8 +32,8 @@ const CreateDormitoryPage = () => {
     dormitoryName: '',
     description: '',
     location: '',
-    type_dormitory: '',
-    category_dormitory: '',
+    type_dormitory: 'Apartment',
+    category_dormitory: 'Mixed',
     alley: '',
     address: '',
     electric_price: '',
@@ -56,7 +56,11 @@ const CreateDormitoryPage = () => {
       cctv: false,
       desk: false,
       parking: false,
-      kitchen: false
+      kitchen: false,
+      waterHeater: false,
+      convenienceStore: false,
+      laundry: false,
+      fan: false
     }
   });
   
@@ -312,8 +316,8 @@ const handleMapSelect = (lat, lng) => {
       return;
     }
 
-    if (rooms.length < 2) {
-      alert('กรุณาเพิ่มห้องอย่างน้อย 2 ห้อง');
+    if (rooms.length < 1) {
+      alert('กรุณาเพิ่มห้องอย่างน้อย 1 ห้อง');
       return;
     }
 
@@ -325,7 +329,7 @@ const handleMapSelect = (lat, lng) => {
 
     // Validate gate location
     if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
-      alert('กรุณาเลือกตำแหน่งประตูที่ถูกต้อง (ประตูหน้า หรือ ประตูหลัง)');
+      alert('กรุณาเลือกตำแหน่งประตูทางเข้าที่ถูกต้อง (ประตูหน้าหรือประตูหลังมหาวิทยาลัย)');
       return;
     }
     
@@ -515,17 +519,6 @@ const handleMapSelect = (lat, lng) => {
                   <div className={styles.facilityItem}>
                     <input
                       type="checkbox"
-                      id="privateBathroom"
-                      name="privateBathroom"
-                      checked={formData.facilities.privateBathroom}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="privateBathroom" className={styles.checkboxLabel}>ห้องน้ำส่วนตัว</label>
-                  </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
                       id="refrigerator"
                       name="refrigerator"
                       checked={formData.facilities.refrigerator}
@@ -621,6 +614,50 @@ const handleMapSelect = (lat, lng) => {
                       className={styles.checkbox}
                     />
                     <label htmlFor="kitchen" className={styles.checkboxLabel}>ห้องครัว</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="waterHeater"
+                      name="waterHeater"
+                      checked={formData.facilities.waterHeater}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="waterHeater" className={styles.checkboxLabel}>เครื่องทำน้ำอุ่น</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="convenienceStore"
+                      name="convenienceStore"
+                      checked={formData.facilities.convenienceStore}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="convenienceStore" className={styles.checkboxLabel}>ร้านสะดวกซื้อ</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="laundry"
+                      name="laundry"
+                      checked={formData.facilities.laundry}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="laundry" className={styles.checkboxLabel}>ร้านซักรีด</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="fan"
+                      name="fan"
+                      checked={formData.facilities.fan}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="fan" className={styles.checkboxLabel}>พัดลม</label>
                   </div>
                 </div>
               </div>

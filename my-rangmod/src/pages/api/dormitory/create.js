@@ -37,6 +37,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
+    // Validate type_dormitory
+    if (!type_dormitory || !['Apartment', 'Mansion', 'Dormitory', 'Condominium', 'House', 'Townhouse'].includes(type_dormitory)) {
+      return res.status(400).json({ message: 'Invalid dormitory type' });
+    }
+
     // Validate contract duration
     if (![3, 6, 12].includes(Number(contract_duration))) {
       return res.status(400).json({ message: 'Contract duration must be 3, 6, or 12 months' });
@@ -53,8 +58,8 @@ export default async function handler(req, res) {
     }
 
     // Validate minimum rooms requirement
-    if (rooms.length < 2) {
-      return res.status(400).json({ message: 'At least 2 rooms are required' });
+    if (rooms.length < 1) {
+      return res.status(400).json({ message: 'At least 1 room is required' });
     }
 
     // Calculate price range from rooms
@@ -67,7 +72,7 @@ export default async function handler(req, res) {
     // Create dormitory
     const dormitory = await Dormitory.create({
       name_dormitory: dormitoryName,
-      type_dormitory: type_dormitory || 'Standard',
+      type_dormitory: type_dormitory,
       category_dormitory: category_dormitory || 'Mixed',
       alley: alley || '',
       address: address,

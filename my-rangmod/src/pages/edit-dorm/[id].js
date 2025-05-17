@@ -117,11 +117,10 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
     agreement: dormitory.agreement || '',
     distance_from_university: dormitory.distance_from_university || '',
     contract_duration: dormitory.contract_duration || 3,
-    gate_location: dormitory.gate_location || '',
+    gate_location: dormitory.gate_location || 'Front Gate',
     facilities: {
       wifi: facility?.facilities?.includes('wifi') || false,
       airConditioner: facility?.facilities?.includes('air_conditioner') || false,
-      privateBathroom: facility?.facilities?.includes('private_bathroom') || false,
       refrigerator: facility?.facilities?.includes('refrigerator') || false,
       television: facility?.facilities?.includes('television') || false,
       closet: facility?.facilities?.includes('closet') || false,
@@ -130,7 +129,11 @@ const EditDorm = ({ dormitory, facility, initialImages, initialRooms }) => {
       cctv: facility?.facilities?.includes('cctv') || false,
       desk: facility?.facilities?.includes('desk') || false,
       parking: facility?.facilities?.includes('parking') || false,
-      kitchen: facility?.facilities?.includes('kitchen') || false
+      kitchen: facility?.facilities?.includes('kitchen') || false,
+      waterHeater: facility?.facilities?.includes('water_heater') || false,
+      convenienceStore: facility?.facilities?.includes('convenience_store') || false,
+      laundry: facility?.facilities?.includes('laundry') || false,
+      fan: facility?.facilities?.includes('fan') || false
     }
   });
   
@@ -360,33 +363,33 @@ const handleMapSelect = (lat, lng) => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   if (photos.length < 5) {
-    alert('Please upload at least 5 photos of the dormitory');
+    alert('กรุณาอัปโหลดรูปภาพของหอพักอย่างน้อย 5 รูป');
     return;
   }
 
   const roomsWithoutPhotos = rooms.filter(room => room.photos.length === 0);
   if (roomsWithoutPhotos.length > 0) {
-    alert(`Please upload at least one photo for each room. ${roomsWithoutPhotos.map(r => r.name).join(', ')} missing photos.`);
+    alert(`กรุณาอัปโหลดรูปภาพอย่างน้อยหนึ่งรูปสำหรับแต่ละห้อง โดยห้องที่ยังไม่มีรูปภาพได้แก่: ${roomsWithoutPhotos.map(r => r.name).join(', ')}`);
     return;
   }
 
   if (!mapLocation) {
-    alert('Please select a location on the map');
+    alert('กรุณาเลือกตำแหน่งบนแผนที่');
     return;
   }
 
-  if (rooms.length < 2) {
-    alert('Please add at least 2 rooms');
+  if (rooms.length < 1) {
+    alert('กรุณาเพิ่มห้องอย่างน้อย 1 ห้อง');
     return;
   }
 
   if (![3, 6, 12].includes(Number(formData.contract_duration))) {
-    alert('Please select a valid contract duration (3, 6, or 12 months)');
+    alert('กรุณาเลือกระยะเวลาสัญญาที่ถูกต้อง (3, 6 หรือ 12 เดือน)');
     return;
   }
 
   if (!['Front Gate', 'Back Gate'].includes(formData.gate_location)) {
-    alert('Please select a valid gate location (Front Gate or Back Gate)');
+    alert('กรุณาเลือกตำแหน่งประตูทางเข้าที่ถูกต้อง (ประตูหน้าหรือประตูหลังมหาวิทยาลัย)');
     return;
   }
 
@@ -415,17 +418,14 @@ const handleSubmit = async (e) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update dormitory');
+      throw new Error('การอัปเดตหอพักล้มเหลว');
     }
-    console.log('🚀 Submitting with formData:', formData);
-    console.log('🗺️ mapLocation:', mapLocation);
 
-
-    alert('Dormitory updated successfully');
+    alert('อัปเดตหอพักเรียบร้อยแล้ว');
     router.push('/admin/dashboard');
   } catch (error) {
     alert(error.message);
-    console.error('Error updating dormitory:', error);
+    console.error('ไม่สามารถอัปเดตหอพักได้:', error);
   }
 };
 
@@ -490,8 +490,8 @@ useEffect(() => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -523,14 +523,14 @@ useEffect(() => {
           </div>
 
           <div className={styles.formSection}>
-            <h1 className={styles.contentTitle}>Edit Dormitory</h1>
+            <h1 className={styles.contentTitle}>หน้าควบคุมแอดมิน</h1>
             
             <div className={styles.formContainer}>
-              <h2 className={styles.sectionTitle}>Dormitory details section.</h2>
+              <h2 className={styles.sectionTitle}>ส่วนรายละเอียดหอพัก</h2>
               
               {/* Dormitory Name */}
               <div className={styles.formGroup}>
-                <label htmlFor="dormitoryName" className={styles.formLabel}>Name Of Dormitory</label>
+                <label htmlFor="dormitoryName" className={styles.formLabel}>ชื่อหอพัก</label>
                 <input
                   type="text"
                   id="dormitoryName"
@@ -538,13 +538,13 @@ useEffect(() => {
                   className={styles.formInput}
                   value={formData.dormitoryName}
                   onChange={handleInputChange}
-                  placeholder="Name of dormitory"
+                  placeholder="ชื่อหอพัก"
                 />
               </div>
 
               {/* Dormitory Photos */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Your Dormitory Photos (5-10 photos required)</label>
+                <label className={styles.formLabel}>รูปภาพหอพักของคุณ (จำเป็นต้องมีรูปภาพ 5–10 รูป)</label>
                 <div className={styles.photoGallery}>
                   {photos.map(photo => (
                     <div key={photo.id} className={styles.photoPreview}>
@@ -578,13 +578,13 @@ useEffect(() => {
                   )}
                 </div>
                 <div className={styles.photoCounter}>
-                  {photos.length}/10 photos uploaded ({photos.length < 5 ? `${5 - photos.length} more required` : 'minimum requirement met'})
+                  อัปโหลดรูปภาพแล้ว {photos.length}/10 รูป ({photos.length < 5 ? `${5 - photos.length} ยังไม่ครบตามที่กำหนด` : 'ครบตามเงื่อนไขขั้นต่ำ'})
                 </div>
               </div>
 
               {/* Description */}
               <div className={styles.formGroup}>
-                <label htmlFor="description" className={styles.formLabel}>Description</label>
+                <label htmlFor="description" className={styles.formLabel}>คำอธิบายหอพัก</label>
                 <textarea
                   id="description"
                   name="description"
@@ -592,13 +592,13 @@ useEffect(() => {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder="Description of the dormitory"
+                  placeholder="คำอธิบายหอพัก"
                 />
               </div>
 
               {/* Facilities */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Facilities</label>
+                <label className={styles.formLabel}>สิ่งอำนวยความสะดวก</label>
                 <div className={styles.facilitiesGrid}>
                   <div className={styles.facilityItem}>
                     <input
@@ -621,17 +621,6 @@ useEffect(() => {
                       className={styles.checkbox}
                     />
                     <label htmlFor="airConditioner" className={styles.checkboxLabel}>Air Conditioner</label>
-                  </div>
-                  <div className={styles.facilityItem}>
-                    <input
-                      type="checkbox"
-                      id="privateBathroom"
-                      name="privateBathroom"
-                      checked={formData.facilities.privateBathroom}
-                      onChange={handleCheckboxChange}
-                      className={styles.checkbox}
-                    />
-                    <label htmlFor="privateBathroom" className={styles.checkboxLabel}>Private Bathroom</label>
                   </div>
                   <div className={styles.facilityItem}>
                     <input
@@ -731,6 +720,50 @@ useEffect(() => {
                       className={styles.checkbox}
                     />
                     <label htmlFor="kitchen" className={styles.checkboxLabel}>Kitchen</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="waterHeater"
+                      name="waterHeater"
+                      checked={formData.facilities.waterHeater}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="waterHeater" className={styles.checkboxLabel}>เครื่องทำน้ำอุ่น</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="convenienceStore"
+                      name="convenienceStore"
+                      checked={formData.facilities.convenienceStore}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="convenienceStore" className={styles.checkboxLabel}>ร้านสะดวกซื้อ</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="laundry"
+                      name="laundry"
+                      checked={formData.facilities.laundry}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="laundry" className={styles.checkboxLabel}>ร้านซักรีด</label>
+                  </div>
+                  <div className={styles.facilityItem}>
+                    <input
+                      type="checkbox"
+                      id="fan"
+                      name="fan"
+                      checked={formData.facilities.fan}
+                      onChange={handleCheckboxChange}
+                      className={styles.checkbox}
+                    />
+                    <label htmlFor="fan" className={styles.checkboxLabel}>พัดลม</label>
                   </div>
                 </div>
               </div>

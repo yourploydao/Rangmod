@@ -32,6 +32,31 @@ export default async function handler(req, res) {
       rooms
     } = req.body;
 
+    // Validate required fields
+    if (!dormitoryName || !description || !rooms || !photos) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Validate contract duration
+    if (![3, 6, 12].includes(Number(contract_duration))) {
+      return res.status(400).json({ message: 'Contract duration must be 3, 6, or 12 months' });
+    }
+
+    // Validate gate location
+    if (!['Front Gate', 'Back Gate'].includes(gate_location)) {
+      return res.status(400).json({ message: 'Gate location must be either Front Gate or Back Gate' });
+    }
+
+    // Validate minimum photos requirement
+    if (photos.length < 5) {
+      return res.status(400).json({ message: 'At least 5 photos are required' });
+    }
+
+    // Validate minimum rooms requirement
+    if (rooms.length < 1) {
+      return res.status(400).json({ message: 'At least 1 room is required' });
+    }
+
     // Update dormitory
     const updatedDormitory = await Dormitory.findByIdAndUpdate(
       id,

@@ -858,42 +858,80 @@ const CreateDormitoryPage = () => {
                 />
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Location</label>
-                <div className={styles.mapContainer}>
-                  {mapLocation ? (
-                    <>
-                      <div className={styles.mapPreview}>
-                        <img
-                          src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
-                          alt="Map location"
-                          className={styles.mapImage}
-                          onClick={() => setShowMapModal(true)}
-                          style={{ cursor: 'pointer' }}
-                        />
-                      </div>
-                      {distanceKm && (
-                        <div className={styles.mapAddress}>
-                          <MapPin size={24} className={styles.mapPinSmall} />
-                          <span>{mapLocation.address}</span>
-                          <span style={{ marginLeft: '24px', color: '#555', marginBottom: '5px' }}>
-                            ระยะห่างจากจุดอ้างอิง: {distanceKm} กม.
-                          </span>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div 
-                      className={styles.mapSelectArea}
-                      onClick={() => setShowMapModal(true)}
-                    >
-                      <MapPin size={24} className={styles.mapIcon} />
-                      <span className={styles.mapText}>Select Location on Map</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+              {/* Location Map */}
+               <div className={styles.formGroup}>
+                 <label className={styles.formLabel}>Location</label>
+                 <div className={styles.mapContainer}>
+                 {mapLocation ? (
+                   <>
+                     <div className={styles.mapPreview}>
+                 <img
+                   src={`https://maps.locationiq.com/v3/staticmap?key=pk.c829b59e04366f70c6af5a4e72e80ce3&center=${mapLocation.lat},${mapLocation.lng}&zoom=15&size=700x150&markers=icon:large-red-cutout|${mapLocation.lat},${mapLocation.lng}`}
+                   alt="Map location"
+                   className={styles.mapImage}
+                   onClick={() => setShowMapModal(true)}  // เพิ่มตรงนี้!
+                   style={{ cursor: 'pointer' }}          // ทำให้ดูเป็นปุ่มคลิก
+                 />
+                   </div>
+                   {distanceKm && (
+                     <div className={styles.mapAddress}>
+                       <MapPin size={24} className={styles.mapPinSmall} />
+                     <span>{mapLocation.address}</span>
+                       <span style={{ marginLeft: '24px', color: '#555', marginBottom: '5px' }}>
+                         ระยะห่างจากจุดอ้างอิง: {distanceKm} กม.
+                       </span>
+                     </div>
+                   )}
+                 </>
+               ) : (
+                 <div 
+                   className={styles.mapSelectArea}
+                   onClick={() => setShowMapModal(true)}
+                 >
+                   <MapPin size={24} className={styles.mapIcon} />
+                   <span className={styles.mapText}>Select Location on Map</span>
+                 </div>
+               )}
 
+                 </div>
+               </div>
+             
+               {/* Map Modal */}
+               {showMapModal && (
+                 <div className={styles.modalOverlay}>
+                   <div className={styles.mapModal}>
+                     <div className={styles.modalHeader}>
+                       <h3>Select Location</h3>
+                       <button 
+                         className={styles.closeModalBtn}
+                         onClick={() => setShowMapModal(false)}  // ปิด modal
+                       >
+                         <X size={20} />
+                       </button>
+                     </div>
+                     <div className={styles.modalBody}>
+                       <div className={styles.modalMapContainer}>
+                         {/* ใช้ MapSelector */}
+                         <MapSelector onSelect={handleMapSelect} />
+                       </div>
+                       <div className={styles.modalActions}>
+                         <button 
+                           className={styles.cancelBtn}
+                           onClick={() => setShowMapModal(false)}  // ปิด modal
+                         >
+                           Cancel
+                         </button>
+                         <button 
+                           className={styles.saveLocationBtn}
+                           onClick={() => setShowMapModal(false)}  // ปิด modal โดยไม่ทำอะไร
+                         >
+                           Save Location
+                         </button>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               )}
               <div className={styles.sectionDivider}>
                 <h3 className={styles.sectionTitle}>ข้อมูลห้องพัก</h3>
               </div>

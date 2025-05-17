@@ -92,7 +92,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
       router.push("/signin");
     } catch (err) {
       console.error('Logout error:', err);
-      alert('Failed to logout. Please try again.');
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
     }
   };
 
@@ -116,7 +116,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete dormitory');
+        throw new Error('ลบหอพักไม่สำเร็จ');
       }
 
       // Update local state after successful deletion
@@ -126,13 +126,13 @@ const OwnerDashboard = ({ initialDormitories }) => {
       
       setNotification({
         show: true,
-        message: "Dormitory deleted successfully"
+        message: "ลบหอพักเรียบร้อยแล้ว"
       });
     } catch (error) {
       console.error('Error deleting dormitory:', error);
       setNotification({
         show: true,
-        message: "Failed to delete dormitory"
+        message: "ลบหอพักไม่สำเร็จ"
       });
     }
     
@@ -198,8 +198,8 @@ const OwnerDashboard = ({ initialDormitories }) => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -229,7 +229,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -239,7 +239,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
           </div>
           
           <div className={styles.dashboardHeader}>
-            <h2 className={styles.dashboardTitle}>Admin Dashboard</h2>
+            <h2 className={styles.dashboardTitle}>หน้าควบคุมแอดมิน</h2>
           </div>
           
           <div className={styles.searchSortContainer}>
@@ -261,7 +261,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
             
             <div className={styles.actionButtons}>
               <div className={styles.sortByContainer}>
-                <span>Sort by</span>
+                <span>จัดเรียงตาม</span>
                 <div className={styles.sortIcon}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 6h18"></path>
@@ -281,18 +281,18 @@ const OwnerDashboard = ({ initialDormitories }) => {
           </div>
           
           <div className={styles.dormListContainer}>
-            <h3 className={styles.listTitle}>List Dormitory</h3>
+            <h3 className={styles.listTitle}>แสดงรายการที่พักทั้งหมด</h3>
             
             <div className={styles.tableContainer}>
               <table className={styles.dormTable}>
                 <thead>
                   <tr>
-                    <th className={styles.idColumn}>No.</th>
-                    <th className={styles.nameColumn}>Name</th>
-                    <th className={styles.typeColumn}>Type</th>
-                    <th className={styles.categoryColumn}>Category</th>
-                    <th className={styles.updateColumn}>Last update</th>
-                    <th className={styles.actionColumn}>Action</th>
+                    <th className={styles.idColumn}>ไอดี</th>
+                    <th className={styles.nameColumn}>ชื่อที่พัก</th>
+                    <th className={styles.ownerColumn}>เจ้าของ</th>
+                    <th className={styles.stateColumn}>สถานะ</th>
+                    <th className={styles.updateColumn}>อัปเดตล่าสุด</th>
+                    <th className={styles.actionColumn}>การจัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -321,7 +321,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
                               e.stopPropagation(); // Prevent row click when clicking edit
                               handleEditDorm(dorm._id);
                             }}
-                            title="Edit"
+                            title="แก้ไข"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -334,7 +334,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
                               e.stopPropagation(); // Prevent row click when clicking delete
                               handleDeleteClick(dorm._id);
                             }}
-                            title="Delete"
+                            title="ลบ"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <polyline points="3 6 5 6 21 6"></polyline>
@@ -392,7 +392,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p>Are you sure you want to delete this dormitory? <br></br>This action cannot be undone.</p>
+              <p>คุณแน่ใจหรือไม่ว่าต้องการลบหอพักนี้? <br></br>การลบนี้ไม่สามารถยกเลิกหรือกู้คืนได้</p>
             </div>
             <div className={styles.modalFooter}>
               <button className={styles.cancelButton} onClick={cancelDelete}>Cancel</button>

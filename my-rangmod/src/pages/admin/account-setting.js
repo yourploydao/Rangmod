@@ -51,11 +51,11 @@ const AdminAccountSetting = () => {
   }, [router]);
   
   const handleEditButtonClick = () => {
-    console.log('Edit button clicked');
+    console.log('กดปุ่มแก้ไขแล้ว');
     try {
       router.push("/admin/edit-setting");
     } catch (error) {
-      console.error('Error navigating to edit page:', error);
+      console.error('เกิดข้อผิดพลาดในการไปยังหน้าการแก้ไข:', error);
     }
   };
   
@@ -69,8 +69,8 @@ const AdminAccountSetting = () => {
       localStorage.removeItem('token');
       router.push("/signin");
     } catch (err) {
-      console.error('Logout error:', err);
-      alert('Failed to logout. Please try again.');
+      console.error('ออกจากระบบไม่สำเร็จ:', err);
+      alert('ออกจากระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
     }
   };
   
@@ -90,7 +90,7 @@ const AdminAccountSetting = () => {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loading}>กรุณารอสักครู่...</div>
       </div>
     );
   }
@@ -111,8 +111,8 @@ const AdminAccountSetting = () => {
         <div className={styles.mainContent}>
           <div className={styles.header}>
             <div className={styles.greeting}>
-              <h1>Hello, {userData.username}</h1>
-              <p>Have a nice day</p>
+              <h1>สวัสดี, {userData.username}</h1>
+              <p>ขอให้มีวันที่ดีนะ!</p>
             </div>
             
             <div className={styles.headerRightSection}>
@@ -142,7 +142,7 @@ const AdminAccountSetting = () => {
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
                         </div>
-                        <span>Logout</span>
+                        <span>ออกจากระบบ</span>
                       </div>
                     </div>
                   )}
@@ -174,7 +174,7 @@ const AdminAccountSetting = () => {
                   className={styles.editButton} 
                   onClick={handleEditButtonClick}
                 >
-                  Edit
+                  แก้ไข
                 </button>
               </div>
             </div>
@@ -182,24 +182,24 @@ const AdminAccountSetting = () => {
             <div className={styles.profileForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Full Name</label>
+                  <label>ชื่อ-นามสกุล</label>
                   <div className={styles.readOnlyInput}>{userData.name}</div>
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Username</label>
+                  <label>ชื่อผู้ใช้</label>
                   <div className={styles.readOnlyInput}>{userData.username}</div>
                 </div>
               </div>
               
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Phone Number</label>
+                  <label>เบอร์โทรศัพท์</label>
                   <div className={styles.readOnlyInput}>{userData.phone}</div>
                 </div>
               </div>
               
               <div className={styles.formSection}>
-                <div className={styles.email}>My email Address</div>
+                <div className={styles.email}>อีเมลของฉัน</div>
                 <div className={styles.emailList}>
                   <div className={styles.emailItem}>
                     <div className={styles.emailIcon}>

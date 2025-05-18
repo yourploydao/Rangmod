@@ -25,7 +25,6 @@ const RangModSignIn = () => {
       const data = res.data;
 
       if (res.status === 200 ) {
-        alert(data.message || "เข้าสู่ระบบสำเร็จ!");
         
         // เก็บ JWT token ตามตัวเลือก rememberMe
         if (rememberMe) {

@@ -119,6 +119,15 @@ const DormitorySearch = ({ initialDormitories }) => {
     'ที่พักอาศัยรวม': 'Mixed'
   };
 
+  const dormitoryTypeTranslations = {
+    'Apartment': 'อพาร์ตเมนต์',
+    'Mansion': 'แมนชัน',
+    'Dormitory': 'หอพัก',
+    'Condominium': 'คอนโดมิเนียม',
+    'House': 'บ้าน',
+    'Townhouse': 'ทาวน์เฮาส์'
+  };
+
   // Update search query when URL changes
   useEffect(() => {
     if (router.query.search) {
@@ -512,7 +521,7 @@ const DormitorySearch = ({ initialDormitories }) => {
                     <div className={styles.dormPriceHorizontal}>
                       {dorm.price_range?.min?.toLocaleString()} - {dorm.price_range?.max?.toLocaleString()} บาท/เดือน
                     </div>
-                    <div className={styles.dormTypeHorizontal}>{dorm.type_dormitory}</div>
+                    <div className={styles.dormTypeHorizontal}>{dormitoryTypeTranslations[dorm.type_dormitory] || dorm.type_dormitory}</div>
                     <div className={styles.dormRefreshedHorizontal}>
                       {dorm.distance_from_university?.toFixed(2)} กิโลเมตร จากมหาวิทยาลัย
                     </div>

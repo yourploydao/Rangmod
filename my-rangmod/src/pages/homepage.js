@@ -55,6 +55,15 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
     'Back Gate': 'หลังมหาวิทยาลัย'
   };
 
+  const dormitoryTypeTranslations = {
+    'Apartment': 'อพาร์ตเมนต์',
+    'Mansion': 'แมนชัน',
+    'Dormitory': 'หอพัก',
+    'Condominium': 'คอนโดมิเนียม',
+    'House': 'บ้าน',
+    'Townhouse': 'ทาวน์เฮาส์'
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -193,7 +202,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                   <p className={styles.priceRange}>
                     {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} บาท/เดือน
                   </p>
-                  <p className={styles.dormType}>{dormitory.type_dormitory}</p>
+                  <p className={styles.dormType}>{dormitoryTypeTranslations[dormitory.type_dormitory] || dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
                     {dormitory.distance_from_university?.toFixed(2)} กิโลเมตร จากมหาวิทยาลัย
                   </p>
@@ -248,7 +257,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                   <p className={styles.priceRange}>
                     {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} บาท/เดือน
                   </p>
-                  <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
+                  <p className={styles.dormFeature}>{dormitoryTypeTranslations[dormitory.type_dormitory] || dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
                     {dormitory.distance_from_university?.toFixed(2)} กิโลเมตร จากมหาวิทยาลัย
                   </p>
@@ -295,7 +304,7 @@ const RangModDormitory = ({ dormitories, recommendedDormitories }) => {
                   <p className={styles.priceRange}>
                     {dormitory.price_range?.min?.toLocaleString()} - {dormitory.price_range?.max?.toLocaleString()} บาท/เดือน
                   </p>
-                  <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
+                  <p className={styles.dormFeature}>{dormitoryTypeTranslations[dormitory.type_dormitory] || dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
                     {dormitory.distance_from_university?.toFixed(2)} กิโลเมตร จากมหาวิทยาลัย
                   </p>

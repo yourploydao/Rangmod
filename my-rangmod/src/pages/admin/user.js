@@ -378,12 +378,6 @@ const AdminUsers = () => {
                   User
                 </button>
                 <button 
-                  className={`${styles.roleOption} ${userToUpdate.role === 'owner' ? styles.active : ''}`}
-                  onClick={() => updateUserRole('owner')}
-                >
-                  Owner
-                </button>
-                <button 
                   className={`${styles.roleOption} ${userToUpdate.role === 'admin' ? styles.active : ''}`}
                   onClick={() => updateUserRole('admin')}
                 >

@@ -4,7 +4,8 @@ import Link from 'next/link';
 import styles from "../styles/chatbot.module.css";
 import Header from "../components/navigation";
 import Footer from "../components/footer";
-import { getChatResponse } from "../lib/ai/chat.ts";
+import { getChatResponse } from "../lib/ai/chat";
+const BACKEND_URL = "http://localhost:8000/chat";
 
 export default function ChatbotPage() {
   const [messages, setMessages] = useState([]);
@@ -19,14 +20,17 @@ export default function ChatbotPage() {
     setInput("");
 
     try {
-      const botReply = await getChatResponse(input);
-      const botMessage = { sender: "bot", text: botReply };
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      const errorMsg = { sender: "bot", text: "เกิดข้อผิดพลาดในการเชื่อมต่อ AI" };
-      setMessages((prev) => [...prev, errorMsg]);
-    }
-  };
+    const answer = await getChatResponse(input); // 👈 ใช้ RAG + Chat API
+    const botMessage = { sender: "bot", text: answer };
+    setMessages((prev) => [...prev, botMessage]);
+  } catch (error) {
+    const errorMsg = {
+      sender: "bot",
+      text: "เกิดข้อผิดพลาดในการเชื่อมต่อ AI"
+    };
+    setMessages((prev) => [...prev, errorMsg]);
+  }
+};
 
   useEffect(() => {
     if (chatBoxRef.current) {

@@ -33,7 +33,8 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    # ✅ เรียก context (RAG) จาก Next.js API
+    print(f"📩 ได้รับคำถาม: {request.question}")
+
     try:
         contextRes = requests.post(
             "http://localhost:3000/api/ai/context",
@@ -44,30 +45,35 @@ async def chat(request: ChatRequest):
         contextData = contextRes.json()
         context = contextData.get("context", "")
     except Exception as e:
+        print(f"⚠️ context error: {e}")
         context = ""
 
-    # ✅ สร้าง prompt รวม context
     context_part = f"Context:\n{context.strip()}\n\n" if context else ""
 
     prompt = f"""คุณคือแชทบอทแนะนำหอพักในประเทศไทย ห้ามใช้ภาษาจีน และให้ตอบเฉพาะภาษาไทยเท่านั้น
 
-    {context_part}Q: {request.question}
-    A:"""
+{context_part}Q: {request.question}
+A:"""
 
-    # ✅ encode + generate
-    inputs = tokenizer(prompt, return_tensors="pt").to("cpu")
-    input_len = inputs.input_ids.shape[-1]
+    try:
+        inputs = tokenizer(prompt, return_tensors="pt").to("cpu")
+        input_len = inputs.input_ids.shape[-1]
 
-    outputs = model.generate(
-        **inputs,
-        max_new_tokens=256,
-        do_sample=True,
-        top_p=0.9,
-        temperature=0.7,
-        pad_token_id=tokenizer.eos_token_id
-    )
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=256,
+            do_sample=True,
+            top_p=0.9,
+            temperature=0.7,
+            pad_token_id=tokenizer.eos_token_id
+        )
 
-    generated_tokens = outputs[0][input_len:]
-    answer = tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
+        generated_tokens = outputs[0][input_len:]
+        answer = tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
 
-    return { "answer": answer }
+        print(f"✅ ตอบกลับ: {answer}")
+        return { "answer": answer or "ขออภัย ฉันยังไม่มีข้อมูลสำหรับคำถามนี้" }
+    
+    except Exception as e:
+        print(f"❌ generate error: {e}")
+        return { "answer": "เกิดข้อผิดพลาดระหว่างประมวลผลคำถาม" }

@@ -1,8 +1,7 @@
 #!/bin/bash
-MODEL_PARENT_DIR="./my-rangmod/models"
-MODEL_DIR="./my-rangmod/models/qwen-merged"
+MODEL_DIR="./models/qwen-merged"
 MODEL_FILE="qwen-merged.zip"
-FILE_ID="1I5jHuk_mVnd3u7OU8Bq4thgLn1Op2KEp"
+FILE_ID="1l5jHuk_mVnd3u70UB8q4thgLn10p2KEp"
 
 echo "📦 Downloading model to $MODEL_DIR..."
 mkdir -p "$MODEL_DIR"

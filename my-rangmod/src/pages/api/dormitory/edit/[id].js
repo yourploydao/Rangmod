@@ -119,6 +119,20 @@ export default async function handler(req, res) {
       });
 
       await Promise.all(roomPromises);
+
+      // Calculate new price range
+      const prices = rooms.map(room => Number(room.price));
+      const price_range = {
+        min: Math.min(...prices),
+        max: Math.max(...prices)
+      };
+
+      // Update dormitory with new price range
+      await Dormitory.findByIdAndUpdate(
+        id,
+        { price_range },
+        { new: true }
+      );
     }
 
     return res.status(200).json({

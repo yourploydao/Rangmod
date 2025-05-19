@@ -53,7 +53,7 @@ const RangModSignIn = () => {
           // ถ้าเป็น user ให้ไปที่ /owner/dashboard
           router.push("/owner-dashboard");
         } else {
-          alert("Unknown role");
+          alert("ไม่พบบทบาทผู้ใช้งาน");
         }
       } else {
         alert(data.error || data.message || "เข้าสู่ระบบไม่สำเร็จ");

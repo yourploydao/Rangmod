@@ -889,7 +889,7 @@ const CreateDormitoryPage = () => {
 
               {/* Location Map */}
                <div className={styles.formGroup}>
-                 <label className={styles.formLabel}>Location</label>
+                 <label className={styles.formLabel}>ตำแหน่งที่ตั้ง</label>
                  <div className={styles.mapContainer}>
                  {mapLocation ? (
                    <>
@@ -918,7 +918,7 @@ const CreateDormitoryPage = () => {
                    onClick={() => setShowMapModal(true)}
                  >
                    <MapPin size={24} className={styles.mapIcon} />
-                   <span className={styles.mapText}>Select Location on Map</span>
+                   <span className={styles.mapText}>โปรดเลือกตำแหน่งที่ตั้งจากแผนที่</span>
                  </div>
                )}
 
@@ -930,7 +930,7 @@ const CreateDormitoryPage = () => {
                  <div className={styles.modalOverlay}>
                    <div className={styles.mapModal}>
                      <div className={styles.modalHeader}>
-                       <h3>Select Location</h3>
+                       <h3>เลือกตำแหน่งที่ตั้ง</h3>
                        <button 
                          className={styles.closeModalBtn}
                          onClick={() => setShowMapModal(false)}  // ปิด modal
@@ -948,13 +948,13 @@ const CreateDormitoryPage = () => {
                            className={styles.cancelBtn}
                            onClick={() => setShowMapModal(false)}  // ปิด modal
                          >
-                           Cancel
+                           ยกเลิก
                          </button>
                          <button 
                            className={styles.saveLocationBtn}
                            onClick={() => setShowMapModal(false)}  // ปิด modal โดยไม่ทำอะไร
                          >
-                           Save Location
+                           บันทึกตำแหน่งที่ตั้ง
                          </button>
                        </div>
                      </div>

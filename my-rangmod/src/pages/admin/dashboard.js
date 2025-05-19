@@ -371,7 +371,7 @@ const OwnerDashboard = ({ initialDormitories }) => {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h3>Confirm Deletion</h3>
+              <h3>ยืนยันการลบ?</h3>
               <button className={styles.closeButton} onClick={cancelDelete}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>

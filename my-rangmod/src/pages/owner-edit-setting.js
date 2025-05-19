@@ -195,7 +195,7 @@ const OwnerAccountSettingEdit = () => {
             <div className={styles.profileForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Full Name</label>
+                  <label>ชื่อ-นามสกุล</label>
                   <input
                     type="text"
                     name="fullName"
@@ -205,7 +205,7 @@ const OwnerAccountSettingEdit = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Username</label>
+                  <label>ชื่อผู้ใช้</label>
                   <input
                     type="text"
                     name="username"
@@ -218,7 +218,7 @@ const OwnerAccountSettingEdit = () => {
               
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Phone Number</label>
+                  <label>เบอร์โทรศัพท์</label>
                   <input
                     type="text"
                     name="phoneNumber"

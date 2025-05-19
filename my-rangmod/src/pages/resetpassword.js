@@ -16,7 +16,7 @@ const RangModResetPassword = () => {
 
     // Validate passwords match
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match. Please try again.");
+      alert("รหัสผ่านไม่ตรงกัน โปรดลองอีกครั้ง");
       return;
     }
 
@@ -24,7 +24,7 @@ const RangModResetPassword = () => {
     const otp = localStorage.getItem('resetOtp'); // Retrieve the OTP stored
 
     if (!email || !otp) {
-      alert("Missing email or OTP for reset. Please start the reset process again.");
+      alert("ไม่มีอีเมลรือรัสผ่าน OTP สำรับเปลี่ยนรหัสผ่าน กรุณาทำการเปลี่ยนรัสผ่านใหม่อีกครั้งม");
       router.push("/forgotpassword");
       return;
     }
@@ -40,15 +40,15 @@ const RangModResetPassword = () => {
       const data = res.data;
 
       if (res.status === 200 ) {
-        alert(data.message || "Password reset successfully!");
+        alert(data.message || "เปลี่ยนรหัสผ่านเรียบร้อยแล้ว!");
 
         router.push("/signin");
       } else {
-        alert(data.error || data.message || "Password reset failed");
+        alert(data.error || data.message || "เปลี่ยนรหัสผ่านล้มเหลว");
       }
     } catch (err) {
       console.error("Password reset error:", err);
-      alert("Something went wrong. Please try again later.");
+      alert("มีบางอย่างผิดพลาด โปรดลองอีกครั้งในภายหลัง");
     }
   };
 
@@ -93,7 +93,7 @@ const RangModResetPassword = () => {
             </div>
             
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>CONFIRM PASSWORD</label>
+              <label className={styles.fieldLabel}>ยืนยันรหัสผ่าน</label>
               <div className={styles.passwordWrapper}>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
@@ -121,13 +121,13 @@ const RangModResetPassword = () => {
             </div>
             
             <button type="submit" className={`${styles.createButton} ${styles.confirmButton}`}>
-              CONFIRM
+              ยืนยัน
             </button>
           </form>
         </div>
         
         <div className={styles.footer}>
-          <p>© 2025 All Rights Reserved.</p>
+          <p>สงวนลิขสิทธิ์ทุกประการ © 2025</p>
         </div>
       </div>
       

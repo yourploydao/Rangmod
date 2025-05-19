@@ -18,7 +18,7 @@ const VerifyCodeForgotpassword = () => {
     const email = localStorage.getItem('resetEmail');
 
     if (!otp) {
-      setMessage({ text: "Please enter the verification code", isError: true });
+      setMessage({ text: "กรุณากรอกรหัสยืนยัน", isError: true });
       setIsSubmitting(false);
       return;
     }
@@ -34,7 +34,7 @@ const VerifyCodeForgotpassword = () => {
 
       if (res.status === 200) {
         setMessage({ 
-          text: "OTP verified successfully!", 
+          text: "ยืนยีนรหัส OTP สำเร็จแล้ว!", 
           isError: false 
         });
 
@@ -48,14 +48,14 @@ const VerifyCodeForgotpassword = () => {
         }, 1500);
       } else {
         setMessage({ 
-          text: data.error || data.message || "Invalid verification code", 
+          text: data.error || data.message || "รหัสยืนยันไม่ถูกต้อง", 
           isError: true 
         });
       }
     } catch (err) {
       console.error("Verification error:", err);
       setMessage({ 
-        text: "Something went wrong. Please try again later.", 
+        text: "มีบางอย่างผิดพลาด โปรดลองอีกครั้งในภายหลัง", 
         isError: true 
       });
     } finally {
@@ -69,7 +69,7 @@ const VerifyCodeForgotpassword = () => {
     
     const email = localStorage.getItem('resetEmail');
     if (!email) {
-      setMessage({ text: "Email not found. Please try forgot password again.", isError: true });
+      setMessage({ text: "ไม่พบอีเมลในระบบ กรุณาใช้เมนูลืมรัสผ่านใม่อีกครั้ง", isError: true });
       setIsResending(false);
       return;
     }
@@ -78,19 +78,19 @@ const VerifyCodeForgotpassword = () => {
       const res = await axios.post("/api/auth/resendotp", { email });
       if (res.status === 200) {
         setMessage({ 
-          text: "New verification code has been sent to your email!", 
+          text: "รหัสผ่านใหม่ได้ถูกส่งไปยังที่อยู่อีเมลของคุณแล้ว", 
           isError: false 
         });
       } else {
         setMessage({ 
-          text: "Failed to resend verification code. Please try again.", 
+          text: "การส่งรหัสยืนยันล้มเหลว กรุณาลองอีกครั้ง", 
           isError: true 
         });
       }
     } catch (err) {
       console.error("Resend OTP error:", err);
       setMessage({ 
-        text: "Failed to resend verification code. Please try again.", 
+        text: "การส่งรหัสยืนยันล้มเหลว กรุณาลองอีกครั้ง", 
         isError: true 
       });
     } finally {
@@ -107,11 +107,11 @@ const VerifyCodeForgotpassword = () => {
         </div>
         
         <div className={styles.formContainer}>
-          <h1 className={styles.title}>Verify Code</h1>
+          <h1 className={styles.title}>ยืนยันรหัส</h1>
           
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>OTP IN YOUR EMAIL</label>
+              <label className={styles.fieldLabel}>รหัส OTP ในอีเมลของคุณ</label>
               <input
                 type="text"
                 value={otp}
@@ -132,17 +132,17 @@ const VerifyCodeForgotpassword = () => {
               className={styles.createButton}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "VERIFYING..." : "CONFIRM"}
+              {isSubmitting ? "กำลังตรวจสอบ..." : "ยืนยัน"}
             </button>
           </form>
           
           <div className={styles.signInSection}>
-            <p>Didn't receive code? <a href="#" onClick={handleResendOTP} className={styles.signInLink}>{isResending ? "SENDING..." : "RESEND"}</a></p>
+            <p>ไม่ได้รับรหัส? <a href="#" onClick={handleResendOTP} className={styles.signInLink}>{isResending ? "SENDING..." : "RESEND"}</a></p>
           </div>
         </div>
         
         <div className={styles.footer}>
-          <p>© 2025 All Rights Reserved.</p>
+          <p>สงวนลิขสิทธิ์ทุกประการ © 2025</p>
         </div>
       </div>
       

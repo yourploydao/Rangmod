@@ -284,7 +284,7 @@ const RangModDormitory = ({ dormitories }) => {
                   </p>
                   <p className={styles.dormFeature}>{dormitory.type_dormitory}</p>
                   <p className={styles.refreshDate}>
-                    refreshed at: {new Date(dormitory.last_updated).toLocaleDateString()}
+                    อัปเดตเมื่อ : {new Date(dormitory.last_updated).toLocaleDateString()}
                   </p>
                 </div>
               </div>

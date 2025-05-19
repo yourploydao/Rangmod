@@ -96,7 +96,7 @@ const handleSubmit = async (e) => {
             </div>
             
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>เบอร์ไทรศัพท์</label>
+              <label className={styles.fieldLabel}>เบอร์โทรศัพท์</label>
               <input
                 type="tel"
                 value={phone}

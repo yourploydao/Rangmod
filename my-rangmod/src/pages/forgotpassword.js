@@ -15,7 +15,7 @@ const RangModForgotPassword = () => {
     setIsSubmitting(true);
 
     if (!email) {
-      setMessage({ text: "Please enter your email address", isError: true });
+      setMessage({ text: "กรุณาใส่ที่อยู่อีเมลของคุณ", isError: true });
       setIsSubmitting(false);
       return;
     }
@@ -28,7 +28,7 @@ const RangModForgotPassword = () => {
 
       if (res.status === 200 ) {
         setMessage({ 
-          text: data.message || "Password reset instructions sent to your email!", 
+          text: data.message || "รหัสผ่านใหม่ได้ถูกส่งไปยังที่อยู่อีเมลของคุณแล้ว!", 
           isError: false 
         });
         // Save email to localStorage
@@ -37,14 +37,14 @@ const RangModForgotPassword = () => {
         router.push("/verifycode");
       } else {
         setMessage({ 
-          text: data.error || data.message || "Failed to process your request", 
+          text: data.error || data.message || "คำขอของท่านล้มเหลว", 
           isError: true 
         });
       }
     } catch (err) {
       console.error("Forgot password error:", err);
       setMessage({ 
-        text: "Something went wrong. Please try again later.", 
+        text: "มีบางอย่างผิดพลาด โปรดลองอีกครั้งในภายหลัง", 
         isError: true 
       });
     } finally {
@@ -61,11 +61,11 @@ const RangModForgotPassword = () => {
         </div>
         
         <div className={styles.formContainer}>
-          <h1 className={styles.title}>Forgot Password</h1>
+          <h1 className={styles.title}>ลืมรหัสผ่าน</h1>
           
           <form onSubmit={handleSubmit}>
             <div className={styles.formField}>
-              <label className={styles.fieldLabel}>EMAIL ADDRESS</label>
+              <label className={styles.fieldLabel}>ที่อยู่อีเมล</label>
               <input
                 type="email"
                 value={email}
@@ -85,17 +85,17 @@ const RangModForgotPassword = () => {
               className={styles.createButton}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "SENDING..." : "SEND OTP"}
+              {isSubmitting ? "กำลังส่ง..." : "ส่ง OTP เรียบร้อยแล้ว"}
             </button>
           </form>
           
           <div className={styles.signInSection}>
-            <p>Remember your password? <a href="/signin" className={styles.signInLink}>SIGN IN</a></p>
+            <p>จำรหัสผ่านได้แล้ว? <a href="/signin" className={styles.signInLink}>เข้าสู่ระบบ</a></p>
           </div>
         </div>
         
         <div className={styles.footer}>
-          <p>© 2025 All Rights Reserved.</p>
+          <p>สงวนลิขสิทธิ์ทุกประการ © 2025</p>
         </div>
       </div>
       
